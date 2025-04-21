@@ -1,0 +1,1668 @@
+[
+  {
+    "id": "baa",
+    "kanji": "巴",
+    "jyutping": "baa",
+    "katakana": "バー",
+    "audioPath": "/audio/baa.mp3"
+  },
+  {
+    "id": "baai",
+    "kanji": "擺",
+    "jyutping": "baai",
+    "katakana": "バーイ",
+    "audioPath": "/audio/baai.mp3"
+  },
+  {
+    "id": "baau",
+    "kanji": "包",
+    "jyutping": "baau",
+    "katakana": "バーウ",
+    "audioPath": "/audio/baau.mp3"
+  },
+  {
+    "id": "baan",
+    "kanji": "班",
+    "jyutping": "baan",
+    "katakana": "バーン(ヌ)",
+    "audioPath": "/audio/baan.mp3"
+  },
+  {
+    "id": "baang",
+    "kanji": "嘭",
+    "jyutping": "baang",
+    "katakana": "バーン(グ)",
+    "audioPath": "/audio/baang.mp3"
+  },
+  {
+    "id": "baat",
+    "kanji": "八",
+    "jyutping": "baat",
+    "katakana": "バーッ(トゥ)",
+    "audioPath": "/audio/baat.mp3"
+  },
+  {
+    "id": "baak",
+    "kanji": "百",
+    "jyutping": "baak",
+    "katakana": "バーッ(ク)",
+    "audioPath": "/audio/baak.mp3"
+  },
+  {
+    "id": "bai",
+    "kanji": "弊",
+    "jyutping": "bai",
+    "katakana": "バイ",
+    "audioPath": "/audio/bai.mp3"
+  },
+  {
+    "id": "bam",
+    "kanji": "泵",
+    "jyutping": "bam",
+    "katakana": "バム",
+    "audioPath": "/audio/bam.mp3"
+  },
+  {
+    "id": "ban",
+    "kanji": "笨",
+    "jyutping": "ban",
+    "katakana": "バン(ヌ)",
+    "audioPath": "/audio/ban.mp3"
+  },
+  {
+    "id": "bang",
+    "kanji": "崩",
+    "jyutping": "bang",
+    "katakana": "バン(グ)",
+    "audioPath": "/audio/bang.mp3"
+  },
+  {
+    "id": "bat",
+    "kanji": "不",
+    "jyutping": "bat",
+    "katakana": "バッ(トゥ)",
+    "audioPath": "/audio/bat.mp3"
+  },
+  {
+    "id": "bak",
+    "kanji": "北",
+    "jyutping": "bak",
+    "katakana": "バッ(ク)",
+    "audioPath": "/audio/bak.mp3"
+  },
+  {
+    "id": "be",
+    "kanji": "啤",
+    "jyutping": "be",
+    "katakana": "べー",
+    "audioPath": "/audio/be.mp3"
+  },
+  {
+    "id": "beng",
+    "kanji": "餅",
+    "jyutping": "beng",
+    "katakana": "べーン(グ)",
+    "audioPath": "/audio/beng.mp3"
+  },
+  {
+    "id": "bei",
+    "kanji": "畀",
+    "jyutping": "bei",
+    "katakana": "べイ",
+    "audioPath": "/audio/bei.mp3"
+  },
+  {
+    "id": "bing",
+    "kanji": "冰",
+    "jyutping": "bing",
+    "katakana": "べン(グ)",
+    "audioPath": "/audio/bing.mp3"
+  },
+  {
+    "id": "bik",
+    "kanji": "逼",
+    "jyutping": "bik",
+    "katakana": "べッ(ク)",
+    "audioPath": "/audio/bik.mp3"
+  },
+  {
+    "id": "bo",
+    "kanji": "波",
+    "jyutping": "bo",
+    "katakana": "ボー",
+    "audioPath": "/audio/bo.mp3"
+  },
+  {
+    "id": "bong",
+    "kanji": "邦",
+    "jyutping": "bong",
+    "katakana": "ボーン(グ)",
+    "audioPath": "/audio/bong.mp3"
+  },
+  {
+    "id": "bok",
+    "kanji": "縛",
+    "jyutping": "bok",
+    "katakana": "ボーッ(ク)",
+    "audioPath": "/audio/bok.mp3"
+  },
+  {
+    "id": "bou",
+    "kanji": "寶",
+    "jyutping": "bou",
+    "katakana": "ボウ",
+    "audioPath": "/audio/bou.mp3"
+  },
+  {
+    "id": "bung",
+    "kanji": "埲",
+    "jyutping": "bung",
+    "katakana": "ボン",
+    "audioPath": "/audio/bung.mp3"
+  },
+  {
+    "id": "buk",
+    "kanji": "瀑",
+    "jyutping": "buk",
+    "katakana": "ボッ(ク)",
+    "audioPath": "/audio/buk.mp3"
+  },
+  {
+    "id": "bi",
+    "kanji": "Ｂ",
+    "jyutping": "bi",
+    "katakana": "ビー",
+    "audioPath": "/audio/bi.mp3"
+  },
+  {
+    "id": "biu",
+    "kanji": "表",
+    "jyutping": "biu",
+    "katakana": "ビーウ",
+    "audioPath": "/audio/biu.mp3"
+  },
+  {
+    "id": "bin",
+    "kanji": "變",
+    "jyutping": "bin",
+    "katakana": "ビーン(ヌ)",
+    "audioPath": "/audio/bin.mp3"
+  },
+  {
+    "id": "bit",
+    "kanji": "必",
+    "jyutping": "bit",
+    "katakana": "ビーッ(トゥ)",
+    "audioPath": "/audio/bit.mp3"
+  },
+  {
+    "id": "bui",
+    "kanji": "杯",
+    "jyutping": "bui",
+    "katakana": "ブーイ",
+    "audioPath": "/audio/bui.mp3"
+  },
+  {
+    "id": "bun",
+    "kanji": "般",
+    "jyutping": "bun",
+    "katakana": "ブーン(ヌ)",
+    "audioPath": "/audio/bun.mp3"
+  },
+  {
+    "id": "but",
+    "kanji": "勃",
+    "jyutping": "but",
+    "katakana": "ブーッ(トゥ)",
+    "audioPath": "/audio/but.mp3"
+  },
+  {
+    "id": "faa",
+    "kanji": "花",
+    "jyutping": "faa",
+    "katakana": "ファー",
+    "audioPath": "/audio/faa.mp3"
+  },
+  {
+    "id": "faai",
+    "kanji": "快",
+    "jyutping": "faai",
+    "katakana": "ファーイ",
+    "audioPath": "/audio/faai.mp3"
+  },
+  {
+    "id": "faan",
+    "kanji": "反",
+    "jyutping": "faan",
+    "katakana": "ファーン(ヌ)",
+    "audioPath": "/audio/faan.mp3"
+  },
+  {
+    "id": "faat",
+    "kanji": "發",
+    "jyutping": "faat",
+    "katakana": "ファーッ(トゥ)",
+    "audioPath": "/audio/faat.mp3"
+  },
+  {
+    "id": "faak",
+    "kanji": "𢪎",
+    "jyutping": "faak",
+    "katakana": "ファーッ(ク)",
+    "audioPath": "/audio/faak.mp3"
+  },
+  {
+    "id": "fai",
+    "kanji": "輝",
+    "jyutping": "fai",
+    "katakana": "ファイ",
+    "audioPath": "/audio/fai.mp3"
+  },
+  {
+    "id": "fau",
+    "kanji": "否",
+    "jyutping": "fau",
+    "katakana": "ファウ",
+    "audioPath": "/audio/fau.mp3"
+  },
+  {
+    "id": "fan",
+    "kanji": "分",
+    "jyutping": "fan",
+    "katakana": "ファン(ヌ)",
+    "audioPath": "/audio/fan.mp3"
+  },
+  {
+    "id": "fang",
+    "kanji": "揈",
+    "jyutping": "fang",
+    "katakana": "ファン(グ)",
+    "audioPath": "/audio/fang.mp3"
+  },
+  {
+    "id": "fat",
+    "kanji": "弗",
+    "jyutping": "fat",
+    "katakana": "ファッ(トゥ)",
+    "audioPath": "/audio/fat.mp3"
+  },
+  {
+    "id": "fe",
+    "kanji": "啡",
+    "jyutping": "fe",
+    "katakana": "フェー",
+    "audioPath": "/audio/fe.mp3"
+  },
+  {
+    "id": "fei",
+    "kanji": "飛",
+    "jyutping": "fei",
+    "katakana": "フェイ",
+    "audioPath": "/audio/fei.mp3"
+  },
+  {
+    "id": "fo",
+    "kanji": "科",
+    "jyutping": "fo",
+    "katakana": "フォー",
+    "audioPath": "/audio/fo.mp3"
+  },
+  {
+    "id": "fong",
+    "kanji": "方",
+    "jyutping": "fong",
+    "katakana": "フォーン(グ)",
+    "audioPath": "/audio/fong.mp3"
+  },
+  {
+    "id": "fok",
+    "kanji": "霍",
+    "jyutping": "fok",
+    "katakana": "フォーッ(ク)",
+    "audioPath": "/audio/fok.mp3"
+  },
+  {
+    "id": "fung",
+    "kanji": "風",
+    "jyutping": "fung",
+    "katakana": "フォン",
+    "audioPath": "/audio/fung.mp3"
+  },
+  {
+    "id": "fuk",
+    "kanji": "福",
+    "jyutping": "fuk",
+    "katakana": "フォッ(ク)",
+    "audioPath": "/audio/fuk.mp3"
+  },
+  {
+    "id": "fiu",
+    "kanji": "覅",
+    "jyutping": "fiu",
+    "katakana": "フィーウ",
+    "audioPath": "/audio/fiu.mp3"
+  },
+  {
+    "id": "fit",
+    "kanji": "𢞵",
+    "jyutping": "fit",
+    "katakana": "フィーッ(トゥ)",
+    "audioPath": "/audio/fit.mp3"
+  },
+  {
+    "id": "fu",
+    "kanji": "呼",
+    "jyutping": "fu",
+    "katakana": "フー",
+    "audioPath": "/audio/fu.mp3"
+  },
+  {
+    "id": "fui",
+    "kanji": "灰",
+    "jyutping": "fui",
+    "katakana": "フーイ",
+    "audioPath": "/audio/fui.mp3"
+  },
+  {
+    "id": "fun",
+    "kanji": "歡",
+    "jyutping": "fun",
+    "katakana": "フーン(ヌ)",
+    "audioPath": "/audio/fun.mp3"
+  },
+  {
+    "id": "fut",
+    "kanji": "闊",
+    "jyutping": "fut",
+    "katakana": "フーッ(トゥ)",
+    "audioPath": "/audio/fut.mp3"
+  },
+  {
+    "id": "taa",
+    "kanji": "他",
+    "jyutping": "taa",
+    "katakana": "ター",
+    "audioPath": "/audio/taa.mp3"
+  },
+  {
+    "id": "taai",
+    "kanji": "太",
+    "jyutping": "taai",
+    "katakana": "ターイ",
+    "audioPath": "/audio/taai.mp3"
+  },
+  {
+    "id": "taam",
+    "kanji": "貪",
+    "jyutping": "taam",
+    "katakana": "ターム",
+    "audioPath": "/audio/taam.mp3"
+  },
+  {
+    "id": "taan",
+    "kanji": "攤",
+    "jyutping": "taan",
+    "katakana": "ターン(ヌ)",
+    "audioPath": "/audio/taan.mp3"
+  },
+  {
+    "id": "taap",
+    "kanji": "塌",
+    "jyutping": "taap",
+    "katakana": "タープ",
+    "audioPath": "/audio/taap.mp3"
+  },
+  {
+    "id": "taat",
+    "kanji": "撻",
+    "jyutping": "taat",
+    "katakana": "ターッ(トゥ)",
+    "audioPath": "/audio/taat.mp3"
+  },
+  {
+    "id": "tai",
+    "kanji": "梯",
+    "jyutping": "tai",
+    "katakana": "タイ",
+    "audioPath": "/audio/tai.mp3"
+  },
+  {
+    "id": "tau",
+    "kanji": "偷",
+    "jyutping": "tau",
+    "katakana": "タウ",
+    "audioPath": "/audio/tau.mp3"
+  },
+  {
+    "id": "tam",
+    "kanji": "氹",
+    "jyutping": "tam",
+    "katakana": "タム",
+    "audioPath": "/audio/tam.mp3"
+  },
+  {
+    "id": "tan",
+    "kanji": "吞",
+    "jyutping": "tan",
+    "katakana": "タン(ヌ)",
+    "audioPath": "/audio/tan.mp3"
+  },
+  {
+    "id": "tang",
+    "kanji": "騰",
+    "jyutping": "tang",
+    "katakana": "タン(グ)",
+    "audioPath": "/audio/tang.mp3"
+  },
+  {
+    "id": "tap",
+    "kanji": "佮",
+    "jyutping": "tap",
+    "katakana": "タプ",
+    "audioPath": "/audio/tap.mp3"
+  },
+  {
+    "id": "teng",
+    "kanji": "聽",
+    "jyutping": "teng",
+    "katakana": "テーン(グ)",
+    "audioPath": "/audio/teng.mp3"
+  },
+  {
+    "id": "tek",
+    "kanji": "踢",
+    "jyutping": "tek",
+    "katakana": "テーッ(ク)",
+    "audioPath": "/audio/tek.mp3"
+  },
+  {
+    "id": "ting",
+    "kanji": "挺",
+    "jyutping": "ting",
+    "katakana": "テン(グ)",
+    "audioPath": "/audio/ting.mp3"
+  },
+  {
+    "id": "tik",
+    "kanji": "剔",
+    "jyutping": "tik",
+    "katakana": "テッ(ク)",
+    "audioPath": "/audio/tik.mp3"
+  },
+  {
+    "id": "to",
+    "kanji": "拖",
+    "jyutping": "to",
+    "katakana": "トー",
+    "audioPath": "/audio/to.mp3"
+  },
+  {
+    "id": "toi",
+    "kanji": "臺",
+    "jyutping": "toi",
+    "katakana": "トォーイ",
+    "audioPath": "/audio/toi.mp3"
+  },
+  {
+    "id": "tong",
+    "kanji": "唐",
+    "jyutping": "tong",
+    "katakana": "トーン(グ)",
+    "audioPath": "/audio/tong.mp3"
+  },
+  {
+    "id": "tok",
+    "kanji": "托",
+    "jyutping": "tok",
+    "katakana": "トーッ(ク)",
+    "audioPath": "/audio/tok.mp3"
+  },
+  {
+    "id": "tou",
+    "kanji": "圖",
+    "jyutping": "tou",
+    "katakana": "トウ",
+    "audioPath": "/audio/tou.mp3"
+  },
+  {
+    "id": "tung",
+    "kanji": "同",
+    "jyutping": "tung",
+    "katakana": "トン",
+    "audioPath": "/audio/tung.mp3"
+  },
+  {
+    "id": "tuk",
+    "kanji": "禿",
+    "jyutping": "tuk",
+    "katakana": "トッ(ク)",
+    "audioPath": "/audio/tuk.mp3"
+  },
+  {
+    "id": "toe",
+    "kanji": "唾",
+    "jyutping": "toe",
+    "katakana": "テェオー",
+    "audioPath": "/audio/toe.mp3"
+  },
+  {
+    "id": "teoi",
+    "kanji": "退",
+    "jyutping": "teoi",
+    "katakana": "トェオイ",
+    "audioPath": "/audio/teoi.mp3"
+  },
+  {
+    "id": "teon",
+    "kanji": "盾",
+    "jyutping": "teon",
+    "katakana": "トェオン(ヌ)",
+    "audioPath": "/audio/teon.mp3"
+  },
+  {
+    "id": "ti",
+    "kanji": "Ｔ",
+    "jyutping": "ti",
+    "katakana": "ティー",
+    "audioPath": "/audio/ti.mp3"
+  },
+  {
+    "id": "tiu",
+    "kanji": "跳",
+    "jyutping": "tiu",
+    "katakana": "ティーウ",
+    "audioPath": "/audio/tiu.mp3"
+  },
+  {
+    "id": "tim",
+    "kanji": "甜",
+    "jyutping": "tim",
+    "katakana": "ティーム",
+    "audioPath": "/audio/tim.mp3"
+  },
+  {
+    "id": "tin",
+    "kanji": "天",
+    "jyutping": "tin",
+    "katakana": "ティーン(ヌ)",
+    "audioPath": "/audio/tin.mp3"
+  },
+  {
+    "id": "tip",
+    "kanji": "貼",
+    "jyutping": "tip",
+    "katakana": "ティーッ(プ)",
+    "audioPath": "/audio/tip.mp3"
+  },
+  {
+    "id": "tit",
+    "kanji": "鐵",
+    "jyutping": "tit",
+    "katakana": "ティーッ(トゥ)",
+    "audioPath": "/audio/tit.mp3"
+  },
+  {
+    "id": "tyun",
+    "kanji": "屯",
+    "jyutping": "tyun",
+    "katakana": "テューン(ヌ)",
+    "audioPath": "/audio/tyun.mp3"
+  },
+  {
+    "id": "tyut",
+    "kanji": "脫",
+    "jyutping": "tyut",
+    "katakana": "テューッ(トゥ)",
+    "audioPath": "/audio/tyut.mp3"
+  },
+  {
+    "id": "kaa",
+    "kanji": "卡",
+    "jyutping": "kaa",
+    "katakana": "カー",
+    "audioPath": "/audio/kaa.mp3"
+  },
+  {
+    "id": "kaai",
+    "kanji": "楷",
+    "jyutping": "kaai",
+    "katakana": "カーイ",
+    "audioPath": "/audio/kaai.mp3"
+  },
+  {
+    "id": "kaau",
+    "kanji": "靠",
+    "jyutping": "kaau",
+    "katakana": "カーウ",
+    "audioPath": "/audio/kaau.mp3"
+  },
+  {
+    "id": "kaat",
+    "kanji": "咭",
+    "jyutping": "kaat",
+    "katakana": "カーッ(トゥ)",
+    "audioPath": "/audio/kaat.mp3"
+  },
+  {
+    "id": "kai",
+    "kanji": "溪",
+    "jyutping": "kai",
+    "katakana": "カイ",
+    "audioPath": "/audio/kai.mp3"
+  },
+  {
+    "id": "kau",
+    "kanji": "溝",
+    "jyutping": "kau",
+    "katakana": "カウ",
+    "audioPath": "/audio/kau.mp3"
+  },
+  {
+    "id": "kam",
+    "kanji": "琴",
+    "jyutping": "kam",
+    "katakana": "カム",
+    "audioPath": "/audio/kam.mp3"
+  },
+  {
+    "id": "kan",
+    "kanji": "勤",
+    "jyutping": "kan",
+    "katakana": "カン(ヌ)",
+    "audioPath": "/audio/kan.mp3"
+  },
+  {
+    "id": "kang",
+    "kanji": "啃",
+    "jyutping": "kang",
+    "katakana": "カン(グ)",
+    "audioPath": "/audio/kang.mp3"
+  },
+  {
+    "id": "kap",
+    "kanji": "給",
+    "jyutping": "kap",
+    "katakana": "カプ",
+    "audioPath": "/audio/kap.mp3"
+  },
+  {
+    "id": "kat",
+    "kanji": "咳",
+    "jyutping": "kat",
+    "katakana": "カッ(トゥ)",
+    "audioPath": "/audio/kat.mp3"
+  },
+  {
+    "id": "ke",
+    "kanji": "茄",
+    "jyutping": "ke",
+    "katakana": "ケー",
+    "audioPath": "/audio/ke.mp3"
+  },
+  {
+    "id": "keu",
+    "kanji": "𠵇",
+    "jyutping": "keu",
+    "katakana": "ケーウ",
+    "audioPath": "/audio/keu.mp3"
+  },
+  {
+    "id": "kek",
+    "kanji": "劇",
+    "jyutping": "kek",
+    "katakana": "ケーッ(ク)",
+    "audioPath": "/audio/kek.mp3"
+  },
+  {
+    "id": "kei",
+    "kanji": "奇",
+    "jyutping": "kei",
+    "katakana": "ケイ",
+    "audioPath": "/audio/kei.mp3"
+  },
+  {
+    "id": "king",
+    "kanji": "傾",
+    "jyutping": "king",
+    "katakana": "ケン(グ)",
+    "audioPath": "/audio/king.mp3"
+  },
+  {
+    "id": "kik",
+    "kanji": "𠽤",
+    "jyutping": "kik",
+    "katakana": "ケッ(ク)",
+    "audioPath": "/audio/kik.mp3"
+  },
+  {
+    "id": "koi",
+    "kanji": "概",
+    "jyutping": "koi",
+    "katakana": "コォーイ",
+    "audioPath": "/audio/koi.mp3"
+  },
+  {
+    "id": "kong",
+    "kanji": "抗",
+    "jyutping": "kong",
+    "katakana": "コーン(グ)",
+    "audioPath": "/audio/kong.mp3"
+  },
+  {
+    "id": "kok",
+    "kanji": "確",
+    "jyutping": "kok",
+    "katakana": "コーッ(ク)",
+    "audioPath": "/audio/kok.mp3"
+  },
+  {
+    "id": "kung",
+    "kanji": "窮",
+    "jyutping": "kung",
+    "katakana": "コン",
+    "audioPath": "/audio/kung.mp3"
+  },
+  {
+    "id": "kuk",
+    "kanji": "曲",
+    "jyutping": "kuk",
+    "katakana": "コッ(ク)",
+    "audioPath": "/audio/kuk.mp3"
+  },
+  {
+    "id": "koeng",
+    "kanji": "強",
+    "jyutping": "koeng",
+    "katakana": "キェオーン(グ)",
+    "audioPath": "/audio/koeng.mp3"
+  },
+  {
+    "id": "koek",
+    "kanji": "卻",
+    "jyutping": "koek",
+    "katakana": "キェオーッ(ク)",
+    "audioPath": "/audio/koek.mp3"
+  },
+  {
+    "id": "keoi",
+    "kanji": "區",
+    "jyutping": "keoi",
+    "katakana": "コェオイ",
+    "audioPath": "/audio/keoi.mp3"
+  },
+  {
+    "id": "kiu",
+    "kanji": "橋",
+    "jyutping": "kiu",
+    "katakana": "キーウ",
+    "audioPath": "/audio/kiu.mp3"
+  },
+  {
+    "id": "kim",
+    "kanji": "鉗",
+    "jyutping": "kim",
+    "katakana": "キーム",
+    "audioPath": "/audio/kim.mp3"
+  },
+  {
+    "id": "kin",
+    "kanji": "虔",
+    "jyutping": "kin",
+    "katakana": "キーン(ヌ)",
+    "audioPath": "/audio/kin.mp3"
+  },
+  {
+    "id": "kit",
+    "kanji": "揭",
+    "jyutping": "kit",
+    "katakana": "キーッ(トゥ)",
+    "audioPath": "/audio/kit.mp3"
+  },
+  {
+    "id": "ku",
+    "kanji": "箍",
+    "jyutping": "ku",
+    "katakana": "クー",
+    "audioPath": "/audio/ku.mp3"
+  },
+  {
+    "id": "kui",
+    "kanji": "繪",
+    "jyutping": "kui",
+    "katakana": "クーイ",
+    "audioPath": "/audio/kui.mp3"
+  },
+  {
+    "id": "kut",
+    "kanji": "括",
+    "jyutping": "kut",
+    "katakana": "クーッ(トゥ)",
+    "audioPath": "/audio/kut.mp3"
+  },
+  {
+    "id": "kyun",
+    "kanji": "權",
+    "jyutping": "kyun",
+    "katakana": "キューン(ヌ)",
+    "audioPath": "/audio/kyun.mp3"
+  },
+  {
+    "id": "kyut",
+    "kanji": "缺",
+    "jyutping": "kyut",
+    "katakana": "キューッ(トゥ)",
+    "audioPath": "/audio/kyut.mp3"
+  },
+  {
+    "id": "haa",
+    "kanji": "哈",
+    "jyutping": "haa",
+    "katakana": "ハー",
+    "audioPath": "/audio/haa.mp3"
+  },
+  {
+    "id": "haai",
+    "kanji": "鞋",
+    "jyutping": "haai",
+    "katakana": "ハーイ",
+    "audioPath": "/audio/haai.mp3"
+  },
+  {
+    "id": "haau",
+    "kanji": "敲",
+    "jyutping": "haau",
+    "katakana": "ハーウ",
+    "audioPath": "/audio/haau.mp3"
+  },
+  {
+    "id": "haam",
+    "kanji": "鹹",
+    "jyutping": "haam",
+    "katakana": "ハーム",
+    "audioPath": "/audio/haam.mp3"
+  },
+  {
+    "id": "haan",
+    "kanji": "限",
+    "jyutping": "haan",
+    "katakana": "ハーン",
+    "audioPath": "/audio/haan.mp3"
+  },
+  {
+    "id": "haang",
+    "kanji": "坑",
+    "jyutping": "haang",
+    "katakana": "ハァーン(グ)",
+    "audioPath": "/audio/haang.mp3"
+  },
+  {
+    "id": "haap",
+    "kanji": "峽",
+    "jyutping": "haap",
+    "katakana": "ハープ",
+    "audioPath": "/audio/haap.mp3"
+  },
+  {
+    "id": "haat",
+    "kanji": "乞",
+    "jyutping": "haat",
+    "katakana": "ハーッ(トゥ)",
+    "audioPath": "/audio/haat.mp3"
+  },
+  {
+    "id": "haak",
+    "kanji": "黑",
+    "jyutping": "haak",
+    "katakana": "ハーッ(ク)",
+    "audioPath": "/audio/haak.mp3"
+  },
+  {
+    "id": "hai",
+    "kanji": "係",
+    "jyutping": "hai",
+    "katakana": "ハイ",
+    "audioPath": "/audio/hai.mp3"
+  },
+  {
+    "id": "hau",
+    "kanji": "猴",
+    "jyutping": "hau",
+    "katakana": "ハウ",
+    "audioPath": "/audio/hau.mp3"
+  },
+  {
+    "id": "ham",
+    "kanji": "含",
+    "jyutping": "ham",
+    "katakana": "ハム",
+    "audioPath": "/audio/ham.mp3"
+  },
+  {
+    "id": "han",
+    "kanji": "痕",
+    "jyutping": "han",
+    "katakana": "ハン",
+    "audioPath": "/audio/han.mp3"
+  },
+  {
+    "id": "hang",
+    "kanji": "肯",
+    "jyutping": "hang",
+    "katakana": "ハン(グ)",
+    "audioPath": "/audio/hang.mp3"
+  },
+  {
+    "id": "hap",
+    "kanji": "恰",
+    "jyutping": "hap",
+    "katakana": "ハプ",
+    "audioPath": "/audio/hap.mp3"
+  },
+  {
+    "id": "hat",
+    "kanji": "核",
+    "jyutping": "hat",
+    "katakana": "ハッ(トゥ)",
+    "audioPath": "/audio/hat.mp3"
+  },
+  {
+    "id": "heng",
+    "kanji": "輕",
+    "jyutping": "heng",
+    "katakana": "ヘーン(グ)",
+    "audioPath": "/audio/heng.mp3"
+  },
+  {
+    "id": "hek",
+    "kanji": "吃",
+    "jyutping": "hek",
+    "katakana": "ヘーッ(ク)",
+    "audioPath": "/audio/hek.mp3"
+  },
+  {
+    "id": "hei",
+    "kanji": "希",
+    "jyutping": "hei",
+    "katakana": "ヘイ",
+    "audioPath": "/audio/hei.mp3"
+  },
+  {
+    "id": "hing",
+    "kanji": "興",
+    "jyutping": "hing",
+    "katakana": "ヘン(グ)",
+    "audioPath": "/audio/hing.mp3"
+  },
+  {
+    "id": "ho",
+    "kanji": "何",
+    "jyutping": "ho",
+    "katakana": "ホー",
+    "audioPath": "/audio/ho.mp3"
+  },
+  {
+    "id": "hoi",
+    "kanji": "海",
+    "jyutping": "hoi",
+    "katakana": "ホォーイ",
+    "audioPath": "/audio/hoi.mp3"
+  },
+  {
+    "id": "hon",
+    "kanji": "看",
+    "jyutping": "hon",
+    "katakana": "ホーン",
+    "audioPath": "/audio/hon.mp3"
+  },
+  {
+    "id": "hong",
+    "kanji": "康",
+    "jyutping": "hong",
+    "katakana": "ホーン(グ)",
+    "audioPath": "/audio/hong.mp3"
+  },
+  {
+    "id": "hot",
+    "kanji": "渴",
+    "jyutping": "hot",
+    "katakana": "ホーッ(トゥ)",
+    "audioPath": "/audio/hot.mp3"
+  },
+  {
+    "id": "hok",
+    "kanji": "學",
+    "jyutping": "hok",
+    "katakana": "ホーッ(ク)",
+    "audioPath": "/audio/hok.mp3"
+  },
+  {
+    "id": "hou",
+    "kanji": "好",
+    "jyutping": "hou",
+    "katakana": "ホウ",
+    "audioPath": "/audio/hou.mp3"
+  },
+  {
+    "id": "hung",
+    "kanji": "紅",
+    "jyutping": "hung",
+    "katakana": "ホン",
+    "audioPath": "/audio/hung.mp3"
+  },
+  {
+    "id": "huk",
+    "kanji": "哭",
+    "jyutping": "huk",
+    "katakana": "ホッ(ク)",
+    "audioPath": "/audio/huk.mp3"
+  },
+  {
+    "id": "hoe",
+    "kanji": "靴",
+    "jyutping": "hoe",
+    "katakana": "ヘェオー",
+    "audioPath": "/audio/hoe.mp3"
+  },
+  {
+    "id": "hoeng",
+    "kanji": "香",
+    "jyutping": "hoeng",
+    "katakana": "ヘェオーン(グ)",
+    "audioPath": "/audio/hoeng.mp3"
+  },
+  {
+    "id": "heoi",
+    "kanji": "去",
+    "jyutping": "heoi",
+    "katakana": "ホェオイ",
+    "audioPath": "/audio/heoi.mp3"
+  },
+  {
+    "id": "hi",
+    "kanji": "嘻",
+    "jyutping": "hi",
+    "katakana": "ヒー",
+    "audioPath": "/audio/hi.mp3"
+  },
+  {
+    "id": "hiu",
+    "kanji": "曉",
+    "jyutping": "hiu",
+    "katakana": "ヒーウ",
+    "audioPath": "/audio/hiu.mp3"
+  },
+  {
+    "id": "him",
+    "kanji": "謙",
+    "jyutping": "him",
+    "katakana": "ヒーム",
+    "audioPath": "/audio/him.mp3"
+  },
+  {
+    "id": "hin",
+    "kanji": "軒",
+    "jyutping": "hin",
+    "katakana": "ヒーン",
+    "audioPath": "/audio/hin.mp3"
+  },
+  {
+    "id": "hip",
+    "kanji": "協",
+    "jyutping": "hip",
+    "katakana": "ヒーッ(プ)",
+    "audioPath": "/audio/hip.mp3"
+  },
+  {
+    "id": "hit",
+    "kanji": "歇",
+    "jyutping": "hit",
+    "katakana": "ヒーッ(トゥ)",
+    "audioPath": "/audio/hit.mp3"
+  },
+  {
+    "id": "hyun",
+    "kanji": "犬",
+    "jyutping": "hyun",
+    "katakana": "ヒューン",
+    "audioPath": "/audio/hyun.mp3"
+  },
+  {
+    "id": "hyut",
+    "kanji": "血",
+    "jyutping": "hyut",
+    "katakana": "ヒューッ(トゥ)",
+    "audioPath": "/audio/hyut.mp3"
+  },
+  {
+    "id": "caa",
+    "kanji": "叉",
+    "jyutping": "caa",
+    "katakana": "チャー",
+    "audioPath": "/audio/caa.mp3"
+  },
+  {
+    "id": "caai",
+    "kanji": "柴",
+    "jyutping": "caai",
+    "katakana": "チャーイ",
+    "audioPath": "/audio/caai.mp3"
+  },
+  {
+    "id": "caau",
+    "kanji": "抄",
+    "jyutping": "caau",
+    "katakana": "チャーウ",
+    "audioPath": "/audio/caau.mp3"
+  },
+  {
+    "id": "caam",
+    "kanji": "慘",
+    "jyutping": "caam",
+    "katakana": "チャーム",
+    "audioPath": "/audio/caam.mp3"
+  },
+  {
+    "id": "caan",
+    "kanji": "餐",
+    "jyutping": "caan",
+    "katakana": "チャーン(ヌ)",
+    "audioPath": "/audio/caan.mp3"
+  },
+  {
+    "id": "caang",
+    "kanji": "橙",
+    "jyutping": "caang",
+    "katakana": "チャーン(グ)",
+    "audioPath": "/audio/caang.mp3"
+  },
+  {
+    "id": "caap",
+    "kanji": "插",
+    "jyutping": "caap",
+    "katakana": "チャープ",
+    "audioPath": "/audio/caap.mp3"
+  },
+  {
+    "id": "caat",
+    "kanji": "冊",
+    "jyutping": "caat",
+    "katakana": "チャーッ(トゥ)",
+    "audioPath": "/audio/caat.mp3"
+  },
+  {
+    "id": "caak",
+    "kanji": "冊",
+    "jyutping": "caak",
+    "katakana": "チャーッ(ク)",
+    "audioPath": "/audio/caak.mp3"
+  },
+  {
+    "id": "cai",
+    "kanji": "妻",
+    "jyutping": "cai",
+    "katakana": "チャイ",
+    "audioPath": "/audio/cai.mp3"
+  },
+  {
+    "id": "cau",
+    "kanji": "臭",
+    "jyutping": "cau",
+    "katakana": "チャウ",
+    "audioPath": "/audio/cau.mp3"
+  },
+  {
+    "id": "cam",
+    "kanji": "侵",
+    "jyutping": "cam",
+    "katakana": "チャム",
+    "audioPath": "/audio/cam.mp3"
+  },
+  {
+    "id": "can",
+    "kanji": "親",
+    "jyutping": "can",
+    "katakana": "チャン(ヌ)",
+    "audioPath": "/audio/can.mp3"
+  },
+  {
+    "id": "cang",
+    "kanji": "層",
+    "jyutping": "cang",
+    "katakana": "チャン(グ)",
+    "audioPath": "/audio/cang.mp3"
+  },
+  {
+    "id": "cap",
+    "kanji": "輯",
+    "jyutping": "cap",
+    "katakana": "チャプ",
+    "audioPath": "/audio/cap.mp3"
+  },
+  {
+    "id": "cat",
+    "kanji": "七",
+    "jyutping": "cat",
+    "katakana": "チャッ(トゥ)",
+    "audioPath": "/audio/cat.mp3"
+  },
+  {
+    "id": "ce",
+    "kanji": "車",
+    "jyutping": "ce",
+    "katakana": "チェー",
+    "audioPath": "/audio/ce.mp3"
+  },
+  {
+    "id": "ceng",
+    "kanji": "請",
+    "jyutping": "ceng",
+    "katakana": "チェーン(グ)",
+    "audioPath": "/audio/ceng.mp3"
+  },
+  {
+    "id": "cek",
+    "kanji": "赤",
+    "jyutping": "cek",
+    "katakana": "チェーッ(ク)",
+    "audioPath": "/audio/cek.mp3"
+  },
+  {
+    "id": "cing",
+    "kanji": "清",
+    "jyutping": "cing",
+    "katakana": "チェン(グ)",
+    "audioPath": "/audio/cing.mp3"
+  },
+  {
+    "id": "cik",
+    "kanji": "戚",
+    "jyutping": "cik",
+    "katakana": "チェッ(ク)",
+    "audioPath": "/audio/cik.mp3"
+  },
+  {
+    "id": "co",
+    "kanji": "錯",
+    "jyutping": "co",
+    "katakana": "チォー",
+    "audioPath": "/audio/co.mp3"
+  },
+  {
+    "id": "coi",
+    "kanji": "彩",
+    "jyutping": "coi",
+    "katakana": "チォォーイ",
+    "audioPath": "/audio/coi.mp3"
+  },
+  {
+    "id": "cong",
+    "kanji": "牀",
+    "jyutping": "cong",
+    "katakana": "チォーン(グ)",
+    "audioPath": "/audio/cong.mp3"
+  },
+  {
+    "id": "cok",
+    "kanji": "擢",
+    "jyutping": "cok",
+    "katakana": "チォーッ(ク)",
+    "audioPath": "/audio/cok.mp3"
+  },
+  {
+    "id": "cou",
+    "kanji": "操",
+    "jyutping": "cou",
+    "katakana": "チォウ",
+    "audioPath": "/audio/cou.mp3"
+  },
+  {
+    "id": "cung",
+    "kanji": "松",
+    "jyutping": "cung",
+    "katakana": "チォン",
+    "audioPath": "/audio/cung.mp3"
+  },
+  {
+    "id": "cuk",
+    "kanji": "束",
+    "jyutping": "cuk",
+    "katakana": "チォッ(ク)",
+    "audioPath": "/audio/cuk.mp3"
+  },
+  {
+    "id": "coeng",
+    "kanji": "昌",
+    "jyutping": "coeng",
+    "katakana": "チェオーン(グ)",
+    "audioPath": "/audio/coeng.mp3"
+  },
+  {
+    "id": "coek",
+    "kanji": "卓",
+    "jyutping": "coek",
+    "katakana": "チェオーッ(ク)",
+    "audioPath": "/audio/coek.mp3"
+  },
+  {
+    "id": "ceoi",
+    "kanji": "吹",
+    "jyutping": "ceoi",
+    "katakana": "チョェオイ",
+    "audioPath": "/audio/ceoi.mp3"
+  },
+  {
+    "id": "ceon",
+    "kanji": "春",
+    "jyutping": "ceon",
+    "katakana": "チォェオン(ヌ",
+    "audioPath": "/audio/ceon.mp3"
+  },
+  {
+    "id": "ceot",
+    "kanji": "出",
+    "jyutping": "ceot",
+    "katakana": "チェオッ(トゥ)",
+    "audioPath": "/audio/ceot.mp3"
+  },
+  {
+    "id": "ci",
+    "kanji": "似",
+    "jyutping": "ci",
+    "katakana": "チィー",
+    "audioPath": "/audio/ci.mp3"
+  },
+  {
+    "id": "ciu",
+    "kanji": "肖",
+    "jyutping": "ciu",
+    "katakana": "チィーウ",
+    "audioPath": "/audio/ciu.mp3"
+  },
+  {
+    "id": "cim",
+    "kanji": "簽",
+    "jyutping": "cim",
+    "katakana": "チィーム",
+    "audioPath": "/audio/cim.mp3"
+  },
+  {
+    "id": "cin",
+    "kanji": "前",
+    "jyutping": "cin",
+    "katakana": "チィーン(ヌ)",
+    "audioPath": "/audio/cin.mp3"
+  },
+  {
+    "id": "cip",
+    "kanji": "妾",
+    "jyutping": "cip",
+    "katakana": "チィーッ(プ)",
+    "audioPath": "/audio/cip.mp3"
+  },
+  {
+    "id": "cit",
+    "kanji": "切",
+    "jyutping": "cit",
+    "katakana": "チィーッ(トゥ)",
+    "audioPath": "/audio/cit.mp3"
+  },
+  {
+    "id": "cyu",
+    "kanji": "柱",
+    "jyutping": "cyu",
+    "katakana": "チュー",
+    "audioPath": "/audio/cyu.mp3"
+  },
+  {
+    "id": "cyun",
+    "kanji": "串",
+    "jyutping": "cyun",
+    "katakana": "チューン(ヌ)",
+    "audioPath": "/audio/cyun.mp3"
+  },
+  {
+    "id": "cyut",
+    "kanji": "猝",
+    "jyutping": "cyut",
+    "katakana": "チューッ(トゥ)",
+    "audioPath": "/audio/cyut.mp3"
+  },
+  {
+    "id": "jaa",
+    "kanji": "也",
+    "jyutping": "jaa",
+    "katakana": "ヤー",
+    "audioPath": "/audio/jaa.mp3"
+  },
+  {
+    "id": "jaau",
+    "kanji": "㕭",
+    "jyutping": "jaau",
+    "katakana": "ヤーウ",
+    "audioPath": "/audio/jaau.mp3"
+  },
+  {
+    "id": "jaam",
+    "kanji": "蘸",
+    "jyutping": "jaam",
+    "katakana": "ヤーム",
+    "audioPath": "/audio/jaam.mp3"
+  },
+  {
+    "id": "jaang",
+    "kanji": "𨅝",
+    "jyutping": "jaang",
+    "katakana": "ヤーン(グ)",
+    "audioPath": "/audio/jaang.mp3"
+  },
+  {
+    "id": "jaap",
+    "kanji": "擪",
+    "jyutping": "jaap",
+    "katakana": "ヤープ",
+    "audioPath": "/audio/jaap.mp3"
+  },
+  {
+    "id": "jaak",
+    "kanji": "喫",
+    "jyutping": "jaak",
+    "katakana": "ヤーッ(ク)",
+    "audioPath": "/audio/jaak.mp3"
+  },
+  {
+    "id": "jai",
+    "kanji": "曳",
+    "jyutping": "jai",
+    "katakana": "ヤイ",
+    "audioPath": "/audio/jai.mp3"
+  },
+  {
+    "id": "jau",
+    "kanji": "休",
+    "jyutping": "jau",
+    "katakana": "ヤウ",
+    "audioPath": "/audio/jau.mp3"
+  },
+  {
+    "id": "jam",
+    "kanji": "音",
+    "jyutping": "jam",
+    "katakana": "ヤム",
+    "audioPath": "/audio/jam.mp3"
+  },
+  {
+    "id": "jan",
+    "kanji": "人",
+    "jyutping": "jan",
+    "katakana": "ヤン(ヌ)",
+    "audioPath": "/audio/jan.mp3"
+  },
+  {
+    "id": "jap",
+    "kanji": "泣",
+    "jyutping": "jap",
+    "katakana": "ヤプ",
+    "audioPath": "/audio/jap.mp3"
+  },
+  {
+    "id": "jat",
+    "kanji": "日",
+    "jyutping": "jat",
+    "katakana": "ヤッ(トゥ)",
+    "audioPath": "/audio/jat.mp3"
+  },
+  {
+    "id": "je",
+    "kanji": "爺",
+    "jyutping": "je",
+    "katakana": "イェー",
+    "audioPath": "/audio/je.mp3"
+  },
+  {
+    "id": "jen",
+    "kanji": "円",
+    "jyutping": "jen",
+    "katakana": "イェーン(ヌ)",
+    "audioPath": "/audio/jen.mp3"
+  },
+  {
+    "id": "jeng",
+    "kanji": "贏",
+    "jyutping": "jeng",
+    "katakana": "イェーン(グ)",
+    "audioPath": "/audio/jeng.mp3"
+  },
+  {
+    "id": "jing",
+    "kanji": "形",
+    "jyutping": "jing",
+    "katakana": "イェン(グ)",
+    "audioPath": "/audio/jing.mp3"
+  },
+  {
+    "id": "jik",
+    "kanji": "益",
+    "jyutping": "jik",
+    "katakana": "イェッ(ク)",
+    "audioPath": "/audio/jik.mp3"
+  },
+  {
+    "id": "jo",
+    "kanji": "喲",
+    "jyutping": "jo",
+    "katakana": "ヨー",
+    "audioPath": "/audio/jo.mp3"
+  },
+  {
+    "id": "jung",
+    "kanji": "用",
+    "jyutping": "jung",
+    "katakana": "ヨン",
+    "audioPath": "/audio/jung.mp3"
+  },
+  {
+    "id": "juk",
+    "kanji": "肉",
+    "jyutping": "juk",
+    "katakana": "ヨッ(ク)",
+    "audioPath": "/audio/juk.mp3"
+  },
+  {
+    "id": "joeng",
+    "kanji": "揚",
+    "jyutping": "joeng",
+    "katakana": "ヨーン(グ)",
+    "audioPath": "/audio/joeng.mp3"
+  },
+  {
+    "id": "joek",
+    "kanji": "約",
+    "jyutping": "joek",
+    "katakana": "ヨェオーッ(ク)",
+    "audioPath": "/audio/joek.mp3"
+  },
+  {
+    "id": "jeoi",
+    "kanji": "銳",
+    "jyutping": "jeoi",
+    "katakana": "ヨェオイ",
+    "audioPath": "/audio/jeoi.mp3"
+  },
+  {
+    "id": "jeon",
+    "kanji": "潤",
+    "jyutping": "jeon",
+    "katakana": "ヨェオン(ヌ)",
+    "audioPath": "/audio/jeon.mp3"
+  },
+  {
+    "id": "ji",
+    "kanji": "以",
+    "jyutping": "ji",
+    "katakana": "イー",
+    "audioPath": "/audio/ji.mp3"
+  },
+  {
+    "id": "jiu",
+    "kanji": "要",
+    "jyutping": "jiu",
+    "katakana": "イーウ",
+    "audioPath": "/audio/jiu.mp3"
+  },
+  {
+    "id": "jim",
+    "kanji": "鹽",
+    "jyutping": "jim",
+    "katakana": "イーム",
+    "audioPath": "/audio/jim.mp3"
+  },
+  {
+    "id": "jin",
+    "kanji": "然",
+    "jyutping": "jin",
+    "katakana": "イーン(ヌ)",
+    "audioPath": "/audio/jin.mp3"
+  },
+  {
+    "id": "jip",
+    "kanji": "葉",
+    "jyutping": "jip",
+    "katakana": "イーッ(プ)",
+    "audioPath": "/audio/jip.mp3"
+  },
+  {
+    "id": "jit",
+    "kanji": "熱",
+    "jyutping": "jit",
+    "katakana": "イーッ(トゥ)",
+    "audioPath": "/audio/jit.mp3"
+  },
+  {
+    "id": "ju",
+    "kanji": "Ｕ",
+    "jyutping": "ju",
+    "katakana": "ユー",
+    "audioPath": "/audio/ju.mp3"
+  },
+  {
+    "id": "jyu",
+    "kanji": "魚",
+    "jyutping": "jyu",
+    "katakana": "ユー",
+    "audioPath": "/audio/jyu.mp3"
+  },
+  {
+    "id": "jyun",
+    "kanji": "丸",
+    "jyutping": "jyun",
+    "katakana": "ユーン(ヌ)",
+    "audioPath": "/audio/jyun.mp3"
+  },
+  {
+    "id": "jyut",
+    "kanji": "月",
+    "jyutping": "jyut",
+    "katakana": "ユーッ(トゥ)",
+    "audioPath": "/audio/jyut.mp3"
+  }
+]
