@@ -404,8 +404,8 @@ export function WBSView({ tasks, showAmounts, isMobile = false }: WBSViewProps) 
                                       <span>To: {new Date(task.endDate).toLocaleDateString()}</span>
                                     </div>
                                     <div className="flex items-center space-x-1 text-xs">
-                                      <span className="font-medium">Assignee:</span>
-                                      <span>{task.assignee}</span>
+                                      <span className="font-medium">Salesman:</span>
+                                      <span>{task.salesman}</span>
                                     </div>
                                   </div>
                                 </TooltipContent>
@@ -591,6 +591,11 @@ export function WBSView({ tasks, showAmounts, isMobile = false }: WBSViewProps) 
                                       </Badge>
                                     )}
                                   </div>
+
+                                  <div className="md:col-span-2 flex items-center space-x-2">
+                                    <span className="text-sm font-medium">Salesman:</span>
+                                    <span className="text-sm">{task.salesman}</span>
+                                  </div>
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent className="max-w-sm">
@@ -604,8 +609,8 @@ export function WBSView({ tasks, showAmounts, isMobile = false }: WBSViewProps) 
                                     <span className="text-sm">To: {new Date(task.endDate).toLocaleDateString()}</span>
                                   </div>
                                   <div className="flex items-center space-x-2">
-                                    <span className="text-sm font-medium">Assignee:</span>
-                                    <span className="text-sm">{task.assignee}</span>
+                                    <span className="text-sm font-medium">Salesman:</span>
+                                    <span className="text-sm">{task.salesman}</span>
                                   </div>
                                 </div>
                               </TooltipContent>

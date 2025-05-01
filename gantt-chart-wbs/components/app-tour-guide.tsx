@@ -47,10 +47,10 @@ export function AppTourGuide() {
       position: "bottom",
     },
     {
-      target: ".gantt-filter",
+      target: ".filter-section",
       title: "Filters and Grouping",
       content:
-        "Group tasks by Assignee, Client, or Project. You can also select the start date for the displayed period.",
+        "Group tasks by Salesman, Client, or Project. You can also select the start date for the displayed period.",
       position: "bottom",
     },
     {
@@ -71,7 +71,7 @@ export function AppTourGuide() {
       target: ".group-header",
       title: "Group Expansion/Collapse",
       content:
-        "Click on a group header to expand or collapse tasks within that group. This helps you focus on specific projects, clients, or assignees.",
+        "Click on a group header to expand or collapse tasks within that group. This helps you focus on specific projects, clients, or salesmen.",
       position: "right",
     },
     {
@@ -103,10 +103,10 @@ export function AppTourGuide() {
       position: "left",
     },
     {
-      target: ".add-task-btn",
+      target: ".add-task-button",
       title: "Add Task",
       content:
-        "Click this button to add a new task. You'll need to enter Task Title, Task Type, Start/End Dates, Assignee, Project, Client, Status, and Progress. You can also add optional Amount and Details.",
+        "Click this button to add a new task. You'll need to enter Task Title, Task Type, Start/End Dates, Salesman, Project, Client, Status, and Progress. You can also add optional Amount and Details.",
       position: "left",
     },
     {

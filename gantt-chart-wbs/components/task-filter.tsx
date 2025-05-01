@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 interface TaskFilterProps {
-  filterType: "assignee" | "client" | "project"
-  onFilterChange: (type: "assignee" | "client" | "project") => void
+  filterType: "salesman" | "client" | "project"
+  onFilterChange: (type: "salesman" | "client" | "project") => void
   startDate: Date
   onStartDateChange: (date: Date) => void
   hideGroupBy?: boolean
@@ -38,12 +38,12 @@ export function TaskFilter({
           <h3 className="text-sm font-medium">Group By</h3>
           <RadioGroup
             defaultValue={filterType}
-            onValueChange={(value) => onFilterChange(value as "assignee" | "client" | "project")}
+            onValueChange={(value) => onFilterChange(value as "salesman" | "client" | "project")}
             className="flex flex-row space-x-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="assignee" id="assignee" />
-              <Label htmlFor="assignee">Assignee</Label>
+              <RadioGroupItem value="salesman" id="salesman" />
+              <Label htmlFor="salesman">Salesman</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="client" id="client" />

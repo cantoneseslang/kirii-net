@@ -21,8 +21,8 @@ import type { Task, Project } from "@/lib/types"
 import Image from "next/image"
 
 export default function Home() {
-  const [filterType, setFilterType] = useState<"assignee" | "client" | "project">("assignee")
-  const [startDate, setStartDate] = useState<Date>(new Date(2025, 0, 1))
+  const [filterType, setFilterType] = useState<"salesman" | "client" | "project">("salesman")
+  const [startDate, setStartDate] = useState<Date>(new Date("2025-01-01"))
   const [showAmounts, setShowAmounts] = useState(true)
   const [tasks, setTasks] = useState<Task[]>([])
   const [projects, setProjects] = useState<Project[]>([])

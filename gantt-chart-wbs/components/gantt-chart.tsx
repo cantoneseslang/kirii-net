@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 interface GanttChartProps {
   tasks: Task[]
-  filterType: "assignee" | "client" | "project"
+  filterType: "salesman" | "client" | "project"
   startDate: Date
   showAmounts: boolean
   isMobile?: boolean
@@ -184,7 +184,7 @@ export function GanttChart({
           groupProgress = groupTotal > 0 ? (completedAmount / groupTotal) * 100 : 0
         }
       }
-      // If filtering by client or assignee, sum up the unique project totals
+      // If filtering by client or salesman, sum up the unique project totals
       else {
         projectsInGroup.forEach((project) => {
           const projectTasks = groupTasks.filter((task) => task.project === project)
@@ -403,7 +403,7 @@ export function GanttChart({
                   <ChevronRight className="h-3 w-3 mr-1" />
                 )}
                 <span className="font-medium text-xs truncate">
-                  {filterType === "assignee" ? "Assignee: " : filterType === "client" ? "Client: " : "Project: "}
+                  {filterType === "salesman" ? "Salesman: " : filterType === "client" ? "Client: " : "Project: "}
                   {group}
                 </span>
               </div>
@@ -547,11 +547,7 @@ export function GanttChart({
                             <ChevronRight className="h-3 w-3 mr-1" />
                           )}
                           <span className="font-medium text-xs truncate">
-                            {filterType === "assignee"
-                              ? "Assignee: "
-                              : filterType === "client"
-                                ? "Client: "
-                                : "Project: "}
+                            {filterType === "salesman" ? "Salesman: " : filterType === "client" ? "Client: " : "Project: "}
                             {group}
                           </span>
                         </div>
@@ -733,11 +729,7 @@ export function GanttChart({
                           <ChevronRight className="h-3 w-3 mr-1" />
                         )}
                         <span className="font-medium text-xs truncate">
-                          {filterType === "assignee"
-                            ? "Assignee: "
-                            : filterType === "client"
-                              ? "Client: "
-                              : "Project: "}
+                          {filterType === "salesman" ? "Salesman: " : filterType === "client" ? "Client: " : "Project: "}
                           {group}
                         </span>
                       </div>

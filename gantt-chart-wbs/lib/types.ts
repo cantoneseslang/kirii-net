@@ -4,7 +4,7 @@ export interface Task {
   startDate: string
   endDate: string
   progress: number
-  assignee: string
+  salesman: string // 担当営業
   client: string
   project: string
   description?: string

@@ -15,6 +15,7 @@ import { CalendarIcon, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { taskTypeLabels, taskStatusLabels, sampleProjects } from "@/lib/data"
 import type { Task, TaskType, TaskStatus } from "@/lib/types"
+import { toast } from "react-hot-toast"
 
 interface TaskFormProps {
   task?: Task
@@ -25,16 +26,16 @@ interface TaskFormProps {
 
 export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) {
   const [title, setTitle] = useState(task?.title || "")
-  const [description, setDescription] = useState(task?.details || "")
   const [startDate, setStartDate] = useState<Date | undefined>(task?.startDate ? new Date(task.startDate) : undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(task?.endDate ? new Date(task.endDate) : undefined)
-  const [assignee, setAssignee] = useState(task?.assignee || "")
+  const [progress, setProgress] = useState(task?.progress || 0)
+  const [salesman, setSalesman] = useState(task?.salesman || "")
   const [client, setClient] = useState(task?.client || "")
   const [project, setProject] = useState(task?.project || "")
-  const [taskType, setTaskType] = useState<TaskType | undefined>(task?.taskType)
-  const [status, setStatus] = useState<TaskStatus | undefined>(task?.status)
-  const [amount, setAmount] = useState(task?.amount?.toString() || "")
-  const [progress, setProgress] = useState(task?.progress?.toString() || "0")
+  const [taskType, setTaskType] = useState<TaskType | "">(task?.taskType || "")
+  const [amount, setAmount] = useState(task?.amount || 0)
+  const [status, setStatus] = useState<TaskStatus | "">(task?.status || "")
+  const [details, setDetails] = useState(task?.details || "")
 
   // Get unique clients and projects from sample data
   const uniqueClients = [...new Set(sampleProjects.map((p) => p.client))]
@@ -52,36 +53,34 @@ export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!title || !startDate || !endDate || !assignee || !client || !project || !taskType || !status) {
-      alert("Please fill in all required fields")
+    if (!title || !startDate || !endDate || !salesman || !client || !project || !taskType || !status) {
+      toast.error("Please fill in all required fields")
       return
     }
 
-    const updatedTask: Task = {
+    onSubmit({
       id: task?.id || `task-${Date.now()}`,
       title,
       startDate: format(startDate, "yyyy-MM-dd"),
       endDate: format(endDate, "yyyy-MM-dd"),
-      progress: Number.parseInt(progress, 10),
-      assignee,
+      progress,
+      salesman,
       client,
       project,
-      taskType,
-      status,
-      details: description,
-      amount: amount ? Number.parseInt(amount, 10) : undefined,
-      priority: task?.priority || "medium",
       dependencies: task?.dependencies || [],
-    }
-
-    onSubmit(updatedTask)
+      priority: task?.priority || "medium",
+      taskType,
+      amount,
+      status,
+      details,
+    })
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Task Title *</Label>
+          <Label htmlFor="title">Title *</Label>
           <Input
             id="title"
             value={title}
@@ -92,8 +91,8 @@ export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) 
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="task-type">Task Type *</Label>
-          <Select value={taskType} onValueChange={(value) => setTaskType(value as TaskType)} required>
+          <Label htmlFor="taskType">Task Type *</Label>
+          <Select value={taskType} onValueChange={(value) => setTaskType(value as TaskType)}>
             <SelectTrigger>
               <SelectValue placeholder="Select task type" />
             </SelectTrigger>
@@ -144,12 +143,12 @@ export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) 
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="assignee">Assignee *</Label>
+          <Label htmlFor="salesman">Salesman *</Label>
           <Input
-            id="assignee"
-            value={assignee}
-            onChange={(e) => setAssignee(e.target.value)}
-            placeholder="Enter assignee name"
+            id="salesman"
+            value={salesman}
+            onChange={(e) => setSalesman(e.target.value)}
+            placeholder="Enter salesman name"
             required
           />
         </div>
@@ -188,7 +187,7 @@ export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) 
 
         <div className="space-y-2">
           <Label htmlFor="status">Status *</Label>
-          <Select value={status} onValueChange={(value) => setStatus(value as TaskStatus)} required>
+          <Select value={status} onValueChange={(value) => setStatus(value as TaskStatus)}>
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -203,39 +202,41 @@ export function TaskForm({ task, onSubmit, onCancel, onDelete }: TaskFormProps) 
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="progress">Progress</Label>
+          <div className="flex items-center gap-4">
+            <Input
+              id="progress"
+              type="range"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={(e) => setProgress(Number(e.target.value))}
+              className="flex-1"
+            />
+            <span className="w-12 text-right">{progress}%</span>
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="amount">Amount</Label>
           <Input
             id="amount"
             type="number"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter amount (if applicable)"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="progress">Progress (%) *</Label>
-          <Input
-            id="progress"
-            type="number"
-            min="0"
-            max="100"
-            value={progress}
-            onChange={(e) => setProgress(e.target.value)}
-            placeholder="Enter progress percentage"
-            required
+            onChange={(e) => setAmount(Number(e.target.value))}
+            placeholder="Enter amount"
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Details</Label>
+        <Label htmlFor="details">Details</Label>
         <Textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          id="details"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
           placeholder="Enter task details"
-          rows={4}
+          className="min-h-[100px]"
         />
       </div>
 
