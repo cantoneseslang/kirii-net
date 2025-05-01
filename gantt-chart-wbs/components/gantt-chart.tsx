@@ -141,85 +141,80 @@ export function GanttChart({
   // プロジェクトごとの契約日を取得
   const projectContractDates = useMemo(() => getProjectContractDates(tasks), [tasks])
 
-  // Group tasks by the selected filter type
+  // Group tasks by salesman and then by project
   const groupedTasks = useMemo(() => {
-    return tasks.reduce(
-      (acc, task) => {
-        const key = task[filterType]
-        if (!acc[key]) {
-          acc[key] = []
-        }
-        acc[key].push(task)
-        return acc
-      },
-      {} as Record<string, Task[]>,
-    )
-  }, [tasks, filterType])
+    return tasks.reduce((acc, task) => {
+      const salesman = task[filterType];
+      const project = task.project;
+      
+      if (!acc[salesman]) {
+        acc[salesman] = {
+          tasks: [],
+          projects: {}
+        };
+      }
+      
+      if (!acc[salesman].projects[project]) {
+        acc[salesman].projects[project] = [];
+      }
+      
+      acc[salesman].tasks.push(task);
+      acc[salesman].projects[project].push(task);
+      
+      return acc;
+    }, {} as Record<string, {
+      tasks: Task[];
+      projects: Record<string, Task[]>;
+    }>);
+  }, [tasks, filterType]);
 
   // Calculate group totals and progress
   const groupTotals = useMemo(() => {
-    const totals: Record<string, { total: number; progress: number }> = {}
+    const totals: Record<string, {
+      total: number;
+      progress: number;
+      projects: Record<string, {
+        total: number;
+        progress: number;
+      }>;
+    }> = {};
 
-    Object.entries(groupedTasks).forEach(([group, groupTasks]) => {
-      // Find unique projects in this group
-      const projectsInGroup = [...new Set(groupTasks.map((task) => task.project))]
+    Object.entries(groupedTasks).forEach(([salesman, { tasks, projects }]) => {
+      let salesmanTotal = 0;
+      let salesmanProgress = 0;
+      const projectTotals: Record<string, { total: number; progress: number }> = {};
 
-      let groupTotal = 0
-      let groupProgress = 0
-
-      // If filtering by project, use the project's total amount
-      if (filterType === "project") {
-        const firstTask = groupTasks[0]
-        if (firstTask && firstTask.totalAmount) {
-          groupTotal = firstTask.totalAmount
-
-          // Calculate progress based on completed amounts
-          const completedAmount = groupTasks.reduce((sum, task) => {
-            if (task.amount && task.progress) {
-              return sum + task.amount * (task.progress / 100)
-            }
-            return sum
-          }, 0)
-
-          groupProgress = groupTotal > 0 ? (completedAmount / groupTotal) * 100 : 0
-        }
-      }
-      // If filtering by client or salesman, sum up the unique project totals
-      else {
-        projectsInGroup.forEach((project) => {
-          const projectTasks = groupTasks.filter((task) => task.project === project)
-          const firstProjectTask = projectTasks[0]
-
-          if (firstProjectTask && firstProjectTask.totalAmount) {
-            groupTotal += firstProjectTask.totalAmount
-
-            // Calculate progress based on completed amounts for this project
-            const completedAmount = projectTasks.reduce((sum, task) => {
-              if (task.amount && task.progress) {
-                return sum + task.amount * (task.progress / 100)
-              }
-              return sum
-            }, 0)
-
-            groupProgress +=
-              firstProjectTask.totalAmount > 0
-                ? (completedAmount / firstProjectTask.totalAmount) * firstProjectTask.totalAmount
-                : 0
+      Object.entries(projects).forEach(([project, projectTasks]) => {
+        const firstTask = projectTasks[0];
+        const projectTotal = firstTask?.totalAmount || 0;
+        
+        const completedAmount = projectTasks.reduce((sum, task) => {
+          if (task.amount && task.progress) {
+            return sum + task.amount * (task.progress / 100);
           }
-        })
+          return sum;
+        }, 0);
 
-        // Calculate weighted average progress
-        groupProgress = groupTotal > 0 ? (groupProgress / groupTotal) * 100 : 0
-      }
+        const projectProgress = projectTotal > 0 ? (completedAmount / projectTotal) * 100 : 0;
+        
+        projectTotals[project] = {
+          total: projectTotal,
+          progress: projectProgress
+        };
 
-      totals[group] = {
-        total: groupTotal,
-        progress: Math.round(groupProgress),
-      }
-    })
+        salesmanTotal += projectTotal;
+        salesmanProgress += completedAmount;
+      });
 
-    return totals
-  }, [groupedTasks, filterType])
+      totals[salesman] = {
+        total: salesmanTotal,
+        progress: salesmanTotal > 0 ? (salesmanProgress / salesmanTotal) * 100 : 0,
+        projects: projectTotals
+      };
+    });
+
+    return totals;
+  }, [groupedTasks]);
 
   // Generate all week headers and day cells for the entire year
   const allWeekData = useMemo(() => {
@@ -674,10 +669,10 @@ export function GanttChart({
             <thead>
               {/* Month Row */}
               <tr className="bg-muted/50">
-                <th className="p-2 text-left w-40 sticky left-0 z-10 bg-background" rowSpan={3}>
+                <th className="p-2 text-left w-60 sticky left-0 z-10 bg-background" rowSpan={3}>
                   <span className="text-xs font-medium">Task</span>
                 </th>
-                <th className="p-2 text-left w-40 sticky left-40 z-10 bg-background" rowSpan={3}>
+                <th className="p-2 text-left w-40 sticky left-60 z-10 bg-background" rowSpan={3}>
                   <span className="text-xs font-medium">Type</span>
                 </th>
                 {monthHeaders.map((month, index) => (
@@ -694,7 +689,7 @@ export function GanttChart({
                   <th
                     key={week.weekIndex}
                     className="p-1 text-center border-l"
-                    colSpan={7} // 7日分の列をスパン
+                    colSpan={7}
                   >
                     <div className="text-xs">{week.weekLabel}</div>
                     <div className="text-xs text-muted-foreground">{week.dateRange}</div>
@@ -717,110 +712,122 @@ export function GanttChart({
             </thead>
             <tbody>
               {/* Groups and Tasks */}
-              {Object.entries(groupedTasks).map(([group, groupTasks]) => (
-                <React.Fragment key={group}>
-                  {/* Group Header */}
-                  <tr className="bg-muted/50 cursor-pointer group-header" onClick={() => toggleGroup(group)}>
-                    <td className="p-2 sticky left-0 z-10 bg-muted/50">
+              {Object.entries(groupedTasks).map(([salesman, { tasks, projects }]) => (
+                <React.Fragment key={salesman}>
+                  {/* Salesman Header */}
+                  <tr className="bg-muted/50 cursor-pointer" onClick={() => toggleGroup(salesman)}>
+                    <td className="p-2 sticky left-0 z-10 bg-muted/50" colSpan={2}>
                       <div className="flex items-center">
-                        {expandedGroups[group] ? (
-                          <ChevronDown className="h-3 w-3 mr-1" />
-                        ) : (
-                          <ChevronRight className="h-3 w-3 mr-1" />
+                        {expandedGroups[salesman] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                        <span className="font-medium text-xs ml-1">Salesman: {salesman}</span>
+                        {showAmounts && groupTotals[salesman] && (
+                          <span className="ml-2">${groupTotals[salesman].total.toLocaleString()}</span>
                         )}
-                        <span className="font-medium text-xs truncate">
-                          {filterType === "salesman" ? "Salesman: " : filterType === "client" ? "Client: " : "Project: "}
-                          {group}
-                        </span>
                       </div>
-                    </td>
-                    <td className="p-2 sticky left-40 z-10 bg-muted/50">
-                      {showAmounts && groupTotals[group] && <span>${groupTotals[group].total.toLocaleString()}</span>}
                     </td>
                     <td colSpan={visibleWeekCount * 7}></td>
                   </tr>
 
-                  {/* Group Tasks */}
-                  {expandedGroups[group] &&
-                    groupTasks.map((task) => (
-                      <tr key={task.id} className="border-b hover:bg-muted/10 task-item">
-                        <td className="p-1 pl-6 sticky left-0 z-10 bg-background">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="truncate hover:text-primary cursor-help text-xs">
-                                  <div>{task.title}</div>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-xs">
-                                <div className="space-y-1">
-                                  <p className="font-medium">{task.title}</p>
-                                  <p className="text-xs text-muted-foreground">{task.details}</p>
-                                  <div className="flex flex-wrap gap-1">
-                                    <Badge variant="outline" className="text-xs">
-                                      Priority: {task.priority}
-                                    </Badge>
-                                    <Badge className={cn("text-xs", getStatusColor(task.status))}>
-                                      {task.status ? taskStatusLabels[task.status] : "Status Unknown"}
-                                    </Badge>
+                  {/* Projects and Tasks */}
+                  {expandedGroups[salesman] && Object.entries(projects).map(([project, projectTasks]) => (
+                    <React.Fragment key={project}>
+                      {/* Project Header */}
+                      <tr className="bg-muted/30">
+                        <td className="p-2 pl-6 sticky left-0 z-10 bg-muted/30" colSpan={2}>
+                          <div className="flex items-center">
+                            <span className="font-medium text-xs">Project: {project}</span>
+                            {showAmounts && groupTotals[salesman].projects[project] && (
+                              <span className="ml-2">
+                                ${groupTotals[salesman].projects[project].total.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td colSpan={visibleWeekCount * 7}></td>
+                      </tr>
+
+                      {/* Project Tasks */}
+                      {projectTasks.map((task) => (
+                        <tr key={task.id} className="border-b hover:bg-muted/10">
+                          <td className="p-1 pl-8 sticky left-0 z-10 bg-background">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="truncate hover:text-primary cursor-help text-xs">
+                                    <div>{task.title}</div>
                                   </div>
-                                </div>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </td>
-                        <td className="p-1 sticky left-40 z-10 bg-background">
-                          {task.taskType && (
-                            <Badge
-                              variant="outline"
-                              className={cn(
-                                "text-xs font-normal inline-block px-2 py-0.5 w-full text-center max-w-[120px] truncate",
-                                getTaskTypeBadgeColor(task),
-                              )}
-                            >
-                              {taskTypeLabels[task.taskType]}
-                            </Badge>
-                          )}
-                        </td>
-
-                        {/* Task Timeline - Day by Day */}
-                        {allWeekData.slice(0, visibleWeekCount).map((week) =>
-                          week.days.map((day, dayIndex) => {
-                            const isActive = isTaskActiveOnDay(task, day.date)
-                            const taskStart = parseISO(task.startDate)
-                            const taskEnd = parseISO(task.endDate)
-                            const isStartDay = isSameDay(day.date, taskStart)
-                            const isEndDay = isSameDay(day.date, taskEnd)
-
-                            return (
-                              <td
-                                key={`${week.weekIndex}-${dayIndex}`}
-                                className={cn("p-0 border-l h-8 relative", day.isWeekend && "bg-muted/10")}
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <div className="space-y-1">
+                                    <p className="font-medium">{task.title}</p>
+                                    <p className="text-xs text-muted-foreground">{task.details}</p>
+                                    <div className="flex flex-wrap gap-1">
+                                      <Badge variant="outline" className="text-xs">
+                                        Priority: {task.priority}
+                                      </Badge>
+                                      <Badge className={cn("text-xs", getStatusColor(task.status))}>
+                                        {task.status ? taskStatusLabels[task.status] : "Status Unknown"}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </td>
+                          <td className="p-1 sticky left-60 z-10 bg-background">
+                            {task.taskType && (
+                              <Badge
+                                variant="outline"
+                                className={cn(
+                                  "text-xs font-normal inline-block px-2 py-0.5 w-full text-center max-w-[120px] truncate",
+                                  getTaskTypeBadgeColor(task),
+                                )}
                               >
-                                {isActive && (
-                                  <div
-                                    className={cn(
-                                      "absolute inset-0 m-1 rounded-sm border",
-                                      getTaskTypeColor(task, projectContractDates),
-                                      isStartDay && "rounded-l-sm",
-                                      isEndDay && "rounded-r-sm",
-                                    )}
-                                  >
+                                {taskTypeLabels[task.taskType]}
+                              </Badge>
+                            )}
+                          </td>
+
+                          {/* Task Timeline */}
+                          {allWeekData.slice(0, visibleWeekCount).map((week) =>
+                            week.days.map((day, dayIndex) => {
+                              const isActive = isTaskActiveOnDay(task, day.date)
+                              const taskStart = parseISO(task.startDate)
+                              const taskEnd = parseISO(task.endDate)
+                              const isStartDay = isSameDay(day.date, taskStart)
+                              const isEndDay = isSameDay(day.date, taskEnd)
+
+                              return (
+                                <td
+                                  key={`${week.weekIndex}-${dayIndex}`}
+                                  className={cn("p-0 border-l h-8 relative", day.isWeekend && "bg-muted/10")}
+                                >
+                                  {isActive && (
                                     <div
                                       className={cn(
-                                        "h-full rounded-sm",
-                                        getTaskProgressColor(task, projectContractDates),
+                                        "absolute inset-0 m-1 rounded-sm border",
+                                        getTaskTypeColor(task, projectContractDates),
+                                        isStartDay && "rounded-l-sm",
+                                        isEndDay && "rounded-r-sm",
                                       )}
-                                      style={{ width: `${task.progress}%` }}
-                                    />
-                                  </div>
-                                )}
-                              </td>
-                            )
-                          }),
-                        )}
-                      </tr>
-                    ))}
+                                    >
+                                      <div
+                                        className={cn(
+                                          "h-full rounded-sm",
+                                          getTaskProgressColor(task, projectContractDates),
+                                        )}
+                                        style={{ width: `${task.progress}%` }}
+                                      />
+                                    </div>
+                                  )}
+                                </td>
+                              )
+                            }),
+                          )}
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
                 </React.Fragment>
               ))}
             </tbody>
