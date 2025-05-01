@@ -3,7 +3,8 @@ import MemberGrid from "../components/member-grid"
 import MenuSelection from "../components/menu-selection"
 import AdminPanel from "../components/admin-panel"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import CurrentDateTime from "../components/current-date-time"
+import CurrentDateTime from "@/components/current-date-time"
+import Link from "next/link"
 
 export default function Page() {
   return (
@@ -38,7 +39,15 @@ export default function Page() {
           </TabsContent>
 
           <TabsContent value="admin">
-            <AdminPanel />
+            <div className="space-y-6">
+              <Link 
+                href="/monthly-summary" 
+                className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                每月訂單統計
+              </Link>
+              <AdminPanel />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

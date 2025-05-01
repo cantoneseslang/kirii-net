@@ -1,21 +1,31 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { format } from "date-fns"
+import { ja } from "date-fns/locale"
 
 export default function CurrentDateTime() {
-  const [dateTime, setDateTime] = useState(new Date())
-  const [cutoffTime, setCutoffTime] = useState("10:00")
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
 
   useEffect(() => {
+    // 初期値を設定
+    setCurrentTime(new Date())
+
+    // 1秒ごとに更新
     const timer = setInterval(() => {
-      setDateTime(new Date())
+      setCurrentTime(new Date())
     }, 1000)
 
     return () => clearInterval(timer)
   }, [])
 
-  const formattedDate = `${dateTime.getFullYear()}年${dateTime.getMonth() + 1}月${dateTime.getDate()}日${dateTime.toLocaleDateString("zh-HK", { weekday: "long" })}`
-  const formattedTime = `${String(dateTime.getHours()).padStart(2, "0")}:${String(dateTime.getMinutes()).padStart(2, "0")}:${String(dateTime.getSeconds()).padStart(2, "0")}`
+  if (!currentTime) {
+    return null // 初期レンダリング時は何も表示しない
+  }
+
+  const formattedDate = format(currentTime, "yyyy年MM月dd日 (E)", { locale: ja })
+  const formattedTime = format(currentTime, "HH:mm:ss")
+  const cutoffTime = "11:00"
 
   return (
     <div className="text-right">
