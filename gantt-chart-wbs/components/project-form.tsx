@@ -21,33 +21,36 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({ project, onSubmit, onCancel, onDelete }: ProjectFormProps) {
-  const [name, setName] = useState(project?.name || "")
+  const [projectName, setProjectName] = useState(project?.name || "")
   const [client, setClient] = useState(project?.client || "")
   const [totalAmount, setTotalAmount] = useState(project?.totalAmount?.toString() || "")
   const [startDate, setStartDate] = useState<Date | undefined>(
     project?.startDate ? new Date(project.startDate) : undefined,
   )
   const [endDate, setEndDate] = useState<Date | undefined>(project?.endDate ? new Date(project.endDate) : undefined)
+  const [salesmen, setSalesmen] = useState(project?.salesmen?.join(", ") || "")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!name || !client || !startDate || !endDate) {
+    if (!projectName || !client || !startDate || !endDate) {
       alert("Please fill in all required fields")
       return
     }
 
     const updatedProject: Project = {
       id: project?.id || `project-${Date.now()}`,
-      name,
+      name: projectName,
       client,
-      totalAmount: totalAmount ? Number.parseInt(totalAmount, 10) : 0,
-      startDate: format(startDate, "yyyy-MM-dd"),
-      endDate: format(endDate, "yyyy-MM-dd"),
+      totalAmount: totalAmount ? parseInt(totalAmount) : 0,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
       tasks: project?.tasks || [],
       amountProgress: project?.amountProgress || 0,
+      salesmen: salesmen.split(",").map(s => s.trim()).filter(s => s !== "")
     }
 
+    console.log("Submitting project:", updatedProject)
     onSubmit(updatedProject)
   }
 
@@ -58,8 +61,8 @@ export function ProjectForm({ project, onSubmit, onCancel, onDelete }: ProjectFo
           <Label htmlFor="name">Project Name *</Label>
           <Input
             id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
             placeholder="Enter project name"
             required
           />
@@ -73,6 +76,16 @@ export function ProjectForm({ project, onSubmit, onCancel, onDelete }: ProjectFo
             onChange={(e) => setClient(e.target.value)}
             placeholder="Enter client name"
             required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="salesmen">Salesmen</Label>
+          <Input
+            id="salesmen"
+            value={salesmen}
+            onChange={(e) => setSalesmen(e.target.value)}
+            placeholder="Enter salesmen names (comma-separated)"
           />
         </div>
 

@@ -35,11 +35,30 @@ export default function Home() {
   // Calculate end date (12 months from start date)
   const endDate = addMonths(startDate, 12)
 
-  // Initialize with sample data
+  // Initialize with sample data or load from localStorage
   useEffect(() => {
-    setTasks(sampleTasks)
-    setProjects(sampleProjects)
+    const savedTasks = localStorage.getItem('tasks')
+    const savedProjects = localStorage.getItem('projects')
+    
+    if (savedTasks && savedProjects) {
+      setTasks(JSON.parse(savedTasks))
+      setProjects(JSON.parse(savedProjects))
+    } else {
+      setTasks(sampleTasks)
+      setProjects(sampleProjects)
+      localStorage.setItem('tasks', JSON.stringify(sampleTasks))
+      localStorage.setItem('projects', JSON.stringify(sampleProjects))
+    }
   }, [])
+
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+  }, [tasks])
+
+  useEffect(() => {
+    localStorage.setItem('projects', JSON.stringify(projects))
+  }, [projects])
 
   // Handle task operations
   const handleAddTask = (newTask: Task) => {
@@ -60,8 +79,17 @@ export default function Home() {
   }
 
   const handleUpdateProject = (updatedProject: Project) => {
+    console.log("Updating project:", updatedProject)
     setProjects((prevProjects) =>
-      prevProjects.map((project) => (project.id === updatedProject.id ? updatedProject : project)),
+      prevProjects.map((project) =>
+        project.id === updatedProject.id
+          ? {
+              ...updatedProject,
+              tasks: project.tasks || [],
+              salesmen: updatedProject.salesmen || []
+            }
+          : project
+      )
     )
   }
 
@@ -264,7 +292,12 @@ export default function Home() {
             {projects.map((project) => (
               <div key={project.id} className="border rounded-lg p-3 space-y-2">
                 <div className="flex justify-between items-start">
-                  <h3 className="font-medium text-sm">{project.name}</h3>
+                  <div>
+                    <h3 className="font-medium text-sm">{project.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {(project.salesmen || []).join(", ")}
+                    </p>
+                  </div>
                   <ProjectDialog
                     project={project}
                     onSave={handleUpdateProject}

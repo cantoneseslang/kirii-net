@@ -53,4 +53,5 @@ export interface Project {
   endDate: string
   tasks: Task[]
   amountProgress: number // 金額ベースの進捗率（％）
+  salesmen?: string[] // プロジェクトに関連する営業担当者のリスト
 }
