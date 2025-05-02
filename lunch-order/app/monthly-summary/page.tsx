@@ -31,9 +31,10 @@ export default function MonthlySummary() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('');
   const [periods, setPeriods] = useState<string[]>([]);
   const [summary, setSummary] = useState<OrderSummary | null>(null);
-  const [dishPrice, setDishPrice] = useState<number>(50);
-  const [drinkPrice, setDrinkPrice] = useState<number>(15);
+  const [dishPrice, setDishPrice] = useState<number>(0);
+  const [drinkPrice, setDrinkPrice] = useState<number>(0);
   const [isEditingPrices, setIsEditingPrices] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
     fetchPeriods();
@@ -140,53 +141,56 @@ export default function MonthlySummary() {
 
   const handlePriceUpdate = async () => {
     try {
-      await savePrices();
+      setIsSaving(true);
+      
+      const { error: updateError } = await supabase
+        .from('menu_prices')
+        .update({ valid_until: new Date().toISOString() })
+        .is('valid_until', null);
+
+      if (updateError) {
+        console.error('Error updating old prices:', updateError);
+        throw updateError;
+      }
+
+      const { error: insertError } = await supabase
+        .from('menu_prices')
+        .insert([
+          {
+            item_name: '套餐',
+            price: dishPrice,
+            type: 'dish',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          },
+          {
+            item_name: '單點飲品',
+            price: drinkPrice,
+            type: 'drink',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          }
+        ]);
+
+      if (insertError) {
+        console.error('Error inserting new prices:', insertError);
+        throw insertError;
+      }
+
       if (summary) {
         setSummary({
           ...summary,
           totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
         });
       }
+      
       setIsEditingPrices(false);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
     } catch (error) {
-      console.error('Error updating prices:', error);
-      // エラー時にユーザーに通知する処理を追加することもできます
-    }
-  };
-
-  const savePrices = async () => {
-    // 現在の価格設定を終了
-    const { error: updateError } = await supabase
-      .from('menu_prices')
-      .update({ valid_until: new Date().toISOString() })
-      .is('valid_until', null);
-
-    if (updateError) {
-      console.error('Error updating old prices:', updateError);
-      throw updateError;
-    }
-
-    // 新しい価格設定を追加
-    const { error: insertError } = await supabase
-      .from('menu_prices')
-      .insert([
-        {
-          item_name: '套餐',
-          price: dishPrice,
-          type: 'dish',
-          valid_from: new Date().toISOString()
-        },
-        {
-          item_name: '單點飲品',
-          price: drinkPrice,
-          type: 'drink',
-          valid_from: new Date().toISOString()
-        }
-      ]);
-
-    if (insertError) {
-      console.error('Error inserting new prices:', insertError);
-      throw insertError;
+      console.error('Error saving prices:', error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -315,8 +319,9 @@ export default function MonthlySummary() {
                         variant="outline" 
                         size="sm" 
                         onClick={handlePriceUpdate}
+                        disabled={isSaving}
                       >
-                        保存
+                        {isSaving ? '保存中...' : '保存'}
                       </Button>
                       <Button 
                         variant="ghost" 
@@ -325,6 +330,7 @@ export default function MonthlySummary() {
                           await fetchPrices();
                           setIsEditingPrices(false);
                         }}
+                        disabled={isSaving}
                       >
                         取消
                       </Button>
