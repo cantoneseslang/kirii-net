@@ -230,7 +230,7 @@ export default function MonthlySummary() {
         .is('valid_until', null);
 
       if (updateError) {
-        console.error('Error updating old prices:', updateError);
+        console.error('Error updating old prices:', error);
         throw updateError;
       }
 
@@ -279,11 +279,15 @@ export default function MonthlySummary() {
         throw insertError;
       }
 
+      // 保存成功後の処理
       toast.success('價錢設定已更新');
-      
-      // 価格更新後に管理画面に戻る
-      router.push('/');
-      
+      setIsEditingPrices(false);
+
+      // 現在の期間で統計を再取得
+      if (selectedPeriod) {
+        await fetchSummary(selectedPeriod);
+      }
+
     } catch (error) {
       console.error('Error saving prices:', error);
       toast.error('價錢設定更新失敗');

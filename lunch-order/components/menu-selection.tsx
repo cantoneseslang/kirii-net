@@ -39,10 +39,10 @@ export const DRINKS = {
     { name: "凍杏仁霜", price: 18 }
   ],
   other: [
-    { name: "可樂", price: 10 },
-    { name: "橙汁", price: 10 },
-    { name: "雪碧", price: 10 },
-    { name: "忌廉", price: 10 },
+    { name: "可樂", price: 12 },
+    { name: "橙汁", price: 12 },
+    { name: "雪碧", price: 12 },
+    { name: "忌廉", price: 12 },
     { name: "涼茶", price: 15 }
   ]
 };
