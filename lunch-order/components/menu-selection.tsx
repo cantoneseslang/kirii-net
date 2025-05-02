@@ -15,7 +15,7 @@ const DAILY_MENUS = {
   星期日: ["雜菇蒸雞球飯", "粟米斑腩飯", "叉燒炒蛋飯", "雪菜雞絲炆米", "豆腐粟米飯", "什菇時菜飯"],
 }
 
-const DRINKS = {
+export const DRINKS = {
   hot: [
     { name: "熱奶茶", price: 16 },
     { name: "熱咖啡", price: 16 },

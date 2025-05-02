@@ -11,6 +11,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { stringify } from 'csv-stringify/sync';
 import Link from 'next/link';
+import { DRINKS } from '@/components/menu-selection';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -104,14 +105,42 @@ export default function MonthlySummary() {
       totalOrders: setMealCount + drinksOnlyCount,
       dishCounts,
       drinkCounts,
-      totalAmount: calculateTotalAmount(setMealCount, drinksOnlyCount),
+      totalAmount: calculateTotalAmount(setMealCount, data),
       setMealCount,
       drinksOnlyCount
     });
   };
 
-  const calculateTotalAmount = (setMealCount: number, drinksOnlyCount: number) => {
-    return (setMealCount * dishPrice) + (drinksOnlyCount * drinkPrice);
+  const calculateTotalAmount = (setMealCount: number, orders: any[]) => {
+    let total = setMealCount * dishPrice; // セット注文の合計（飲み物込み）
+
+    // 飲み物単品の注文を計算
+    orders.forEach(order => {
+      if (order.dish === '未選擇' && order.drink !== '未選擇') {
+        // 飲み物の価格を検索
+        const drinkPrice = getDrinkPrice(order.drink);
+        total += drinkPrice;
+      }
+    });
+
+    return total;
+  };
+
+  // 飲み物の価格を取得する関数
+  const getDrinkPrice = (drinkName: string): number => {
+    // 温かい飲み物をチェック
+    const hotDrink = DRINKS.hot.find(drink => drink.name === drinkName);
+    if (hotDrink) return hotDrink.price;
+
+    // 冷たい飲み物をチェック
+    const coldDrink = DRINKS.cold.find(drink => drink.name === drinkName);
+    if (coldDrink) return coldDrink.price;
+
+    // その他の飲み物をチェック
+    const otherDrink = DRINKS.other.find(drink => drink.name === drinkName);
+    if (otherDrink) return otherDrink.price;
+
+    return 0; // 該当する飲み物が見つからない場合
   };
 
   const fetchPrices = async () => {
