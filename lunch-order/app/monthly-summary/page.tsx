@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { stringify } from 'csv-stringify/sync';
@@ -22,12 +23,17 @@ interface OrderSummary {
   dishCounts: { [key: string]: number };
   drinkCounts: { [key: string]: number };
   totalAmount: number;
+  setMealCount: number;
+  drinksOnlyCount: number;
 }
 
 export default function MonthlySummary() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('');
   const [periods, setPeriods] = useState<string[]>([]);
   const [summary, setSummary] = useState<OrderSummary | null>(null);
+  const [dishPrice, setDishPrice] = useState<number>(50);
+  const [drinkPrice, setDrinkPrice] = useState<number>(15);
+  const [isEditingPrices, setIsEditingPrices] = useState<boolean>(false);
 
   useEffect(() => {
     fetchPeriods();
@@ -41,7 +47,7 @@ export default function MonthlySummary() {
 
   const fetchPeriods = async () => {
     const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 6); // 過去6ヶ月分を表示
+    startDate.setMonth(startDate.getMonth() - 6);
 
     const periodList = [];
     for (let i = 0; i < 6; i++) {
@@ -73,36 +79,47 @@ export default function MonthlySummary() {
 
     const dishCounts: { [key: string]: number } = {};
     const drinkCounts: { [key: string]: number } = {};
+    let setMealCount = 0;
+    let drinksOnlyCount = 0;
     
+    // 各注文を個別に分析
     data.forEach(order => {
-      if (order.dish !== '未選擇') {
+      // セット注文の場合
+      if (order.dish !== '未選擇' && order.drink !== '未選擇') {
+        setMealCount++;
         dishCounts[order.dish] = (dishCounts[order.dish] || 0) + 1;
-      }
-      if (order.drink !== '未選擇') {
+        drinkCounts[order.drink] = (drinkCounts[order.drink] || 0) + 1;
+      } 
+      // 飲み物のみの注文の場合
+      else if (order.dish === '未選擇' && order.drink !== '未選擇') {
+        drinksOnlyCount++;
         drinkCounts[order.drink] = (drinkCounts[order.drink] || 0) + 1;
       }
     });
 
     setSummary({
       period: periodStart,
-      totalOrders: data.length,
+      totalOrders: setMealCount + drinksOnlyCount,
       dishCounts,
       drinkCounts,
-      totalAmount: calculateTotalAmount(dishCounts, drinkCounts)
+      totalAmount: calculateTotalAmount(setMealCount, drinksOnlyCount),
+      setMealCount,
+      drinksOnlyCount
     });
   };
 
-  const calculateTotalAmount = (
-    dishCounts: { [key: string]: number },
-    drinkCounts: { [key: string]: number }
-  ) => {
-    const DISH_PRICE = 50;
-    const DRINK_PRICE = 15;
+  const calculateTotalAmount = (setMealCount: number, drinksOnlyCount: number) => {
+    return (setMealCount * dishPrice) + (drinksOnlyCount * drinkPrice);
+  };
 
-    const dishTotal = Object.values(dishCounts).reduce((sum, count) => sum + count * DISH_PRICE, 0);
-    const drinkTotal = Object.values(drinkCounts).reduce((sum, count) => sum + count * DRINK_PRICE, 0);
-
-    return dishTotal + drinkTotal;
+  const handlePriceUpdate = () => {
+    if (summary) {
+      setSummary({
+        ...summary,
+        totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
+      });
+    }
+    setIsEditingPrices(false);
   };
 
   const exportToPDF = async () => {
@@ -134,6 +151,8 @@ export default function MonthlySummary() {
       [],
       ['訂單概要'],
       ['訂單總數', `${summary.totalOrders}單`],
+      ['套餐訂單', `${summary.setMealCount}單`],
+      ['飲品單點', `${summary.drinksOnlyCount}單`],
       ['餐品種類', `${Object.keys(summary.dishCounts).length}種`],
       ['飲品種類', `${Object.keys(summary.drinkCounts).length}種`],
       ['總金額', `$${summary.totalAmount.toLocaleString()}`],
@@ -209,9 +228,75 @@ export default function MonthlySummary() {
             </CardHeader>
             <CardContent>
               <p>訂單總數: {summary.totalOrders}單</p>
+              <p>套餐訂單: {summary.setMealCount}單</p>
+              <p>飲品單點: {summary.drinksOnlyCount}單</p>
               <p>餐品種類: {Object.keys(summary.dishCounts).length}種</p>
               <p>飲品種類: {Object.keys(summary.drinkCounts).length}種</p>
               <p className="mt-4 font-bold">總金額: ${summary.totalAmount.toLocaleString()}</p>
+              
+              <div className="mt-4 pt-4 border-t">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium">價格設定</h4>
+                  {!isEditingPrices ? (
+                    <Button variant="outline" size="sm" onClick={() => setIsEditingPrices(true)}>
+                      修改價格
+                    </Button>
+                  ) : (
+                    <div className="space-x-2">
+                      <Button variant="outline" size="sm" onClick={handlePriceUpdate}>
+                        保存
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => setIsEditingPrices(false)}>
+                        取消
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-32">餐品價格(含飲品):</span>
+                    {isEditingPrices ? (
+                      <Input
+                        type="number"
+                        value={dishPrice || ''}
+                        onChange={(e) => {
+                          const value = e.target.value === '' ? 0 : Number(e.target.value);
+                          setDishPrice(value);
+                        }}
+                        className="w-24"
+                        min={0}
+                        step={1}
+                      />
+                    ) : (
+                      <span>${dishPrice}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-32">單點飲品價格:</span>
+                    {isEditingPrices ? (
+                      <Input
+                        type="number"
+                        value={drinkPrice || ''}
+                        onChange={(e) => {
+                          const value = e.target.value === '' ? 0 : Number(e.target.value);
+                          setDrinkPrice(value);
+                        }}
+                        className="w-24"
+                        min={0}
+                        step={1}
+                      />
+                    ) : (
+                      <span>${drinkPrice}</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-gray-500">
+                  <p>※ 餐品價格包含一份飲品</p>
+                  <p>※ 單點飲品價格僅適用於未點餐者</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -254,4 +339,4 @@ export default function MonthlySummary() {
       )}
     </div>
   );
-} 
+}
