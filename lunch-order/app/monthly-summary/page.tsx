@@ -117,7 +117,6 @@ export default function MonthlySummary() {
     // 飲み物単品の注文を計算
     orders.forEach(order => {
       if (order.dish === '未選擇' && order.drink !== '未選擇') {
-        // 飲み物の価格を検索
         const drinkPrice = getDrinkPrice(order.drink);
         total += drinkPrice;
       }
@@ -157,13 +156,8 @@ export default function MonthlySummary() {
 
     if (prices && prices.length > 0) {
       const dishPriceData = prices.find(p => p.type === 'dish');
-      const drinkPriceData = prices.find(p => p.type === 'drink');
-
       if (dishPriceData) {
         setDishPrice(Number(dishPriceData.price));
-      }
-      if (drinkPriceData) {
-        setDrinkPrice(Number(drinkPriceData.price));
       }
     }
   };
@@ -189,13 +183,6 @@ export default function MonthlySummary() {
             item_name: '套餐',
             price: dishPrice,
             type: 'dish',
-            valid_from: new Date().toISOString(),
-            valid_until: null
-          },
-          {
-            item_name: '單點飲品',
-            price: drinkPrice,
-            type: 'drink',
             valid_from: new Date().toISOString(),
             valid_until: null
           }
@@ -387,28 +374,18 @@ export default function MonthlySummary() {
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-32">單點飲品價格:</span>
-                    {isEditingPrices ? (
-                      <Input
-                        type="number"
-                        value={drinkPrice || ''}
-                        onChange={(e) => {
-                          const value = e.target.value === '' ? 0 : Number(e.target.value);
-                          setDrinkPrice(value);
-                        }}
-                        className="w-24"
-                        min={0}
-                        step={1}
-                      />
-                    ) : (
-                      <span>${drinkPrice}</span>
-                    )}
+                    <span className="w-32">飲品價格:</span>
+                    <div className="text-sm text-gray-600">
+                      <div>温かい飲み物: $16</div>
+                      <div>冷たい飲み物: $18</div>
+                      <div>その他: $10-15</div>
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-4 text-sm text-gray-500">
                   <p>※ 餐品價格包含一份飲品</p>
-                  <p>※ 單點飲品價格僅適用於未點餐者</p>
+                  <p>※ 飲品價格依種類而定</p>
                 </div>
               </div>
             </CardContent>
