@@ -3,11 +3,22 @@ import Link from "next/link"
 export function Footer() {
   return (
     <footer className="w-full border-t py-12 bg-gray-50">
-      <div className="w-full flex justify-center items-center pt-6 pb-8">
-        <div className="flex items-center gap-8">
-          <img src="/images/uploaded/gyproc.png" alt="Gyproc" className="h-16 w-auto" />
-          <img src="/images/uploaded/saint-gobain.png" alt="Saint-Gobain" className="h-16 w-auto" />
-          <img src="/images/uploaded/taishan.jpg" alt="Taishan" className="h-16 w-auto" />
+      <div className="w-full flex flex-col items-center pt-6 pb-8">
+        <div className="flex flex-col items-center w-full">
+          <div className="text-xs text-gray-600 mb-2">我們公司認證</div>
+          <div className="flex items-center justify-center gap-8 mb-6">
+            <img src="/images/uploaded/1.png" alt="認證1" className="h-20 w-auto" />
+            <img src="/images/uploaded/2.png" alt="認證2" className="h-20 w-auto" />
+            <img src="/images/uploaded/3.png" alt="認證3" className="h-20 w-auto" />
+            <img src="/images/uploaded/4.png" alt="認證4" className="h-20 w-auto" />
+            <img src="/images/uploaded/5.png" alt="認證5" className="h-20 w-auto" />
+          </div>
+          <div className="text-xs text-gray-600 mb-2">我們公司品牌及代理品牌</div>
+          <div className="flex items-center justify-center gap-8 mb-8">
+            <img src="/images/uploaded/gyproc.png" alt="Gyproc" className="h-12 w-auto" />
+            <img src="/images/uploaded/saint-gobain.png" alt="Saint-Gobain" className="h-12 w-auto" />
+            <img src="/images/uploaded/taishan.jpg" alt="Taishan" className="h-12 w-auto" />
+          </div>
         </div>
       </div>
       <div className="container px-4 md:px-6">
@@ -17,13 +28,6 @@ export function Footer() {
               <img src="/images/kirii-new-logo.png" alt="KIRII" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-gray-500">為香港建築行業提供高品質建築材料的網上商店。</p>
-            <div className="mt-6">
-              <div className="text-xs text-gray-600 mb-2">我們公司品牌及代理品牌</div>
-              <div className="flex items-center gap-4">
-                <img src="/images/uploaded/gyproc.png" alt="Gyproc" className="h-8 w-auto" />
-                <img src="/images/uploaded/saint-gobain.png" alt="Saint-Gobain" className="h-8 w-auto" />
-              </div>
-            </div>
           </div>
           <div>
             <h3 className="font-medium mb-4">產品</h3>
