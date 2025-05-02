@@ -28,7 +28,13 @@ interface OrderSummary {
   totalAmount: number;
   setMealCount: number;
   drinksOnlyCount: number;
-  uniqueDrinkTypes: number;
+  drinkTypeCount: {
+    hot: number;
+    cold: number;
+    soft: number;
+    herb: number;
+    total: number;
+  };
 }
 
 export default function MonthlySummary() {
@@ -94,48 +100,56 @@ export default function MonthlySummary() {
     
     // 各注文を個別に分析
     data.forEach(order => {
-      // セット注文の場合
       if (order.dish !== '未選擇' && order.drink !== '未選擇') {
         setMealCount++;
         dishCounts[order.dish] = (dishCounts[order.dish] || 0) + 1;
         drinkCounts[order.drink] = (drinkCounts[order.drink] || 0) + 1;
       } 
-      // 飲み物のみの注文の場合
       else if (order.dish === '未選擇' && order.drink !== '未選擇') {
         drinksOnlyCount++;
         drinkCounts[order.drink] = (drinkCounts[order.drink] || 0) + 1;
       }
     });
 
-    // 飲み物の種類を正確にカウント
-    const uniqueDrinks = new Set();
-    
-    // 熱飲
+    // 飲み物の種類をカテゴリー別にカウント
+    const drinkTypeCount = {
+      hot: 0,
+      cold: 0,
+      soft: 0,
+      herb: 0,
+      total: 0
+    };
+
+    // 熱飲をカウント
     DRINKS.hot.forEach(drink => {
       if (drinkCounts[drink.name]) {
-        uniqueDrinks.add('hot:' + drink.name);
+        drinkTypeCount.hot++;
       }
     });
-    
-    // 凍飲
+
+    // 凍飲をカウント
     DRINKS.cold.forEach(drink => {
       if (drinkCounts[drink.name]) {
-        uniqueDrinks.add('cold:' + drink.name);
+        drinkTypeCount.cold++;
       }
     });
-    
-    // 汽水
+
+    // 汽水をカウント
     const softDrinks = ["可樂", "橙汁", "雪碧", "忌廉"];
     softDrinks.forEach(drink => {
       if (drinkCounts[drink]) {
-        uniqueDrinks.add('soft:' + drink);
+        drinkTypeCount.soft++;
       }
     });
-    
-    // 涼茶
+
+    // 涼茶をカウント
     if (drinkCounts["涼茶"]) {
-      uniqueDrinks.add('herb:涼茶');
+      drinkTypeCount.herb++;
     }
+
+    // 合計を計算
+    drinkTypeCount.total = drinkTypeCount.hot + drinkTypeCount.cold + 
+                          drinkTypeCount.soft + drinkTypeCount.herb;
 
     setSummary({
       period: periodStart,
@@ -145,7 +159,7 @@ export default function MonthlySummary() {
       totalAmount: calculateTotalAmount(setMealCount, data),
       setMealCount,
       drinksOnlyCount,
-      uniqueDrinkTypes: uniqueDrinks.size // 実際に注文された飲み物の種類数
+      drinkTypeCount
     });
   };
 
@@ -328,7 +342,7 @@ export default function MonthlySummary() {
       ['套餐訂單', `${summary.setMealCount}單`],
       ['飲品單點', `${summary.drinksOnlyCount}單`],
       ['餐品種類', `${Object.keys(summary.dishCounts).length}種`],
-      ['飲品種類', `${Object.keys(summary.drinkCounts).length}種`],
+      ['飲品種類', `${summary.drinkTypeCount.total}種`],
       ['總金額', `$${summary.totalAmount.toLocaleString()}`],
       [],
       ['餐品訂購統計'],
@@ -405,7 +419,15 @@ export default function MonthlySummary() {
               <p>套餐訂單: {summary.setMealCount}單</p>
               <p>飲品單點: {summary.drinksOnlyCount}單</p>
               <p>餐品種類: {Object.keys(summary.dishCounts).length}種</p>
-              <p>飲品種類: {summary.uniqueDrinkTypes}種</p>
+              <div>
+                <p>飲品種類: {summary.drinkTypeCount.total}種</p>
+                <div className="ml-4 text-sm text-gray-600">
+                  <p>熱飲: {summary.drinkTypeCount.hot}種</p>
+                  <p>凍飲: {summary.drinkTypeCount.cold}種</p>
+                  <p>汽水: {summary.drinkTypeCount.soft}種</p>
+                  <p>涼茶: {summary.drinkTypeCount.herb}種</p>
+                </div>
+              </div>
               <p className="mt-4 font-bold">總金額: ${summary.totalAmount.toLocaleString()}</p>
               
               <div className="mt-4 pt-4 border-t">
