@@ -13,7 +13,7 @@ export default function ProductsPage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center pl-4">
               <Image src="/images/kirii-new-logo.png" alt="KIRII" width={120} height={48} className="h-10 w-auto" />
             </Link>
           </div>

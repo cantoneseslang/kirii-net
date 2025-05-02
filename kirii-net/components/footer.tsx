@@ -3,6 +3,13 @@ import Link from "next/link"
 export function Footer() {
   return (
     <footer className="w-full border-t py-12 bg-gray-50">
+      <div className="w-full flex justify-center items-center pt-6 pb-8">
+        <div className="flex items-center gap-8">
+          <img src="/images/uploaded/gyproc.png" alt="Gyproc" className="h-16 w-auto" />
+          <img src="/images/uploaded/saint-gobain.png" alt="Saint-Gobain" className="h-16 w-auto" />
+          <img src="/images/uploaded/taishan.jpg" alt="Taishan" className="h-16 w-auto" />
+        </div>
+      </div>
       <div className="container px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4">
@@ -10,6 +17,13 @@ export function Footer() {
               <img src="/images/kirii-new-logo.png" alt="KIRII" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-gray-500">為香港建築行業提供高品質建築材料的網上商店。</p>
+            <div className="mt-6">
+              <div className="text-xs text-gray-600 mb-2">我們公司品牌及代理品牌</div>
+              <div className="flex items-center gap-4">
+                <img src="/images/uploaded/gyproc.png" alt="Gyproc" className="h-8 w-auto" />
+                <img src="/images/uploaded/saint-gobain.png" alt="Saint-Gobain" className="h-8 w-auto" />
+              </div>
+            </div>
           </div>
           <div>
             <h3 className="font-medium mb-4">產品</h3>
