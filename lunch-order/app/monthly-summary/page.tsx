@@ -138,7 +138,24 @@ export default function MonthlySummary() {
     }
   };
 
+  const handlePriceUpdate = async () => {
+    try {
+      await savePrices();
+      if (summary) {
+        setSummary({
+          ...summary,
+          totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
+        });
+      }
+      setIsEditingPrices(false);
+    } catch (error) {
+      console.error('Error updating prices:', error);
+      // エラー時にユーザーに通知する処理を追加することもできます
+    }
+  };
+
   const savePrices = async () => {
+    // 現在の価格設定を終了
     const { error: updateError } = await supabase
       .from('menu_prices')
       .update({ valid_until: new Date().toISOString() })
@@ -146,9 +163,10 @@ export default function MonthlySummary() {
 
     if (updateError) {
       console.error('Error updating old prices:', updateError);
-      return;
+      throw updateError;
     }
 
+    // 新しい価格設定を追加
     const { error: insertError } = await supabase
       .from('menu_prices')
       .insert([
@@ -168,19 +186,7 @@ export default function MonthlySummary() {
 
     if (insertError) {
       console.error('Error inserting new prices:', insertError);
-      return;
-    }
-
-    setIsEditingPrices(false);
-  };
-
-  const handlePriceUpdate = () => {
-    savePrices();
-    if (summary) {
-      setSummary({
-        ...summary,
-        totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
-      });
+      throw insertError;
     }
   };
 
@@ -305,13 +311,21 @@ export default function MonthlySummary() {
                     </Button>
                   ) : (
                     <div className="space-x-2">
-                      <Button variant="outline" size="sm" onClick={handlePriceUpdate}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={handlePriceUpdate}
+                      >
                         保存
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => {
-                        setIsEditingPrices(false);
-                        fetchPrices();
-                      }}>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={async () => {
+                          await fetchPrices();
+                          setIsEditingPrices(false);
+                        }}
+                      >
                         取消
                       </Button>
                     </div>
