@@ -37,6 +37,7 @@ export default function MonthlySummary() {
 
   useEffect(() => {
     fetchPeriods();
+    fetchPrices();
   }, []);
 
   useEffect(() => {
@@ -112,14 +113,75 @@ export default function MonthlySummary() {
     return (setMealCount * dishPrice) + (drinksOnlyCount * drinkPrice);
   };
 
+  const fetchPrices = async () => {
+    const { data: prices, error } = await supabase
+      .from('menu_prices')
+      .select('*')
+      .is('valid_until', null)
+      .order('valid_from', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching prices:', error);
+      return;
+    }
+
+    if (prices && prices.length > 0) {
+      const dishPriceData = prices.find(p => p.type === 'dish');
+      const drinkPriceData = prices.find(p => p.type === 'drink');
+
+      if (dishPriceData) {
+        setDishPrice(Number(dishPriceData.price));
+      }
+      if (drinkPriceData) {
+        setDrinkPrice(Number(drinkPriceData.price));
+      }
+    }
+  };
+
+  const savePrices = async () => {
+    const { error: updateError } = await supabase
+      .from('menu_prices')
+      .update({ valid_until: new Date().toISOString() })
+      .is('valid_until', null);
+
+    if (updateError) {
+      console.error('Error updating old prices:', updateError);
+      return;
+    }
+
+    const { error: insertError } = await supabase
+      .from('menu_prices')
+      .insert([
+        {
+          item_name: '套餐',
+          price: dishPrice,
+          type: 'dish',
+          valid_from: new Date().toISOString()
+        },
+        {
+          item_name: '單點飲品',
+          price: drinkPrice,
+          type: 'drink',
+          valid_from: new Date().toISOString()
+        }
+      ]);
+
+    if (insertError) {
+      console.error('Error inserting new prices:', insertError);
+      return;
+    }
+
+    setIsEditingPrices(false);
+  };
+
   const handlePriceUpdate = () => {
+    savePrices();
     if (summary) {
       setSummary({
         ...summary,
         totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
       });
     }
-    setIsEditingPrices(false);
   };
 
   const exportToPDF = async () => {
@@ -246,7 +308,10 @@ export default function MonthlySummary() {
                       <Button variant="outline" size="sm" onClick={handlePriceUpdate}>
                         保存
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => setIsEditingPrices(false)}>
+                      <Button variant="ghost" size="sm" onClick={() => {
+                        setIsEditingPrices(false);
+                        fetchPrices();
+                      }}>
                         取消
                       </Button>
                     </div>
