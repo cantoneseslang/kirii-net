@@ -33,7 +33,10 @@ export default function MonthlySummary() {
   const [periods, setPeriods] = useState<string[]>([]);
   const [summary, setSummary] = useState<OrderSummary | null>(null);
   const [dishPrice, setDishPrice] = useState<number>(0);
-  const [drinkPrice, setDrinkPrice] = useState<number>(0);
+  const [hotDrinkPrice, setHotDrinkPrice] = useState<number>(16);
+  const [coldDrinkPrice, setColdDrinkPrice] = useState<number>(18);
+  const [softDrinkPrice, setSoftDrinkPrice] = useState<number>(10);
+  const [herbTeaPrice, setHerbTeaPrice] = useState<number>(15);
   const [isEditingPrices, setIsEditingPrices] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -129,17 +132,20 @@ export default function MonthlySummary() {
   const getDrinkPrice = (drinkName: string): number => {
     // 温かい飲み物をチェック
     const hotDrink = DRINKS.hot.find(drink => drink.name === drinkName);
-    if (hotDrink) return hotDrink.price;
+    if (hotDrink) return hotDrinkPrice;
 
     // 冷たい飲み物をチェック
     const coldDrink = DRINKS.cold.find(drink => drink.name === drinkName);
-    if (coldDrink) return coldDrink.price;
+    if (coldDrink) return coldDrinkPrice;
 
-    // その他の飲み物をチェック
-    const otherDrink = DRINKS.other.find(drink => drink.name === drinkName);
-    if (otherDrink) return otherDrink.price;
+    // 汽水をチェック
+    const softDrinks = ["可樂", "橙汁", "雪碧", "忌廉"];
+    if (softDrinks.includes(drinkName)) return softDrinkPrice;
 
-    return 0; // 該当する飲み物が見つからない場合
+    // 涼茶をチェック
+    if (drinkName === "涼茶") return herbTeaPrice;
+
+    return 0;
   };
 
   const fetchPrices = async () => {
@@ -156,8 +162,25 @@ export default function MonthlySummary() {
 
     if (prices && prices.length > 0) {
       const dishPriceData = prices.find(p => p.type === 'dish');
+      const hotDrinkPriceData = prices.find(p => p.type === 'hot_drink');
+      const coldDrinkPriceData = prices.find(p => p.type === 'cold_drink');
+      const softDrinkPriceData = prices.find(p => p.type === 'soft_drink');
+      const herbTeaPriceData = prices.find(p => p.type === 'herb_tea');
+
       if (dishPriceData) {
         setDishPrice(Number(dishPriceData.price));
+      }
+      if (hotDrinkPriceData) {
+        setHotDrinkPrice(Number(hotDrinkPriceData.price));
+      }
+      if (coldDrinkPriceData) {
+        setColdDrinkPrice(Number(coldDrinkPriceData.price));
+      }
+      if (softDrinkPriceData) {
+        setSoftDrinkPrice(Number(softDrinkPriceData.price));
+      }
+      if (herbTeaPriceData) {
+        setHerbTeaPrice(Number(herbTeaPriceData.price));
       }
     }
   };
@@ -183,6 +206,34 @@ export default function MonthlySummary() {
             item_name: '套餐',
             price: dishPrice,
             type: 'dish',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          },
+          {
+            item_name: '熱飲',
+            price: hotDrinkPrice,
+            type: 'hot_drink',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          },
+          {
+            item_name: '凍飲',
+            price: coldDrinkPrice,
+            type: 'cold_drink',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          },
+          {
+            item_name: '汽水',
+            price: softDrinkPrice,
+            type: 'soft_drink',
+            valid_from: new Date().toISOString(),
+            valid_until: null
+          },
+          {
+            item_name: '涼茶',
+            price: herbTeaPrice,
+            type: 'herb_tea',
             valid_from: new Date().toISOString(),
             valid_until: null
           }
@@ -373,12 +424,82 @@ export default function MonthlySummary() {
                       <span>${dishPrice}</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-32">飲品價錢:</span>
-                    <div className="text-sm text-gray-600">
-                      <div>熱飲: $16</div>
-                      <div>凍飲: $18</div>
-                      <div>其他: $10-15</div>
+                  <div className="space-y-2">
+                    <span className="font-medium">飲品價錢:</span>
+                    <div className="ml-4 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-28">熱飲:</span>
+                        {isEditingPrices ? (
+                          <Input
+                            type="number"
+                            value={hotDrinkPrice || ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : Number(e.target.value);
+                              setHotDrinkPrice(value);
+                            }}
+                            className="w-24"
+                            min={0}
+                            step={1}
+                          />
+                        ) : (
+                          <span>${hotDrinkPrice}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-28">凍飲:</span>
+                        {isEditingPrices ? (
+                          <Input
+                            type="number"
+                            value={coldDrinkPrice || ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : Number(e.target.value);
+                              setColdDrinkPrice(value);
+                            }}
+                            className="w-24"
+                            min={0}
+                            step={1}
+                          />
+                        ) : (
+                          <span>${coldDrinkPrice}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-28">汽水:</span>
+                        {isEditingPrices ? (
+                          <Input
+                            type="number"
+                            value={softDrinkPrice || ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : Number(e.target.value);
+                              setSoftDrinkPrice(value);
+                            }}
+                            className="w-24"
+                            min={0}
+                            step={1}
+                          />
+                        ) : (
+                          <span>${softDrinkPrice}</span>
+                        )}
+                        <span className="text-sm text-gray-500">(可樂、橙汁、雪碧、忌廉)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-28">涼茶:</span>
+                        {isEditingPrices ? (
+                          <Input
+                            type="number"
+                            value={herbTeaPrice || ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? 0 : Number(e.target.value);
+                              setHerbTeaPrice(value);
+                            }}
+                            className="w-24"
+                            min={0}
+                            step={1}
+                          />
+                        ) : (
+                          <span>${herbTeaPrice}</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
