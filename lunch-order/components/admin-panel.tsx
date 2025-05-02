@@ -88,18 +88,12 @@ export default function AdminPanel() {
         <div className="border rounded-md p-8 text-center text-gray-500">沒有落單記錄</div>
       ) : (
         <div className="space-y-4">
-          <div className="border-b pb-2 flex space-x-2">
-            {weekdays.map((weekday) => (
-              <button
-                key={weekday}
-                className={`px-4 py-2 rounded-md ${weekday === today ? "bg-blue-500 text-white" : "bg-gray-100"}`}
-                onClick={() => {
-                  /* タブ切り替え機能 */
-                }}
-              >
-                {weekday}
-              </button>
-            ))}
+          <div className="border-b pb-2">
+            <button
+              className="px-4 py-2 rounded-md bg-blue-500 text-white"
+            >
+              {today}
+            </button>
           </div>
 
           <div>
