@@ -15,31 +15,37 @@ const DAILY_MENUS = {
   星期日: ["雜菇蒸雞球飯", "粟米斑腩飯", "叉燒炒蛋飯", "雪菜雞絲炆米", "豆腐粟米飯", "什菇時菜飯"],
 }
 
-const DRINKS = [
-  "熱奶茶",
-  "熱咖啡",
-  "熱鴛鴦",
-  "熱檸茶",
-  "熱菜蜜",
-  "熱可力",
-  "熱華田",
-  "熱檸水",
-  "熱杏仁霜",
-  "凍奶茶",
-  "凍咖啡",
-  "凍鴛鴦",
-  "凍檸茶",
-  "凍菜蜜",
-  "凍可力",
-  "凍華田",
-  "凍檸水",
-  "凍杏仁霜",
-  "可樂",
-  "橙汁",
-  "雪碧",
-  "忌廉",
-  "涼茶",
-]
+const DRINKS = {
+  hot: [
+    { name: "熱奶茶", price: 16 },
+    { name: "熱咖啡", price: 16 },
+    { name: "熱鴛鴦", price: 16 },
+    { name: "熱檸茶", price: 16 },
+    { name: "熱菜蜜", price: 16 },
+    { name: "熱可力", price: 16 },
+    { name: "熱華田", price: 16 },
+    { name: "熱檸水", price: 16 },
+    { name: "熱杏仁霜", price: 16 }
+  ],
+  cold: [
+    { name: "凍奶茶", price: 18 },
+    { name: "凍咖啡", price: 18 },
+    { name: "凍鴛鴦", price: 18 },
+    { name: "凍檸茶", price: 18 },
+    { name: "凍菜蜜", price: 18 },
+    { name: "凍可力", price: 18 },
+    { name: "凍華田", price: 18 },
+    { name: "凍檸水", price: 18 },
+    { name: "凍杏仁霜", price: 18 }
+  ],
+  other: [
+    { name: "可樂", price: 10 },
+    { name: "橙汁", price: 10 },
+    { name: "雪碧", price: 10 },
+    { name: "忌廉", price: 10 },
+    { name: "涼茶", price: 15 }
+  ]
+};
 
 export default function MenuSelection() {
   const [selectedDish, setSelectedDish] = useState("")
@@ -210,7 +216,7 @@ export default function MenuSelection() {
 
       <div className="border rounded-md p-4">
         <h3 className="font-bold text-lg mb-4">飲品選擇</h3>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-6">
           <div className="flex items-center">
             <input
               type="radio"
@@ -223,20 +229,68 @@ export default function MenuSelection() {
             />
             <label htmlFor="no-drink">不選擇飲品</label>
           </div>
-          {DRINKS.map((drink, index) => (
-            <div key={index} className="flex items-center">
-              <input
-                type="radio"
-                id={`drink-${index}`}
-                name="drink"
-                value={drink}
-                checked={selectedDrink === drink}
-                onChange={() => setSelectedDrink(drink)}
-                className="mr-2"
-              />
-              <label htmlFor={`drink-${index}`}>{drink}</label>
+          
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">温かい飲み物 (16ドル)</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {DRINKS.hot.map((drink, index) => (
+                  <div key={index} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={`drink-hot-${index}`}
+                      name="drink"
+                      value={drink.name}
+                      checked={selectedDrink === drink.name}
+                      onChange={() => setSelectedDrink(drink.name)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`drink-hot-${index}`}>{drink.name}</label>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+
+            <div>
+              <h4 className="font-medium mb-2">冷たい飲み物 (18ドル)</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {DRINKS.cold.map((drink, index) => (
+                  <div key={index} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={`drink-cold-${index}`}
+                      name="drink"
+                      value={drink.name}
+                      checked={selectedDrink === drink.name}
+                      onChange={() => setSelectedDrink(drink.name)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`drink-cold-${index}`}>{drink.name}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-medium mb-2">その他の飲み物</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {DRINKS.other.map((drink, index) => (
+                  <div key={index} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={`drink-other-${index}`}
+                      name="drink"
+                      value={drink.name}
+                      checked={selectedDrink === drink.name}
+                      onChange={() => setSelectedDrink(drink.name)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`drink-other-${index}`}>{drink.name} (${drink.price}ドル)</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
