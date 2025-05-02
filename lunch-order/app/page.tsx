@@ -5,8 +5,21 @@ import AdminPanel from "../components/admin-panel"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CurrentDateTime from "@/components/current-date-time"
 import Link from "next/link"
+import { format } from "date-fns"
+
+const getChineseWeekday = (date: Date) => {
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  return weekdays[date.getDay()];
+};
 
 export default function Page() {
+  const now = new Date();
+  const formattedDate = format(now, 'yyyy年MM月dd日');
+  const weekday = getChineseWeekday(now);
+  const setCurrentTime = (time: string) => {
+    // Implementation of setCurrentTime function
+  };
+
   return (
     <OrderProvider>
       <div className="max-w-4xl mx-auto p-4 pb-24">
@@ -46,7 +59,7 @@ export default function Page() {
               >
                 每月訂單統計
               </Link>
-              <AdminPanel />
+            <AdminPanel />
             </div>
           </TabsContent>
         </Tabs>

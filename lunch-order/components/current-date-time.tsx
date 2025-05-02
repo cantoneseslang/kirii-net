@@ -2,36 +2,42 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { ja } from "date-fns/locale"
+
+const getChineseWeekday = (date: Date) => {
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  return weekdays[date.getDay()];
+};
 
 export default function CurrentDateTime() {
-  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const [currentTime, setCurrentTime] = useState("")
+  const [isOrderingTime, setIsOrderingTime] = useState(true)
 
   useEffect(() => {
-    // 初期値を設定
-    setCurrentTime(new Date())
+    const updateTime = () => {
+      const now = new Date()
+      const formattedDate = format(now, 'yyyy年MM月dd日');
+      const weekday = getChineseWeekday(now);
+      setCurrentTime(`${formattedDate} (${weekday})\n${format(now, 'HH:mm:ss')}`);
 
-    // 1秒ごとに更新
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
+      // 11:00より前かどうかをチェック
+      const orderEndTime = new Date(now)
+      orderEndTime.setHours(11, 0, 0)
+      setIsOrderingTime(now < orderEndTime)
+    }
 
-    return () => clearInterval(timer)
+    updateTime()
+    const intervalId = setInterval(updateTime, 1000)
+
+    return () => clearInterval(intervalId)
   }, [])
-
-  if (!currentTime) {
-    return null // 初期レンダリング時は何も表示しない
-  }
-
-  const formattedDate = format(currentTime, "yyyy年MM月dd日 (E)", { locale: ja })
-  const formattedTime = format(currentTime, "HH:mm:ss")
-  const cutoffTime = "11:00"
 
   return (
     <div className="text-right">
-      <div>{formattedDate}</div>
-      <div className="text-xl font-bold">{formattedTime}</div>
-      <div className="text-red-500">截止時間: {cutoffTime}</div>
+      <div className="text-2xl whitespace-pre-line">{currentTime}</div>
+      <div className="text-red-500">截止時間: 11:00</div>
+      {!isOrderingTime && (
+        <div className="text-red-500 font-bold">已過截止時間</div>
+      )}
     </div>
   )
 }
