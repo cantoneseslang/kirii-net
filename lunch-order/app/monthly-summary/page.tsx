@@ -164,16 +164,23 @@ export default function MonthlySummary() {
   };
 
   const calculateTotalAmount = (setMealCount: number, orders: any[]) => {
-    let total = setMealCount * dishPrice; // セット注文の合計（飲み物込み）
+    // セット注文の合計（飲み物込み）
+    const setMealTotal = setMealCount * dishPrice;
+    console.log(`セット注文合計: ${setMealCount} × ${dishPrice} = ${setMealTotal}`);
 
     // 飲み物単品の注文を計算
+    let drinkOnlyTotal = 0;
     orders.forEach(order => {
       if (order.dish === '未選擇' && order.drink !== '未選擇') {
         const drinkPrice = getDrinkPrice(order.drink);
-        total += drinkPrice;
+        drinkOnlyTotal += drinkPrice;
+        console.log(`飲み物単品: ${order.drink} = ${drinkPrice}`);
       }
     });
+    console.log(`飲み物単品合計: ${drinkOnlyTotal}`);
 
+    const total = setMealTotal + drinkOnlyTotal;
+    console.log(`総合計: ${total}`);
     return total;
   };
 
