@@ -41,7 +41,7 @@ export default function MonthlySummary() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('');
   const [periods, setPeriods] = useState<string[]>([]);
   const [summary, setSummary] = useState<OrderSummary | null>(null);
-  const [dishPrice, setDishPrice] = useState<number>(0);
+  const [dishPrice, setDishPrice] = useState<number>(37);
   const [hotDrinkPrice, setHotDrinkPrice] = useState<number>(16);
   const [coldDrinkPrice, setColdDrinkPrice] = useState<number>(18);
   const [softDrinkPrice, setSoftDrinkPrice] = useState<number>(10);
