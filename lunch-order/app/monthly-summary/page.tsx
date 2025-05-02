@@ -356,7 +356,7 @@ export default function MonthlySummary() {
                 
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="w-32">餐品價格(含飲品):</span>
+                    <span className="w-32">餐品價錢(包飲品):</span>
                     {isEditingPrices ? (
                       <Input
                         type="number"
@@ -374,18 +374,18 @@ export default function MonthlySummary() {
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-32">飲品價格:</span>
+                    <span className="w-32">飲品價錢:</span>
                     <div className="text-sm text-gray-600">
-                      <div>温かい飲み物: $16</div>
-                      <div>冷たい飲み物: $18</div>
-                      <div>その他: $10-15</div>
+                      <div>熱飲: $16</div>
+                      <div>凍飲: $18</div>
+                      <div>其他: $10-15</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4 text-sm text-gray-500">
-                  <p>※ 餐品價格包含一份飲品</p>
-                  <p>※ 飲品價格依種類而定</p>
+                  <p>※ 餐品價錢已包一份飲品</p>
+                  <p>※ 飲品價錢按種類計算</p>
                 </div>
               </div>
             </CardContent>
