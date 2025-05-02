@@ -12,6 +12,8 @@ import jsPDF from 'jspdf';
 import { stringify } from 'csv-stringify/sync';
 import Link from 'next/link';
 import { DRINKS } from '@/components/menu-selection';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,6 +28,7 @@ interface OrderSummary {
   totalAmount: number;
   setMealCount: number;
   drinksOnlyCount: number;
+  uniqueDrinkTypes: number;
 }
 
 export default function MonthlySummary() {
@@ -39,6 +42,7 @@ export default function MonthlySummary() {
   const [herbTeaPrice, setHerbTeaPrice] = useState<number>(15);
   const [isEditingPrices, setIsEditingPrices] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchPeriods();
@@ -103,6 +107,36 @@ export default function MonthlySummary() {
       }
     });
 
+    // 飲み物の種類を正確にカウント
+    const uniqueDrinks = new Set();
+    
+    // 熱飲
+    DRINKS.hot.forEach(drink => {
+      if (drinkCounts[drink.name]) {
+        uniqueDrinks.add('hot:' + drink.name);
+      }
+    });
+    
+    // 凍飲
+    DRINKS.cold.forEach(drink => {
+      if (drinkCounts[drink.name]) {
+        uniqueDrinks.add('cold:' + drink.name);
+      }
+    });
+    
+    // 汽水
+    const softDrinks = ["可樂", "橙汁", "雪碧", "忌廉"];
+    softDrinks.forEach(drink => {
+      if (drinkCounts[drink]) {
+        uniqueDrinks.add('soft:' + drink);
+      }
+    });
+    
+    // 涼茶
+    if (drinkCounts["涼茶"]) {
+      uniqueDrinks.add('herb:涼茶');
+    }
+
     setSummary({
       period: periodStart,
       totalOrders: setMealCount + drinksOnlyCount,
@@ -110,7 +144,8 @@ export default function MonthlySummary() {
       drinkCounts,
       totalAmount: calculateTotalAmount(setMealCount, data),
       setMealCount,
-      drinksOnlyCount
+      drinksOnlyCount,
+      uniqueDrinkTypes: uniqueDrinks.size // 実際に注文された飲み物の種類数
     });
   };
 
@@ -244,18 +279,14 @@ export default function MonthlySummary() {
         throw insertError;
       }
 
-      if (summary) {
-        setSummary({
-          ...summary,
-          totalAmount: calculateTotalAmount(summary.setMealCount, summary.drinksOnlyCount)
-        });
-      }
+      toast.success('價錢設定已更新');
       
-      setIsEditingPrices(false);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 価格更新後に管理画面に戻る
+      router.push('/');
       
     } catch (error) {
       console.error('Error saving prices:', error);
+      toast.error('價錢設定更新失敗');
     } finally {
       setIsSaving(false);
     }
@@ -370,7 +401,7 @@ export default function MonthlySummary() {
               <p>套餐訂單: {summary.setMealCount}單</p>
               <p>飲品單點: {summary.drinksOnlyCount}單</p>
               <p>餐品種類: {Object.keys(summary.dishCounts).length}種</p>
-              <p>飲品種類: {Object.keys(summary.drinkCounts).length}種</p>
+              <p>飲品種類: {summary.uniqueDrinkTypes}種</p>
               <p className="mt-4 font-bold">總金額: ${summary.totalAmount.toLocaleString()}</p>
               
               <div className="mt-4 pt-4 border-t">
