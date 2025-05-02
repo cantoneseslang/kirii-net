@@ -19,9 +19,9 @@ export default function CurrentDateTime() {
       const weekday = getChineseWeekday(now);
       setCurrentTime(`${formattedDate} (${weekday})\n${format(now, 'HH:mm:ss')}`);
 
-      // 11:00より前かどうかをチェック
+      // 10:00より前かどうかをチェック
       const orderEndTime = new Date(now)
-      orderEndTime.setHours(11, 0, 0)
+      orderEndTime.setHours(10, 0, 0)
       setIsOrderingTime(now < orderEndTime)
     }
 
@@ -34,7 +34,7 @@ export default function CurrentDateTime() {
   return (
     <div className="text-right">
       <div className="text-2xl whitespace-pre-line">{currentTime}</div>
-      <div className="text-red-500">截止時間: 11:00</div>
+      <div className="text-red-500">截止時間: 10:00</div>
       {!isOrderingTime && (
         <div className="text-red-500 font-bold">已過截止時間</div>
       )}
