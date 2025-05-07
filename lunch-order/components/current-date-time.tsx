@@ -9,7 +9,10 @@ const getChineseWeekday = (date: Date) => {
 };
 
 export default function CurrentDateTime() {
-  const [currentTime, setCurrentTime] = useState("")
+  const [currentTime, setCurrentTime] = useState({
+    date: "",
+    time: ""
+  })
   const [isOrderingTime, setIsOrderingTime] = useState(true)
 
   useEffect(() => {
@@ -17,7 +20,10 @@ export default function CurrentDateTime() {
       const now = new Date()
       const formattedDate = format(now, 'yyyy年MM月dd日');
       const weekday = getChineseWeekday(now);
-      setCurrentTime(`${formattedDate} (${weekday})\n${format(now, 'HH:mm:ss')}`);
+      setCurrentTime({
+        date: `${formattedDate} (${weekday})`,
+        time: format(now, 'HH:mm:ss')
+      });
 
       // 10:00より前かどうかをチェック
       const orderEndTime = new Date(now)
@@ -33,7 +39,10 @@ export default function CurrentDateTime() {
 
   return (
     <div className="text-right">
-      <div className="text-sm sm:text-xl whitespace-pre-line">{currentTime}</div>
+      <div className="text-[10px] sm:text-xl">
+        <span className="whitespace-nowrap">{currentTime.date}</span><br />
+        {currentTime.time}
+      </div>
       <div className="text-red-500">截止時間: 10:00</div>
       {!isOrderingTime && (
         <div className="text-red-500 font-bold">已過截止時間</div>
