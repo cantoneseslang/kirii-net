@@ -232,7 +232,7 @@ export default function MenuSelection() {
           
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">温かい飲み物 (16ドル)</h4>
+              <h4 className="font-medium mb-2">熱飲</h4>
               <div className="grid grid-cols-2 gap-2">
                 {DRINKS.hot.map((drink, index) => (
                   <div key={index} className="flex items-center">
@@ -252,7 +252,7 @@ export default function MenuSelection() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">冷たい飲み物 (18ドル)</h4>
+              <h4 className="font-medium mb-2">凍飲</h4>
               <div className="grid grid-cols-2 gap-2">
                 {DRINKS.cold.map((drink, index) => (
                   <div key={index} className="flex items-center">
@@ -272,7 +272,7 @@ export default function MenuSelection() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">その他の飲み物</h4>
+              <h4 className="font-medium mb-2">其他飲品</h4>
               <div className="grid grid-cols-2 gap-2">
                 {DRINKS.other.map((drink, index) => (
                   <div key={index} className="flex items-center">
@@ -285,7 +285,7 @@ export default function MenuSelection() {
                       onChange={() => setSelectedDrink(drink.name)}
                       className="mr-2"
                     />
-                    <label htmlFor={`drink-other-${index}`}>{drink.name} (${drink.price}ドル)</label>
+                    <label htmlFor={`drink-other-${index}`}>{drink.name}</label>
                   </div>
                 ))}
               </div>
