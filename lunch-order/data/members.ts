@@ -20,5 +20,6 @@ export const MEMBERS = [
   { id: "19", name: "Cheng Tak Wong", englishName: "Ricky", nameInChinese: "鄭德旺", nameInEnglish: "Ricky" },
   { id: "20", name: "Li Mei Lin", englishName: "Christine", nameInChinese: "李美蓮", nameInEnglish: "Christine" },
   { id: "21", name: "Yau Siu Yin", nameInChinese: "邱少燕", nameInEnglish: "Yau Siu Yin" },
-  { id: "22", name: "Li Tsz King", nameInChinese: "李子敬", nameInEnglish: "Li Tsz King" }
+  { id: "22", name: "Li Tsz King", nameInChinese: "李子敬", nameInEnglish: "Li Tsz King" },
+  { id: "23", name: "Li ga nin", nameInChinese: "李家年", nameInEnglish: "Li ga nin" }
 ]

@@ -255,16 +255,16 @@ export default function MenuSelection() {
               <h4 className="font-medium mb-2">凍飲</h4>
               <div className="grid grid-cols-2 gap-2">
                 {DRINKS.cold.map((drink, index) => (
-                  <div key={index} className="flex items-center">
-                    <input
-                      type="radio"
+            <div key={index} className="flex items-center">
+              <input
+                type="radio"
                       id={`drink-cold-${index}`}
-                      name="drink"
+                name="drink"
                       value={drink.name}
                       checked={selectedDrink === drink.name}
                       onChange={() => setSelectedDrink(drink.name)}
-                      className="mr-2"
-                    />
+                className="mr-2"
+              />
                     <label htmlFor={`drink-cold-${index}`}>{drink.name}</label>
                   </div>
                 ))}
@@ -286,8 +286,8 @@ export default function MenuSelection() {
                       className="mr-2"
                     />
                     <label htmlFor={`drink-other-${index}`}>{drink.name}</label>
-                  </div>
-                ))}
+            </div>
+          ))}
               </div>
             </div>
           </div>

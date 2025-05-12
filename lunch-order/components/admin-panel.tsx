@@ -89,11 +89,11 @@ export default function AdminPanel() {
       ) : (
         <div className="space-y-4">
           <div className="border-b pb-2">
-            <button
+              <button
               className="px-4 py-2 rounded-md bg-blue-500 text-white"
-            >
+              >
               {today}
-            </button>
+              </button>
           </div>
 
           <div>
