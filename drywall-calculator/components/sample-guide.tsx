@@ -522,7 +522,6 @@ export default function SampleGuide({ lang }: { lang: string }) {
                                 <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
                                 <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
                                 <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
-                                {calculationResults.bendingMoment.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingMoment.judgment}</p>}
                               </>
                             )}
                             {lang === 'en' && (
@@ -530,7 +529,6 @@ export default function SampleGuide({ lang }: { lang: string }) {
                                 <p><span className="font-medium">Formula:</span> {calculationResults.bendingMoment.formula}</p>
                                 <p><span className="font-medium">Substitution:</span> {calculationResults.bendingMoment.substitution}</p>
                                 <p><span className="font-medium">Result:</span> {calculationResults.bendingMoment.result}</p>
-                                {calculationResults.bendingMoment.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingMoment.judgment}</p>}
                               </>
                             )}
                             {lang === 'zh-HK' && (
@@ -538,7 +536,6 @@ export default function SampleGuide({ lang }: { lang: string }) {
                                 <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
                                 <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
                                 <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
-                                {calculationResults.bendingMoment.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingMoment.judgment}</p>}
                               </>
                             )}
                           </div>
@@ -596,19 +593,16 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
                               <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
                               <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
-                              {calculationResults.bendingCapacity.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingCapacity.judgment}</p>}
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> {calculationResults.bendingCapacity.formula}</p>
                               <p><span className="font-medium">Substitution:</span> {calculationResults.bendingCapacity.substitution}</p>
                               <p><span className="font-medium">Result:</span> {calculationResults.bendingCapacity.result}</p>
-                              {calculationResults.bendingCapacity.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingCapacity.judgment}</p>}
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
                               <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
                               <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
-                              {calculationResults.bendingCapacity.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.bendingCapacity.judgment}</p>}
                             </>)}
                           </div>
                         </div>
@@ -638,6 +632,24 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
                             </>)}
                           </div>
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
+                      </td>
+                    </tr>
+                    
+                    <tr>
+                      <td className="border px-4 py-2" colSpan={1}>
+                        {lang === 'ja' && '曲げ判定'}
+                        {lang === 'en' && 'Bending Check'}
+                        {lang === 'zh-HK' && '彎曲判定'}
+                      </td>
+                      <td className="border px-4 py-2" colSpan={2}>
+                        <div className="text-center font-medium text-green-600">
+                          {lang === 'ja' && 'Mb > Mo OK - 曲げに対して安全'}
+                          {lang === 'en' && 'Mb > Mo OK - safe from bending moment'}
+                          {lang === 'zh-HK' && 'Mb > Mo OK - 彎曲安全'}
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -752,16 +764,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
+                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - せん断に対して安全</p>
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">Substitution:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">Result:</span> Vc = 6827 N</p>
+                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - safe from shear</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
+                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - 剪力安全</p>
                             </>)}
                           </div>
                         </div>
@@ -815,16 +830,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> Pw = 848 N</p>
+                              <p className="mt-2 font-medium text-green-600">Pw &gt; Rw OK - ウェブ座屈に対して安全</p>
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">Substitution:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">Result:</span> Pw = 848 N</p>
+                              <p className="mt-2 font-medium text-green-600">Pw &gt; Rw OK - safe from web crippling</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> Pw = 848 N</p>
+                              <p className="mt-2 font-medium text-green-600">Pw &gt; Rw OK - 腹板挫屈安全</p>
                             </>)}
                           </div>
                         </div>
@@ -878,16 +896,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
+                              <p className="mt-2 font-medium text-green-600">δallow &gt; δmax OK - たわみに対して安全</p>
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">Substitution:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">Result:</span> δmax = 12.12 mm</p>
+                              <p className="mt-2 font-medium text-green-600">δallow &gt; δmax OK - safe from deflection</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
+                              <p className="mt-2 font-medium text-green-600">δallow &gt; δmax OK - 撓度安全</p>
                             </>)}
                           </div>
                         </div>

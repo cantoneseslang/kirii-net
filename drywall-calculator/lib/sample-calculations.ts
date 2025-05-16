@@ -130,18 +130,25 @@ export function calculateWallStudSample(): SampleCalculationResults {
   // 5. 複合作用比
   const combinedRatio = (moValue / parseFloat(mbValue)).toFixed(2);  // 0.87
 
+  // 各判定結果
+  const bendingJudgment = "Mb > Mo OK - safe from bending moment";
+  const shearJudgment = "Vc > Fv OK - safe from shear";
+  const webCripplingJudgment = "Pw > Rw OK - safe from web crushing";
+  const deflectionJudgment = "δallow > δmax OK - safe from deflection";
+  const combinedJudgment = "OK - safe from combined action";
+
   return {
     bendingMoment: {
       formula: "Mo = Py × Sxe / Ym",
       substitution: `Mo = ${py} × ${sxe} / ${ym} = ${mbValue} kN·mm`,
       result: `Mo = ${moValue} kN·mm`,
-      judgment: bendingResult
+      judgment: ""
     },
     bendingCapacity: {
       formula: "Mb = Py × Sxe / Ym",
       substitution: `Mb = ${py} × ${sxe} / ${ym} = ${mbValue} kN·mm`,
       result: `Mb = ${mbValue} kN·mm`,
-      judgment: ""
+      judgment: bendingJudgment
     },
     shearForce: {
       formula: "Fv = 2 × (設計集中荷重) / (スパン長さ)",
@@ -153,7 +160,7 @@ export function calculateWallStudSample(): SampleCalculationResults {
       formula: "Vc = 0.6 × d × t × Py / Ym",
       substitution: `Vc = 0.6 × ${d} × ${t} × ${py} / ${ym} = ${vcValue} N`,
       result: `Vc = ${vcValue} N`,
-      judgment: shearResult
+      judgment: shearJudgment
     },
     webCrippling: {
       formula: "Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)",
@@ -165,7 +172,7 @@ export function calculateWallStudSample(): SampleCalculationResults {
       formula: rwFormula,
       substitution: rwSubstitution,
       result: `Rw = ${rwValue} N`,
-      judgment: webCrushingResult
+      judgment: webCripplingJudgment
     },
     maxDeflection: {
       formula: "δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)",
@@ -177,13 +184,13 @@ export function calculateWallStudSample(): SampleCalculationResults {
       formula: dallowFormula,
       substitution: dallowSubstitution,
       result: `δallow = ${dallowValue} mm`,
-      judgment: deflectionResult
+      judgment: deflectionJudgment
     },
     combinedAction: {
       formula: "複合作用比 = Mo / Mb",
       substitution: `複合作用比 = ${moValue} / ${mbValue} = ${combinedRatio}`,
       result: `限界値 = 1.0`,
-      judgment: "OK - safe from combined action"
+      judgment: combinedJudgment
     },
     overallResult: true,
   };
