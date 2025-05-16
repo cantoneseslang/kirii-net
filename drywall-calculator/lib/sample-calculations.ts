@@ -93,10 +93,9 @@ export function calculateWallStudSample(): SampleCalculationResults {
 
   // 計算実行
   // 1. 曲げ耐力計算
-  // 1. Check bending - 曲げ耐力計算
   const mbValue = (py * sxe / ym).toFixed(0);  // 452 kN·mm - 曲げ耐力
-  const moValue = 392;                          // 設計曲げモーメント（サンプル値）
-  const bendingResult = "Mb > Mo OK - safe from bending moment";
+  const mcValue = 392;                          // 設計曲げモーメント（サンプル値）
+  const bendingResult = "Mb > Mc OK - 曲げに対して安全";
 
   // 2. Check shear - せん断力計算
   const fvValue = (2 * designLoad / (span / 1000)).toFixed(1);  // 0.366 kN = 366 N
@@ -128,10 +127,10 @@ export function calculateWallStudSample(): SampleCalculationResults {
   const deflectionResult = "δallow > δmax OK - safe from deflection";
 
   // 5. 複合作用比
-  const combinedRatio = (moValue / parseFloat(mbValue)).toFixed(2);  // 0.87
+  const combinedRatio = (mcValue / parseFloat(mbValue)).toFixed(2);  // 0.87
 
   // 各判定結果
-  const bendingJudgment = "Mb > Mo OK - safe from bending moment";
+  const bendingJudgment = "Mb > Mc OK - 曲げに対して安全";
   const shearJudgment = "Vc > Fv OK - safe from shear";
   const webCripplingJudgment = "Pw > Rw OK - safe from web crushing";
   const deflectionJudgment = "δallow > δmax OK - safe from deflection";
@@ -187,10 +186,10 @@ export function calculateWallStudSample(): SampleCalculationResults {
       judgment: deflectionJudgment
     },
     combinedAction: {
-      formula: "複合作用比 = Mo / Mb",
-      substitution: `複合作用比 = ${moValue} / ${mbValue} = ${combinedRatio}`,
+      formula: "複合作用比 = Mc / Mb",
+      substitution: `複合作用比 = ${mcValue} / ${mbValue} = ${combinedRatio}`,
       result: `限界値 = 1.0`,
-      judgment: combinedJudgment
+      judgment: "OK - safe from combined action"
     },
     overallResult: true,
   };
@@ -209,7 +208,7 @@ export function performActualWallStudCalculation(
   // 1. 曲げ耐力計算
   const actualMbValue = (py * sxe / ym);
   const mbValueFormatted = actualMbValue.toFixed(0);  
-  const moValue = 392; // サンプル値（実際の計算では計算される値）
+  const mcValue = 392; // サンプル値（実際の計算では計算される値）
 
   // 2. せん断力計算
   const actualFvValue = (2 * designLoad / (span / 1000));
@@ -232,14 +231,15 @@ export function performActualWallStudCalculation(
   const dallowValueFormatted = actualDallowValue.toFixed(2);
 
   // 5. 複合作用比
-  const actualCombinedRatio = moValue / actualMbValue;
+  const actualCombinedRatio = mcValue / actualMbValue;
   const combinedRatioFormatted = actualCombinedRatio.toFixed(2);
 
   return {
     bendingMoment: {
-      formula: "Mo = Py × Sxe / Ym",
-      substitution: `Mo = ${py} × ${sxe} / ${ym} = ${mbValueFormatted} kN·mm`,
-      result: `Mo = ${moValue} kN·mm`, // 実際の計算では異なる可能性あり
+      formula: "Mc = Qk × W × Tw × h × (L - h) / L",
+      substitution: `Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm`,
+      result: `Mc = 392 kN·mm`,
+      judgment: ""
     },
     bendingCapacity: {
       formula: "Mb = Py × Sxe / Ym",
@@ -277,8 +277,8 @@ export function performActualWallStudCalculation(
       result: `δallow = ${dallowValueFormatted} mm`,
     },
     combinedAction: {
-      formula: "複合作用比 = Mo / Mc",
-      substitution: `複合作用比 = ${moValue} / ${mbValueFormatted} = ${combinedRatioFormatted}`,
+      formula: "複合作用比 = Mc / Mb",
+      substitution: `複合作用比 = ${mcValue} / ${mbValueFormatted} = ${combinedRatioFormatted}`,
       result: `限界値 = 1.0`,
     },
     overallResult: true, // 実際の計算では条件に基づき判定

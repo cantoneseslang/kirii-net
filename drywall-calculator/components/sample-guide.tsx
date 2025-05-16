@@ -514,7 +514,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (
@@ -547,7 +547,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (
@@ -647,9 +647,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                       </td>
                       <td className="border px-4 py-2" colSpan={2}>
                         <div className="text-center font-medium text-green-600">
-                          {lang === 'ja' && 'Mb > Mo OK - 曲げに対して安全'}
-                          {lang === 'en' && 'Mb > Mo OK - safe from bending moment'}
-                          {lang === 'zh-HK' && 'Mb > Mo OK - 彎曲安全'}
+                          {lang === 'ja' && 'Mb > Mc OK - 曲げに対して安全'}
+                          {lang === 'en' && 'Mb > Mc OK - safe from bending moment'}
+                          {lang === 'zh-HK' && 'Mb > Mc OK - 彎曲安全'}
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
