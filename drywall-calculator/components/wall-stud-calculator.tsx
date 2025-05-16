@@ -110,6 +110,18 @@ const studDatabase = [
   },
 ]
 
+// ダミーの計算関数（本実装は後で差し替え）
+export function calculateWallStud(values, stud) {
+  return {
+    bendingMoment: { value: 0, capacity: 0, ratio: 0, pass: true },
+    shearForce: { value: 0, capacity: 0, ratio: 0, pass: true },
+    webCrippling: { value: 0, capacity: 0, ratio: 0, pass: true },
+    deflection: { value: 0, limit: 0, ratio: 0, pass: true },
+    combinedAction: { value: 0, limit: 0, pass: true },
+    overallResult: true,
+  }
+}
+
 export default function WallStudCalculator({ dict, lang }: { dict: any; lang: string }) {
   const [calculationResults, setCalculationResults] = useState(null)
 

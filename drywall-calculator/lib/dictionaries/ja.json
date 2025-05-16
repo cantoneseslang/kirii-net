@@ -144,5 +144,263 @@
       "backToInputGuide": "入力ガイドに戻る",
       "startWallStudCalculation": "壁スタッド計算を開始"
     }
+  },
+  "wallStud": {
+    "title": "壁スタッド構造計算",
+    "tabs": {
+      "project": "基本情報",
+      "material": "材料特性",
+      "geometry": "幾何学的配置",
+      "loads": "荷重条件",
+      "fixtures": "取り付け物"
+    },
+    "projectInfo": {
+      "title": "プロジェクト基本情報",
+      "description": "計算対象のプロジェクト情報を入力してください",
+      "projectName": "案件名",
+      "projectNamePlaceholder": "例：XXビル改修工事",
+      "projectDetail": "計算対象詳細",
+      "projectDetailPlaceholder": "例：3階間仕切り壁",
+      "calculationDate": "計算日",
+      "author": "作成者",
+      "authorPlaceholder": "氏名"
+    },
+    "materialProperties": {
+      "title": "材料特性",
+      "description": "スタッドの材料特性を入力してください",
+      "yieldStrength": "降伏強度（MPa）",
+      "elasticModulus": "弾性係数（MPa）",
+      "materialFactor": "材料係数",
+      "studType": "スタッドの種類",
+      "bearingLength": "支圧長さ（mm）"
+    },
+    "geometricConfig": {
+      "title": "幾何学的配置",
+      "description": "スタッドの設置条件を入力してください",
+      "span": "支持間距離（mm）",
+      "tributaryWidth": "負担幅/スタッド間隔（mm）",
+      "deflectionCriteria": "たわみ基準",
+      "customDeflection": "カスタムたわみ基準（L/n）",
+      "enterNValue": "n値を入力"
+    },
+    "loadConditions": {
+      "title": "荷重条件",
+      "description": "荷重条件を入力してください",
+      "windLoadFactor": "風荷重係数",
+      "imposedLoadFactor": "施加荷重係数",
+      "deadLoadFactor": "死荷重係数",
+      "fixtureFactor": "取付物荷重係数",
+      "windLoad": "設計等分布風荷重（kPa）",
+      "imposedLoad": "設計集中衝撃荷重（kN/m）",
+      "imposedLoadHeight": "衝撃荷重作用高さ（m）",
+      "deadLoad": "死荷重",
+      "wallBoardLayers": "壁ボードの層数",
+      "wallBoardWeight": "壁ボードの単位面積重量（kgf/m²）",
+      "insulationPresent": "断熱材の有無",
+      "insulationPresenceYes": "あり",
+      "insulationPresenceNo": "なし",
+      "insulationThickness": "断熱材の厚さ（mm）",
+      "metalFrameWeight": "金属フレームの単位面積重量（kgf/m²）"
+    },
+    "fixtures": {
+      "title": "壁取り付け物データ",
+      "description": "壁に取り付ける物の情報を入力してください",
+      "fixtureWeight": "質量（kgf）",
+      "fixtureHeight": "取り付け高さ（m）",
+      "fixtureDistance": "スタッドからの水平距離（mm）"
+    },
+    "results": {
+      "title": "計算結果",
+      "description": "構造計算結果と判定",
+      "waitingMessage": "左側のフォームに必要な情報を入力し、「計算」ボタンをクリックしてください",
+      "overallJudgment": "総合判定",
+      "suitable": "適合",
+      "unsuitable": "不適合",
+      "verificationItem": "検証項目",
+      "calculatedValueCapacity": "計算値/耐力",
+      "judgment": "判定",
+      "bendingMoment": "曲げモーメント",
+      "shearForce": "せん断力",
+      "webBuckling": "ウェブ座屈",
+      "deflection": "たわみ",
+      "combinedAction": "複合作用",
+      "pass": "OK",
+      "fail": "NG"
+    }
+  },
+  "ceiling": {
+    "title": "天井吊り下げシステム構造計算",
+    "tabs": {
+      "project": "基本情報",
+      "material": "材料特性",
+      "geometry": "幾何学的配置",
+      "loads": "荷重条件",
+      "deflection": "たわみ基準"
+    },
+    "projectInfo": {
+      "title": "プロジェクト基本情報",
+      "description": "計算対象のプロジェクト情報を入力してください",
+      "projectName": "案件名",
+      "projectNamePlaceholder": "例：XXビル改修工事",
+      "projectDetail": "計算対象詳細",
+      "projectDetailPlaceholder": "例：3階天井",
+      "calculationDate": "計算日",
+      "author": "作成者",
+      "authorPlaceholder": "氏名"
+    },
+    "materialProperties": {
+      "title": "材料特性",
+      "description": "構成部材の材料特性を入力してください",
+      "yieldStrength": "降伏強度（MPa）",
+      "elasticModulus": "弾性係数（MPa）",
+      "materialFactor": "材料係数",
+      "runnerType": "ランナーの種類",
+      "hangerType": "ハンガーの種類",
+      "anchorType": "アンカーの種類"
+    },
+    "geometricConfig": {
+      "title": "幾何学的配置",
+      "description": "天井システムの設置条件を入力してください",
+      "runnerSpan": "ランナー支持間距離（mm）",
+      "hangerSpacing": "ハンガー間隔（mm）",
+      "runnerSpacing": "ランナー間隔（mm）"
+    },
+    "loadConditions": {
+      "title": "荷重条件",
+      "description": "荷重条件を入力してください",
+      "windLoadFactor": "風荷重係数",
+      "deadLoadFactor": "死荷重係数",
+      "installationFactor": "施工荷重係数",
+      "windLoad": "設計等分布風荷重（kPa）",
+      "deadLoad": "死荷重",
+      "ceilingBoardLayers": "天井ボードの層数",
+      "ceilingBoardWeight": "天井ボードの単位面積重量（kgf/m²）",
+      "insulationPresent": "断熱材の有無",
+      "insulationPresenceYes": "あり",
+      "insulationPresenceNo": "なし",
+      "insulationThickness": "断熱材の厚さ（mm）",
+      "metalFrameWeight": "金属フレームの単位面積重量（kgf/m²）"
+    },
+    "deflectionCriteria": {
+      "title": "たわみ基準",
+      "description": "許容たわみ基準を選択してください",
+      "deflectionCriteria": "たわみ基準",
+      "customDeflection": "カスタムたわみ基準（L/n）",
+      "enterNValue": "n値を入力"
+    },
+    "results": {
+      "title": "計算結果",
+      "description": "構造計算結果と判定",
+      "waitingMessage": "左側のフォームに必要な情報を入力し、「計算」ボタンをクリックしてください",
+      "overallJudgment": "総合判定",
+      "suitable": "適合",
+      "unsuitable": "不適合",
+      "verificationItem": "検証項目",
+      "calculatedValueCapacity": "計算値/耐力",
+      "judgment": "判定",
+      "runnerBending": "ランナー曲げ",
+      "runnerShear": "ランナーせん断",
+      "runnerDeflection": "ランナーたわみ",
+      "hangerTension": "ハンガー引張",
+      "anchorTension": "アンカー引張",
+      "pass": "OK",
+      "fail": "NG"
+    }
+  },
+  "documentation": {
+    "title": "システムドキュメント",
+    "tabs": {
+      "overview": "概要",
+      "wallStud": "壁スタッド",
+      "ceiling": "天井システム",
+      "reference": "参考資料"
+    },
+    "overview": {
+      "title": "システム概要",
+      "description": "乾式壁間仕切りシステム構造計算システムの概要",
+      "purpose": "目的",
+      "purposeText": "本システムは、KIRII乾式壁用スチールC型スタッドおよび天井吊り下げシステムの構造的適合性を精確に検証するためのウェブツールです。設計プロセスの効率化と設計安全性・法規準拠の確保を目的としています。",
+      "mainFeatures": "主な特徴",
+      "mainFeaturesList": [
+        "壁スタッド計算モジュール：C型・CT型スチールスタッドの構造計算",
+        "天井吊り下げシステム計算モジュール：ランナー・ハンガーの構造計算",
+        "詳細なPDFレポート生成機能",
+        "部材データベース参照機能"
+      ],
+      "calculationTargets": "計算対象",
+      "calculationTargetsList": [
+        "壁スタッド：KIRII C型・CT型スチールスタッド",
+        "天井吊り下げシステム：KIRIIランナー（FRC主ランナー、RRCランナー）、M12ねじ込み棒（ハンガー）、Hilti HST3ウェッジアンカー"
+      ],
+      "structuralCheckItems": "構造チェック項目",
+      "structuralCheckItemsList": [
+        "共通：曲げ強度、せん断強度、ウェブ座屈、たわみ限界",
+        "壁スタッド：曲げと圧縮の複合作用",
+        "天井吊り下げシステム：ハンガー引張力、アンカー引張抵抗"
+      ]
+    },
+    "wallStud": {
+      "title": "壁スタッド計算モジュール",
+      "description": "壁スタッド計算モジュールの使い方と計算内容",
+      "inputItems": "入力項目",
+      "inputItemsList": [
+        "プロジェクト基本情報：案件名、計算対象詳細、計算日、作成者",
+        "材料特性：降伏強度、弾性係数、材料係数",
+        "部材断面特性：スタッドの種類、支圧長さ",
+        "幾何学的配置：支持間距離、負担幅/スタッド間隔",
+        "荷重条件：風荷重、施加荷重、死荷重、壁取り付け物による荷重",
+        "たわみ基準：L/240、L/360またはカスタム値"
+      ],
+      "calculationContents": "計算内容",
+      "calculationContentsList": [
+        "曲げモーメント：風荷重・施加荷重・壁取り付け物による総曲げモーメントと曲げ耐力の比較",
+        "せん断力：風荷重によるせん断力とせん断耐力の比較",
+        "ウェブ座屈：せん断力とウェブ座屈耐力の比較",
+        "たわみ：風荷重によるたわみと許容たわみの比較",
+        "複合作用：曲げと圧縮の複合作用比と限界値の比較"
+      ],
+      "calculationFormulaSummary": "計算式概要",
+      "calculationFormulaSummaryText": "本システムは「2007 North American Specification LRFD」などの設計基準に基づく計算式を使用しています。詳細な計算式はPDFレポートに記載しています。"
+    },
+    "ceiling": {
+      "title": "天井吊り下げシステム計算モジュール",
+      "description": "天井吊り下げシステム計算モジュールの使い方と計算内容",
+      "inputItems": "入力項目",
+      "inputItemsList": [
+        "プロジェクト基本情報：案件名、計算対象詳細、計算日、作成者",
+        "材料特性：降伏強度、弾性係数、材料係数",
+        "部材断面特性：ランナーの種類、ハンガーの種類、アンカーの種類",
+        "幾何学的配置：ランナー支持間距離、ハンガー間隔、ランナー間隔",
+        "荷重条件：風荷重、死荷重",
+        "たわみ基準：L/240、L/360またはカスタム値"
+      ],
+      "calculationContents": "計算内容",
+      "calculationContentsList": [
+        "ランナー曲げ：風荷重・死荷重による曲げモーメントとランナーの曲げ耐力の比較",
+        "ランナーせん断：風荷重・死荷重によるせん断力とランナーのせん断耐力の比較",
+        "ランナーたわみ：風荷重・死荷重によるたわみと許容たわみの比較",
+        "ハンガー引張：ハンガーに作用する引張力とハンガーの引張耐力の比較",
+        "アンカー引張：アンカーに作用する引張力とアンカーの引張耐力の比較"
+      ],
+      "calculationFormulaSummary": "計算式概要",
+      "calculationFormulaSummaryText": "本システムは「2007 North American Specification LRFD」などの設計基準に基づく計算式を使用しています。詳細な計算式はPDFレポートに記載しています。"
+    },
+    "reference": {
+      "title": "参考資料",
+      "description": "計算に用いた参考資料・設計基準",
+      "designCodes": "設計基準",
+      "designCodesList": [
+        "2007 North American Specification LRFD（荷重・耐力係数設計法）",
+        "日本建築学会「鋼構造設計規準」",
+        "建築基準法および施行令"
+      ],
+      "productData": "製品データ",
+      "productDataList": [
+        "KIRII製品カタログ：C型・CT型スタッド、FRC主ランナー、RRCランナーの断面特性",
+        "Hilti製品データシート：HST3ウェッジアンカーの性能値"
+      ],
+      "technicalDocuments": "技術資料",
+      "technicalDocumentsList": []
+    }
   }
 }

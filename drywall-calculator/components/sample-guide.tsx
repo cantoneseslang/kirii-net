@@ -107,6 +107,40 @@ export default function SampleGuide({ lang }: { lang: string }) {
               <CardDescription>{t.inputGuide.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <div className="overflow-x-auto mb-6">
+                <table className="min-w-full border text-sm">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border px-2 py-1 text-left">項目</th>
+                      <th className="border px-2 py-1 text-left">サンプル値</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td className="border px-2 py-1">Project Name</td><td className="border px-2 py-1">葛量洪醫院</td></tr>
+                    <tr><td className="border px-2 py-1">Calculation Target Detail</td><td className="border px-2 py-1">C 75x45x0.8t/4100H/406o.c.</td></tr>
+                    <tr><td className="border px-2 py-1">Calculation Date</td><td className="border px-2 py-1">2025-05-16</td></tr>
+                    <tr><td className="border px-2 py-1">Author</td><td className="border px-2 py-1">TC</td></tr>
+                    <tr><td className="border px-2 py-1">Yield Strength (MPa)</td><td className="border px-2 py-1">200</td></tr>
+                    <tr><td className="border px-2 py-1">Elastic Modulus (MPa)</td><td className="border px-2 py-1">205000</td></tr>
+                    <tr><td className="border px-2 py-1">Material Factor</td><td className="border px-2 py-1">1.2</td></tr>
+                    <tr><td className="border px-2 py-1">Stud Type</td><td className="border px-2 py-1">C75x45x0.8t</td></tr>
+                    <tr><td className="border px-2 py-1">Bearing Length (mm)</td><td className="border px-2 py-1">32</td></tr>
+                    <tr><td className="border px-2 py-1">Span Between Supports (mm)</td><td className="border px-2 py-1">4100</td></tr>
+                    <tr><td className="border px-2 py-1">Tributary Width/Stud Spacing (mm)</td><td className="border px-2 py-1">406</td></tr>
+                    <tr><td className="border px-2 py-1">Deflection Criteria</td><td className="border px-2 py-1">L/240</td></tr>
+                    <tr><td className="border px-2 py-1">Wind Load Factor</td><td className="border px-2 py-1">1.5</td></tr>
+                    <tr><td className="border px-2 py-1">Imposed Load Factor</td><td className="border px-2 py-1">1.6</td></tr>
+                    <tr><td className="border px-2 py-1">Dead Load Factor</td><td className="border px-2 py-1">1.5</td></tr>
+                    <tr><td className="border px-2 py-1">Fixture Load Factor</td><td className="border px-2 py-1">1.5</td></tr>
+                    <tr><td className="border px-2 py-1">Design Uniform Wind Load (kPa)</td><td className="border px-2 py-1">0</td></tr>
+                    <tr><td className="border px-2 py-1">Design Concentrated Impact Load (kN/m)</td><td className="border px-2 py-1">0.75</td></tr>
+                    <tr><td className="border px-2 py-1">Impact Load Action Height (m)</td><td className="border px-2 py-1">1.1</td></tr>
+                    <tr><td className="border px-2 py-1">Wall Board Layers</td><td className="border px-2 py-1">0</td></tr>
+                    <tr><td className="border px-2 py-1">Insulation Presence</td><td className="border px-2 py-1">No</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">{t.inputGuide.step1Title}</h3>
                 <div className="rounded-md border p-4 bg-gray-50">

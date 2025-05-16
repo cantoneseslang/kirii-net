@@ -142,6 +142,18 @@ const anchorDatabase = [
   },
 ]
 
+// ダミーの計算関数（本実装は後で差し替え）
+export function calculateCeilingSystem(values, runner, hanger, anchor) {
+  return {
+    runnerBending: { value: 0, capacity: 0, ratio: 0, pass: true },
+    runnerShear: { value: 0, capacity: 0, ratio: 0, pass: true },
+    runnerDeflection: { value: 0, limit: 0, ratio: 0, pass: true },
+    hangerTension: { value: 0, capacity: 0, ratio: 0, pass: true },
+    anchorTension: { value: 0, capacity: 0, ratio: 0, pass: true },
+    overallResult: true,
+  }
+}
+
 export default function CeilingSystemCalculator({ dict, lang }: { dict: any; lang: string }) {
   const [calculationResults, setCalculationResults] = useState(null)
 
