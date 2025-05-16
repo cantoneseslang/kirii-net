@@ -519,23 +519,23 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <div className="text-sm">
                             {lang === 'ja' && (
                               <>
-                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
-                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
-                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
+                                <p><span className="font-medium">計算式:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
+                                <p><span className="font-medium">代入:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
+                                <p><span className="font-medium">結果:</span> Mc = 392 kN·mm</p>
                               </>
                             )}
                             {lang === 'en' && (
                               <>
-                                <p><span className="font-medium">Formula:</span> {calculationResults.bendingMoment.formula}</p>
-                                <p><span className="font-medium">Substitution:</span> {calculationResults.bendingMoment.substitution}</p>
-                                <p><span className="font-medium">Result:</span> {calculationResults.bendingMoment.result}</p>
+                                <p><span className="font-medium">Formula:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
+                                <p><span className="font-medium">Substitution:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
+                                <p><span className="font-medium">Result:</span> Mc = 392 kN·mm</p>
                               </>
                             )}
                             {lang === 'zh-HK' && (
                               <>
-                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
-                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
-                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
+                                <p><span className="font-medium">計算式:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
+                                <p><span className="font-medium">代入:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
+                                <p><span className="font-medium">結果:</span> Mc = 392 kN·mm</p>
                               </>
                             )}
                           </div>
@@ -590,19 +590,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
-                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
-                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
+                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
                             </>)}
                             {lang === 'en' && (<>
-                              <p><span className="font-medium">Formula:</span> {calculationResults.bendingCapacity.formula}</p>
-                              <p><span className="font-medium">Substitution:</span> {calculationResults.bendingCapacity.substitution}</p>
-                              <p><span className="font-medium">Result:</span> {calculationResults.bendingCapacity.result}</p>
+                              <p><span className="font-medium">Formula:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">Substitution:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">Result:</span> Mb = 452 kN·mm</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
-                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
-                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
-                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
+                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
                             </>)}
                           </div>
                         </div>
@@ -613,7 +613,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -664,7 +664,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -694,7 +694,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -727,7 +727,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -746,7 +746,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">代入:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">結果:</span> 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - 剪力安全</p>
+                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - 剪力安全</p>
                             </>)}
                           </div>
                         </div>
@@ -757,7 +757,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -793,7 +793,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -823,7 +823,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -859,7 +859,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -889,7 +889,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -925,7 +925,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
@@ -952,7 +952,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
                             {lang === 'en' && 'Formula and Substitution:'}
-                            {lang === 'zh-HK' && '計算式與代入值:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>

@@ -139,9 +139,9 @@ export function calculateWallStudSample(): SampleCalculationResults {
 
   return {
     bendingMoment: {
-      formula: "Mo = Py × Sxe / Ym",
-      substitution: `Mo = ${py} × ${sxe} / ${ym} = ${mbValue} kN·mm`,
-      result: `Mo = ${moValue} kN·mm`,
+      formula: "Mc = Qk × W × Tw × h × (L - h) / L",
+      substitution: `Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm`,
+      result: `Mc = 392 kN·mm`,
       judgment: ""
     },
     bendingCapacity: {
