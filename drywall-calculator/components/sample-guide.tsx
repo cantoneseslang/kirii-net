@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { calculateWallStudSample } from "@/lib/sample-calculations"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,12 +16,19 @@ import zhHKDict from "@/lib/dictionaries/zh-HK.json"
 
 export default function SampleGuide({ lang }: { lang: string }) {
   const [activeTab, setActiveTab] = useState("overview")
+  const [calculationResults, setCalculationResults] = useState<any>(null)
 
   // Use static dictionaries instead of dynamic loading
   const dictionaries = {
     en: enDict,
     "zh-HK": zhHKDict,
   }
+
+  // 計算結果を取得
+  useEffect(() => {
+    const results = calculateWallStudSample()
+    setCalculationResults(results)
+  }, [])
 
   // Select the appropriate language content
   const t = lang === "zh-HK" ? dictionaries["zh-HK"].sampleGuide : dictionaries.en.sampleGuide
@@ -368,58 +376,74 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    {calculationResults && (
+                      <>
+                      <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingMoment}</td>
-                      <td className="border px-4 py-2 text-right">
-                        392 kN·mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (
-                            <>
-                              計算式: Mo = Py × Sxe / Ym<br />
-                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              結果: 392 kN·mm
-                            </>
-                          )}
-                          {lang === 'en' && (
-                            <>
-                              Formula: Mo = Py × Sxe / Ym<br />
-                              Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              Result: 392 kN·mm
-                            </>
-                          )}
-                          {lang === 'zh-HK' && (
-                            <>
-                              計算式: Mo = Py × Sxe / Ym<br />
-                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              結果: 392 kN·mm
-                            </>
-                          )}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">392 kN·mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (
+                              <>
+                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
+                              </>
+                            )}
+                            {lang === 'en' && (
+                              <>
+                                <p><span className="font-medium">Formula:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">Substitution:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">Result:</span> {calculationResults.bendingMoment.result}</p>
+                              </>
+                            )}
+                            {lang === 'zh-HK' && (
+                              <>
+                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        392 kN·mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (
-                            <>
-                              計算式: Mo = Py × Sxe / Ym<br />
-                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              結果: 392 kN·mm
-                            </>
-                          )}
-                          {lang === 'en' && (
-                            <>
-                              Formula: Mo = Py × Sxe / Ym<br />
-                              Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              Result: 392 kN·mm
-                            </>
-                          )}
-                          {lang === 'zh-HK' && (
-                            <>
-                              計算式: Mo = Py × Sxe / Ym<br />
-                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                              結果: 392 kN·mm
-                            </>
-                          )}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">392 kN·mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (
+                              <>
+                                <p><span className="font-medium">計算式:</span> Mo = Py × Sxe / Ym</p>
+                                <p><span className="font-medium">代入:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                                <p><span className="font-medium">結果:</span> Mo = 392 kN·mm</p>
+                              </>
+                            )}
+                            {lang === 'en' && (
+                              <>
+                                <p><span className="font-medium">Formula:</span> Mo = Py × Sxe / Ym</p>
+                                <p><span className="font-medium">Substitution:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                                <p><span className="font-medium">Result:</span> Mo = 392 kN·mm</p>
+                              </>
+                            )}
+                            {lang === 'zh-HK' && (
+                              <>
+                                <p><span className="font-medium">計算式:</span> Mo = Py × Sxe / Ym</p>
+                                <p><span className="font-medium">代入:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                                <p><span className="font-medium">結果:</span> Mo = 392 kN·mm</p>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -428,44 +452,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingCapacity}</td>
-                      <td className="border px-4 py-2 text-right">
-                        452 kN·mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Mb = Py × Sxe / Ym<br />
-                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            結果: 452 kN·mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Mb = Py × Sxe / Ym<br />
-                            Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            Result: 452 kN·mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Mb = Py × Sxe / Ym<br />
-                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            結果: 452 kN·mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">452 kN·mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">Substitution:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">Result:</span> {calculationResults.bendingCapacity.result}</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        452 kN·mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Mb = Py × Sxe / Ym<br />
-                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            結果: 452 kN·mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Mb = Py × Sxe / Ym<br />
-                            Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            Result: 452 kN·mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Mb = Py × Sxe / Ym<br />
-                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
-                            結果: 452 kN·mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">452 kN·mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">Substitution:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">Result:</span> Mb = 452 kN·mm</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
+                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -474,44 +512,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.shearForce}</td>
-                      <td className="border px-4 py-2 text-right">
-                        243.6 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Fv = 2 × (設計集中荷重) / (スパン長さ)<br />
-                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            結果: 243.6 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Fv = 2 × (Design Imposed Load) / (Span)<br />
-                            Substitution: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            Result: 243.6 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Fv = 2 × (設計集中荷載) / (跨度)<br />
-                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            結果: 243.6 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">243.6 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷重) / (スパン長さ)</p>
+                              <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">結果:</span> 243.6 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Fv = 2 × (Design Imposed Load) / (Span)</p>
+                              <p><span className="font-medium">Substitution:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">Result:</span> 243.6 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷載) / (跨度)</p>
+                              <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">結果:</span> 243.6 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        243.6 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Fv = 2 × (設計集中荷重) / (スパン長さ)<br />
-                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            結果: 243.6 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Fv = 2 × (Design Imposed Load) / (Span)<br />
-                            Substitution: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            Result: 243.6 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Fv = 2 × (設計集中荷載) / (跨度)<br />
-                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
-                            結果: 243.6 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">243.6 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷重) / (スパン長さ)</p>
+                              <p><span className="font-medium">代入:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">結果:</span> Fv = 243.6 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Fv = 2 × (Design Imposed Load) / (Span)</p>
+                              <p><span className="font-medium">Substitution:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">Result:</span> Fv = 243.6 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷載) / (跨度)</p>
+                              <p><span className="font-medium">代入:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
+                              <p><span className="font-medium">結果:</span> Fv = 243.6 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -520,44 +572,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.shearCapacity}</td>
-                      <td className="border px-4 py-2 text-right">
-                        6827 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
-                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            結果: 6827 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Vc = 0.6 × d × t × Py / Ym<br />
-                            Substitution: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            Result: 6827 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
-                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            結果: 6827 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">6827 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">代入:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">結果:</span> 6827 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">Substitution:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">Result:</span> 6827 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">代入:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">結果:</span> 6827 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        6827 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
-                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            結果: 6827 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Vc = 0.6 × d × t × Py / Ym<br />
-                            Substitution: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            Result: 6827 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
-                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
-                            結果: 6827 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">6827 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">Substitution:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">Result:</span> Vc = 6827 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                              <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
+                              <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -566,44 +632,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.webCripplingCapacity}</td>
-                      <td className="border px-4 py-2 text-right">
-                        848 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            結果: 848 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            Substitution: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            Result: 848 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            結果: 848 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">848 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">代入:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">結果:</span> 848 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">Substitution:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">Result:</span> 848 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">代入:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">結果:</span> 848 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        848 N
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            結果: 848 N
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            Substitution: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            Result: 848 N
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                            結果: 848 N
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">848 N</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">結果:</span> Pw = 848 N</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">Substitution:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">Result:</span> Pw = 848 N</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                              <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                              <p><span className="font-medium">結果:</span> Pw = 848 N</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -612,44 +692,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.maxDeflection}</td>
-                      <td className="border px-4 py-2 text-right">
-                        12.12 mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            結果: 12.12 mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            Substitution: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            Result: 12.12 mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            結果: 12.12 mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">12.12 mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">代入:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">結果:</span> 12.12 mm</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">Substitution:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">Result:</span> 12.12 mm</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">代入:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">結果:</span> 12.12 mm</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        12.12 mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            結果: 12.12 mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            Substitution: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            Result: 12.12 mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                            結果: 12.12 mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">12.12 mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">Substitution:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">Result:</span> δmax = 12.12 mm</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                              <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                              <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -658,44 +752,58 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.allowableDeflection}</td>
-                      <td className="border px-4 py-2 text-right">
-                        17.08 mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: δallow = L / 240<br />
-                            代入: 4100 / 240 = 17.08 mm<br />
-                            結果: 17.08 mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: δallow = L / 240<br />
-                            Substitution: 4100 / 240 = 17.08 mm<br />
-                            Result: 17.08 mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: δallow = L / 240<br />
-                            代入: 4100 / 240 = 17.08 mm<br />
-                            結果: 17.08 mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">17.08 mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">代入:</span> 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">結果:</span> 17.08 mm</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">Substitution:</span> 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">Result:</span> 17.08 mm</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">代入:</span> 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">結果:</span> 17.08 mm</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
-                      <td className="border px-4 py-2 text-right">
-                        17.08 mm
-                        <div className="text-xs text-gray-500 mt-1">
-                          {lang === 'ja' && (<>
-                            計算式: δallow = L / 240<br />
-                            代入: 4100 / 240 = 17.08 mm<br />
-                            結果: 17.08 mm
-                          </>)}
-                          {lang === 'en' && (<>
-                            Formula: δallow = L / 240<br />
-                            Substitution: 4100 / 240 = 17.08 mm<br />
-                            Result: 17.08 mm
-                          </>)}
-                          {lang === 'zh-HK' && (<>
-                            計算式: δallow = L / 240<br />
-                            代入: 4100 / 240 = 17.08 mm<br />
-                            結果: 17.08 mm
-                          </>)}
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">17.08 mm</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入值:'}
+                          </p>
+                          <div className="text-sm">
+                            {lang === 'ja' && (<>
+                              <p><span className="font-medium">計算式:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">代入:</span> δallow = 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">結果:</span> δallow = 17.08 mm</p>
+                            </>)}
+                            {lang === 'en' && (<>
+                              <p><span className="font-medium">Formula:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">Substitution:</span> δallow = 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">Result:</span> δallow = 17.08 mm</p>
+                            </>)}
+                            {lang === 'zh-HK' && (<>
+                              <p><span className="font-medium">計算式:</span> δallow = L / 240</p>
+                              <p><span className="font-medium">代入:</span> δallow = 4100 / 240 = 17.08 mm</p>
+                              <p><span className="font-medium">結果:</span> δallow = 17.08 mm</p>
+                            </>)}
+                          </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -710,6 +818,8 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
+                    </>
+                    )}
                   </tbody>
                 </table>
               </div>

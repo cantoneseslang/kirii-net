@@ -72,11 +72,14 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.wallStud.results.bendingMoment}</div>
             <div>
-              {results.bendingMoment.value.toFixed(2)} / {results.bendingMoment.capacity.toFixed(2)} kN·m
-              <div className="text-xs text-gray-500 mt-1">
-                計算式: Mo = Py × Sxe / Ym<br />
-                代入: Mo = 200 × 2712 / 1.2 = 452 kN·mm<br />
-                結果: Mo = 392 kN·mm
+              <div className="font-medium">{results.bendingMoment.value.toFixed(2)} / {results.bendingMoment.capacity.toFixed(2)} kN·m</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> Mo = Py × Sxe / Ym</p>
+                  <p><span className="font-medium">代入:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
+                  <p><span className="font-medium">結果:</span> Mo = 392 kN·mm</p>
+                </div>
               </div>
             </div>
             <div
@@ -89,11 +92,14 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.wallStud.results.shearForce}</div>
             <div>
-              {results.shearForce.value.toFixed(2)} / {results.shearForce.capacity.toFixed(2)} kN
-              <div className="text-xs text-gray-500 mt-1">
-                計算式: Fy = 2 × (設計集中荷重) / (スパン長さ)<br />
-                代入: Fy = 2 × 0.75 / 4.1 = 0.366 kN<br />
-                結果: Fy = 243.6 N, Vc = 6827 N
+              <div className="font-medium">{results.shearForce.value.toFixed(2)} / {results.shearForce.capacity.toFixed(2)} kN</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> Fy = 2 × (設計集中荷重) / (スパン長さ)</p>
+                  <p><span className="font-medium">代入:</span> Fy = 2 × 0.75 / 4.1 = 0.366 kN</p>
+                  <p><span className="font-medium">結果:</span> Fy = 243.6 N, Vc = 6827 N</p>
+                </div>
               </div>
             </div>
             <div
@@ -106,11 +112,14 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.wallStud.results.webBuckling}</div>
             <div>
-              {results.webCrippling.value.toFixed(2)} / {results.webCrippling.capacity.toFixed(2)} kN
-              <div className="text-xs text-gray-500 mt-1">
-                計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
-                代入: Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
-                結果: Pw = 848 N, Rw = 152 N
+              <div className="font-medium">{results.webCrippling.value.toFixed(2)} / {results.webCrippling.capacity.toFixed(2)} kN</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
+                  <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
+                  <p><span className="font-medium">結果:</span> Pw = 848 N, Rw = 152 N</p>
+                </div>
               </div>
             </div>
             <div
@@ -123,11 +132,14 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.wallStud.results.deflection}</div>
             <div>
-              {results.deflection.value.toFixed(2)} / {results.deflection.limit.toFixed(2)} mm
-              <div className="text-xs text-gray-500 mt-1">
-                計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
-                代入: δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
-                結果: δmax = 12.12 mm, δallow = 17.08 mm
+              <div className="font-medium">{results.deflection.value.toFixed(2)} / {results.deflection.limit.toFixed(2)} mm</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
+                  <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
+                  <p><span className="font-medium">結果:</span> δmax = 12.12 mm, δallow = 17.08 mm</p>
+                </div>
               </div>
             </div>
             <div
@@ -140,11 +152,14 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.wallStud.results.combinedAction}</div>
             <div>
-              {results.combinedAction.value.toFixed(2)} / {results.combinedAction.limit.toFixed(2)}
-              <div className="text-xs text-gray-500 mt-1">
-                計算式: 複合作用比 = Mo / Mc<br />
-                代入: 複合作用比 = 392 / 452 = 0.87<br />
-                結果: 限界値 = 1.0
+              <div className="font-medium">{results.combinedAction.value.toFixed(2)} / {results.combinedAction.limit.toFixed(2)}</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> 複合作用比 = Mo / Mc</p>
+                  <p><span className="font-medium">代入:</span> 複合作用比 = 392 / 452 = 0.87</p>
+                  <p><span className="font-medium">結果:</span> 限界値 = 1.0</p>
+                </div>
               </div>
             </div>
             <div

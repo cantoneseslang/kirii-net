@@ -73,7 +73,15 @@ export default function CeilingSystemResults({ results, dict }: CeilingSystemRes
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.ceiling.results.runnerBending}</div>
             <div>
-              {results.runnerBending.value.toFixed(2)} / {results.runnerBending.capacity.toFixed(2)} kN·m
+              <div className="font-medium">{results.runnerBending.value.toFixed(2)} / {results.runnerBending.capacity.toFixed(2)} kN·m</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> M = (w × L²) / 8</p>
+                  <p><span className="font-medium">代入:</span> M = (totalDistributedLoad × hangerSpacing²) / 8</p>
+                  <p><span className="font-medium">結果:</span> M = {results.runnerBending.value.toFixed(2)} kN·m</p>
+                </div>
+              </div>
             </div>
             <div
               className={`px-2 py-1 rounded text-center ${results.runnerBending.pass ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
@@ -85,7 +93,15 @@ export default function CeilingSystemResults({ results, dict }: CeilingSystemRes
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.ceiling.results.runnerShear}</div>
             <div>
-              {results.runnerShear.value.toFixed(2)} / {results.runnerShear.capacity.toFixed(2)} kN
+              <div className="font-medium">{results.runnerShear.value.toFixed(2)} / {results.runnerShear.capacity.toFixed(2)} kN</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> V = (w × L) / 2</p>
+                  <p><span className="font-medium">代入:</span> V = (totalDistributedLoad × hangerSpacing) / 2</p>
+                  <p><span className="font-medium">結果:</span> V = {results.runnerShear.value.toFixed(2)} kN</p>
+                </div>
+              </div>
             </div>
             <div
               className={`px-2 py-1 rounded text-center ${results.runnerShear.pass ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
@@ -97,7 +113,15 @@ export default function CeilingSystemResults({ results, dict }: CeilingSystemRes
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.ceiling.results.runnerDeflection}</div>
             <div>
-              {results.runnerDeflection.value.toFixed(2)} / {results.runnerDeflection.limit.toFixed(2)} mm
+              <div className="font-medium">{results.runnerDeflection.value.toFixed(2)} / {results.runnerDeflection.limit.toFixed(2)} mm</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> δ = (5 × w × L⁴) / (384 × E × I)</p>
+                  <p><span className="font-medium">代入:</span> δ = (5 × totalDistributedLoad × hangerSpacing⁴ × 10¹¹) / (384 × E × I × 10⁴)</p>
+                  <p><span className="font-medium">結果:</span> δ = {results.runnerDeflection.value.toFixed(2)} mm</p>
+                </div>
+              </div>
             </div>
             <div
               className={`px-2 py-1 rounded text-center ${results.runnerDeflection.pass ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
@@ -109,7 +133,15 @@ export default function CeilingSystemResults({ results, dict }: CeilingSystemRes
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.ceiling.results.hangerTension}</div>
             <div>
-              {results.hangerTension.value.toFixed(2)} / {results.hangerTension.capacity.toFixed(2)} kN
+              <div className="font-medium">{results.hangerTension.value.toFixed(2)} / {results.hangerTension.capacity.toFixed(2)} kN</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> T = w × L</p>
+                  <p><span className="font-medium">代入:</span> T = totalDistributedLoad × hangerSpacing / 1000</p>
+                  <p><span className="font-medium">結果:</span> T = {results.hangerTension.value.toFixed(2)} kN</p>
+                </div>
+              </div>
             </div>
             <div
               className={`px-2 py-1 rounded text-center ${results.hangerTension.pass ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
@@ -121,7 +153,15 @@ export default function CeilingSystemResults({ results, dict }: CeilingSystemRes
           <div className="grid grid-cols-3 gap-2 text-sm border-t pt-2">
             <div>{dict.ceiling.results.anchorTension}</div>
             <div>
-              {results.anchorTension.value.toFixed(2)} / {results.anchorTension.capacity.toFixed(2)} kN
+              <div className="font-medium">{results.anchorTension.value.toFixed(2)} / {results.anchorTension.capacity.toFixed(2)} kN</div>
+              <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                <p className="font-medium text-sm text-gray-800 mb-1">計算式と代入値:</p>
+                <div className="text-sm">
+                  <p><span className="font-medium">計算式:</span> T = ハンガー引張力</p>
+                  <p><span className="font-medium">代入:</span> T = {results.hangerTension.value.toFixed(2)} kN</p>
+                  <p><span className="font-medium">結果:</span> T = {results.anchorTension.value.toFixed(2)} kN</p>
+                </div>
+              </div>
             </div>
             <div
               className={`px-2 py-1 rounded text-center ${results.anchorTension.pass ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
