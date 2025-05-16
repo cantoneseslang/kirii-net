@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { calculateWallStudSample } from "@/lib/sample-calculations"
+import { calculateWallStud } from "@/lib/wall-stud-calculator"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -17,6 +18,7 @@ import zhHKDict from "@/lib/dictionaries/zh-HK.json"
 export default function SampleGuide({ lang }: { lang: string }) {
   const [activeTab, setActiveTab] = useState("overview")
   const [calculationResults, setCalculationResults] = useState<any>(null)
+  const [systemResults, setSystemResults] = useState<any>(null)
 
   // Use static dictionaries instead of dynamic loading
   const dictionaries = {
@@ -28,6 +30,52 @@ export default function SampleGuide({ lang }: { lang: string }) {
   useEffect(() => {
     const results = calculateWallStudSample()
     setCalculationResults(results)
+    // システム値（サンプルと同じ入力値で実際のロジックを通す）
+    const systemInput = {
+      projectName: "葛量洪醫院",
+      projectDetail: "C 75x45x0.8t/4100H/406o.c.",
+      calculationDate: "2025-05-16",
+      author: "TC",
+      yieldStrength: 200,
+      elasticModulus: 205000,
+      materialFactor: 1.2,
+      studType: "C75x45x0.8t",
+      bearingLength: 32,
+      span: 4100,
+      tributaryWidth: 406,
+      windLoadFactor: 1.5,
+      imposedLoadFactor: 1.6,
+      deadLoadFactor: 1.5,
+      fixtureFactor: 1.5,
+      windLoad: 0,
+      imposedLoad: 0.75,
+      imposedLoadHeight: 1.1,
+      wallBoardLayers: 0,
+      wallBoardWeight: 0,
+      insulationPresent: "no",
+      insulationThickness: 0,
+      metalFrameWeight: 0,
+      fixtureWeight: 0,
+      fixtureHeight: 0,
+      fixtureDistance: 0,
+      deflectionCriteria: "L/240",
+      customDeflection: 0,
+    }
+    const stud = {
+      id: "C75x45x0.8t",
+      name: "C75x45x0.8t",
+      webHeight: 75,
+      flangeWidth: 45,
+      thickness: 0.8,
+      cornerRadius: 1.587,
+      area: 136.8,
+      momentOfInertia: 13.1785,
+      sectionModulus: 3.5143,
+      effectiveArea: 136.8,
+      effectiveMomentOfInertia: 12.5552,
+      effectiveSectionModulus: 2.712,
+    }
+    setSystemResults(calculateWallStud(systemInput, stud))
   }, [])
 
   // Select the appropriate language content
@@ -504,12 +552,12 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {calculationResults && (
+                    {calculationResults && systemResults && (
                       <>
                       <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingMoment}</td>
                       <td className="border px-4 py-2">
-                        <div className="text-right font-medium">392 kN·mm</div>
+                        <div className="text-right font-medium">{calculationResults.bendingMoment.result.replace('Mc = ', '')}</div>
                         <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
@@ -519,30 +567,30 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           <div className="text-sm">
                             {lang === 'ja' && (
                               <>
-                                <p><span className="font-medium">計算式:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
-                                <p><span className="font-medium">代入:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
-                                <p><span className="font-medium">結果:</span> Mc = 392 kN·mm</p>
+                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
                               </>
                             )}
                             {lang === 'en' && (
                               <>
-                                <p><span className="font-medium">Formula:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
-                                <p><span className="font-medium">Substitution:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
-                                <p><span className="font-medium">Result:</span> Mc = 392 kN·mm</p>
+                                <p><span className="font-medium">Formula:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">Substitution:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">Result:</span> {calculationResults.bendingMoment.result}</p>
                               </>
                             )}
                             {lang === 'zh-HK' && (
                               <>
-                                <p><span className="font-medium">計算式:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
-                                <p><span className="font-medium">代入:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1 = 392 kN·mm</p>
-                                <p><span className="font-medium">結果:</span> Mc = 392 kN·mm</p>
+                                <p><span className="font-medium">計算式:</span> {calculationResults.bendingMoment.formula}</p>
+                                <p><span className="font-medium">代入:</span> {calculationResults.bendingMoment.substitution}</p>
+                                <p><span className="font-medium">結果:</span> {calculationResults.bendingMoment.result}</p>
                               </>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2">
-                        <div className="text-right font-medium">392 kN·mm</div>
+                        <div className="text-right font-medium">{systemResults.bendingMoment.value.toFixed(2)} kN·mm</div>
                         <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
@@ -550,27 +598,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            {lang === 'ja' && (
-                              <>
-                                <p><span className="font-medium">計算式:</span> Mo = Py × Sxe / Ym</p>
-                                <p><span className="font-medium">代入:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                                <p><span className="font-medium">結果:</span> Mo = 392 kN·mm</p>
-                              </>
-                            )}
-                            {lang === 'en' && (
-                              <>
-                                <p><span className="font-medium">Formula:</span> Mo = Py × Sxe / Ym</p>
-                                <p><span className="font-medium">Substitution:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                                <p><span className="font-medium">Result:</span> Mo = 392 kN·mm</p>
-                              </>
-                            )}
-                            {lang === 'zh-HK' && (
-                              <>
-                                <p><span className="font-medium">計算式:</span> Mo = Py × Sxe / Ym</p>
-                                <p><span className="font-medium">代入:</span> Mo = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                                <p><span className="font-medium">結果:</span> Mo = 392 kN·mm</p>
-                              </>
-                            )}
+                            <p><span className="font-medium">計算式:</span> Mc = Qk × W × Tw × h × (L - h) / L</p>
+                            <p><span className="font-medium">代入:</span> Mc = 1.6 × 0.75 × 406 × 1.1 × (4.1 - 1.1) / 4.1</p>
+                            <p><span className="font-medium">結果:</span> Mc = {systemResults.bendingMoment.value.toFixed(2)} kN·mm</p>
                           </div>
                         </div>
                       </td>
@@ -581,7 +611,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingCapacity}</td>
                       <td className="border px-4 py-2">
-                        <div className="text-right font-medium">452 kN·mm</div>
+                        <div className="text-right font-medium">{calculationResults.bendingCapacity.result.replace('Mb = ', '')}</div>
                         <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
@@ -590,25 +620,25 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
+                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
                             </>)}
                             {lang === 'en' && (<>
-                              <p><span className="font-medium">Formula:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">Substitution:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">Result:</span> Mb = 452 kN·mm</p>
+                              <p><span className="font-medium">Formula:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">Substitution:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">Result:</span> {calculationResults.bendingCapacity.result}</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
-                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
+                              <p><span className="font-medium">計算式:</span> {calculationResults.bendingCapacity.formula}</p>
+                              <p><span className="font-medium">代入:</span> {calculationResults.bendingCapacity.substitution}</p>
+                              <p><span className="font-medium">結果:</span> {calculationResults.bendingCapacity.result}</p>
                             </>)}
                           </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2">
-                        <div className="text-right font-medium">452 kN·mm</div>
+                        <div className="text-right font-medium">{systemResults.bendingMoment.capacity.toFixed(2)} kN·mm</div>
                         <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
@@ -616,21 +646,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
-                            </>)}
-                            {lang === 'en' && (<>
-                              <p><span className="font-medium">Formula:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">Substitution:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">Result:</span> Mb = 452 kN·mm</p>
-                            </>)}
-                            {lang === 'zh-HK' && (<>
-                              <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
-                              <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2 = 452 kN·mm</p>
-                              <p><span className="font-medium">結果:</span> Mb = 452 kN·mm</p>
-                            </>)}
+                            <p><span className="font-medium">計算式:</span> Mb = Py × Sxe / Ym</p>
+                            <p><span className="font-medium">代入:</span> Mb = 200 × 2712 / 1.2</p>
+                            <p><span className="font-medium">結果:</span> Mb = {systemResults.bendingMoment.capacity.toFixed(2)} kN·mm</p>
                           </div>
                         </div>
                       </td>
@@ -638,7 +656,6 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
-                    
                     <tr>
                       <td className="border px-4 py-2" colSpan={1}>
                         {lang === 'ja' && '曲げ判定'}
@@ -647,9 +664,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                       </td>
                       <td className="border px-4 py-2" colSpan={2}>
                         <div className="text-center font-medium text-green-600">
-                          {lang === 'ja' && 'Mb > Mc OK - 曲げに対して安全'}
-                          {lang === 'en' && 'Mb > Mc OK - safe from bending moment'}
-                          {lang === 'zh-HK' && 'Mb > Mc OK - 彎曲安全'}
+                          {systemResults.bendingMoment.pass
+                            ? (lang === 'ja' ? 'Mb > Mc OK - 曲げに対して安全' : lang === 'en' ? 'Mb > Mc OK - safe from bending moment' : 'Mb > Mc OK - 彎曲安全')
+                            : (lang === 'ja' ? 'NG' : lang === 'en' ? 'NG' : 'NG')}
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
