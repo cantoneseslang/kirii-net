@@ -688,25 +688,22 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷重) / (スパン長さ)</p>
                               <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
                               <p><span className="font-medium">結果:</span> 243.6 N</p>
-                              {calculationResults.shearForce.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.shearForce.judgment}</p>}
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Fv = 2 × (Design Imposed Load) / (Span)</p>
                               <p><span className="font-medium">Substitution:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
                               <p><span className="font-medium">Result:</span> 243.6 N</p>
-                              {calculationResults.shearForce.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.shearForce.judgment}</p>}
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷載) / (跨度)</p>
                               <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
                               <p><span className="font-medium">結果:</span> 243.6 N</p>
-                              {calculationResults.shearForce.judgment && <p className="mt-2 font-medium text-green-600">{calculationResults.shearForce.judgment}</p>}
                             </>)}
                           </div>
                         </div>
                       </td>
                       <td className="border px-4 py-2">
-                        <div className="text-right font-medium">243.6 N</div>
+                        <div className="text-right font-medium">{systemResults.shearForce.value.toFixed(2)} N</div>
                         <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
                           <p className="font-medium text-sm text-gray-800 mb-1">
                             {lang === 'ja' && '計算式と代入値:'}
@@ -714,21 +711,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷重) / (スパン長さ)</p>
-                              <p><span className="font-medium">代入:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">結果:</span> Fv = 243.6 N</p>
-                            </>)}
-                            {lang === 'en' && (<>
-                              <p><span className="font-medium">Formula:</span> Fv = 2 × (Design Imposed Load) / (Span)</p>
-                              <p><span className="font-medium">Substitution:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">Result:</span> Fv = 243.6 N</p>
-                            </>)}
-                            {lang === 'zh-HK' && (<>
-                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷載) / (跨度)</p>
-                              <p><span className="font-medium">代入:</span> Fv = 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">結果:</span> Fv = 243.6 N</p>
-                            </>)}
+                            <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
+                            <p><span className="font-medium">代入:</span> Vc = 0.6 × {systemInput.webHeight} × {systemInput.thickness} × {systemInput.yieldStrength} / {systemInput.materialFactor}</p>
+                            <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                           </div>
                         </div>
                       </td>
