@@ -370,56 +370,334 @@ export default function SampleGuide({ lang }: { lang: string }) {
                   <tbody>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingMoment}</td>
-                      <td className="border px-4 py-2 text-right">392 kN·mm</td>
-                      <td className="border px-4 py-2 text-right">392 kN·mm</td>
+                      <td className="border px-4 py-2 text-right">
+                        392 kN·mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (
+                            <>
+                              計算式: Mo = Py × Sxe / Ym<br />
+                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              結果: 392 kN·mm
+                            </>
+                          )}
+                          {lang === 'en' && (
+                            <>
+                              Formula: Mo = Py × Sxe / Ym<br />
+                              Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              Result: 392 kN·mm
+                            </>
+                          )}
+                          {lang === 'zh-HK' && (
+                            <>
+                              計算式: Mo = Py × Sxe / Ym<br />
+                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              結果: 392 kN·mm
+                            </>
+                          )}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        392 kN·mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (
+                            <>
+                              計算式: Mo = Py × Sxe / Ym<br />
+                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              結果: 392 kN·mm
+                            </>
+                          )}
+                          {lang === 'en' && (
+                            <>
+                              Formula: Mo = Py × Sxe / Ym<br />
+                              Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              Result: 392 kN·mm
+                            </>
+                          )}
+                          {lang === 'zh-HK' && (
+                            <>
+                              計算式: Mo = Py × Sxe / Ym<br />
+                              代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                              結果: 392 kN·mm
+                            </>
+                          )}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.bendingCapacity}</td>
-                      <td className="border px-4 py-2 text-right">452 kN·mm</td>
-                      <td className="border px-4 py-2 text-right">452 kN·mm</td>
+                      <td className="border px-4 py-2 text-right">
+                        452 kN·mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Mb = Py × Sxe / Ym<br />
+                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            結果: 452 kN·mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Mb = Py × Sxe / Ym<br />
+                            Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            Result: 452 kN·mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Mb = Py × Sxe / Ym<br />
+                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            結果: 452 kN·mm
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        452 kN·mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Mb = Py × Sxe / Ym<br />
+                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            結果: 452 kN·mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Mb = Py × Sxe / Ym<br />
+                            Substitution: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            Result: 452 kN·mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Mb = Py × Sxe / Ym<br />
+                            代入: 200 × 2712 / 1.2 = 452 kN·mm<br />
+                            結果: 452 kN·mm
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.shearForce}</td>
-                      <td className="border px-4 py-2 text-right">243.6 N</td>
-                      <td className="border px-4 py-2 text-right">243.6 N</td>
+                      <td className="border px-4 py-2 text-right">
+                        243.6 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Fv = 2 × (設計集中荷重) / (スパン長さ)<br />
+                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            結果: 243.6 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Fv = 2 × (Design Imposed Load) / (Span)<br />
+                            Substitution: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            Result: 243.6 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Fv = 2 × (設計集中荷載) / (跨度)<br />
+                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            結果: 243.6 N
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        243.6 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Fv = 2 × (設計集中荷重) / (スパン長さ)<br />
+                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            結果: 243.6 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Fv = 2 × (Design Imposed Load) / (Span)<br />
+                            Substitution: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            Result: 243.6 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Fv = 2 × (設計集中荷載) / (跨度)<br />
+                            代入: 2 × 0.75 / 4.1 = 0.366 kN<br />
+                            結果: 243.6 N
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.shearCapacity}</td>
-                      <td className="border px-4 py-2 text-right">6827 N</td>
-                      <td className="border px-4 py-2 text-right">6827 N</td>
+                      <td className="border px-4 py-2 text-right">
+                        6827 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
+                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            結果: 6827 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Vc = 0.6 × d × t × Py / Ym<br />
+                            Substitution: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            Result: 6827 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
+                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            結果: 6827 N
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        6827 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
+                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            結果: 6827 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Vc = 0.6 × d × t × Py / Ym<br />
+                            Substitution: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            Result: 6827 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Vc = 0.6 × d × t × Py / Ym<br />
+                            代入: 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N<br />
+                            結果: 6827 N
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.webCripplingCapacity}</td>
-                      <td className="border px-4 py-2 text-right">848 N</td>
-                      <td className="border px-4 py-2 text-right">848 N</td>
+                      <td className="border px-4 py-2 text-right">
+                        848 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            結果: 848 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            Substitution: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            Result: 848 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            結果: 848 N
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        848 N
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            結果: 848 N
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            Substitution: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            Result: 848 N
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)<br />
+                            代入: 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)<br />
+                            結果: 848 N
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.maxDeflection}</td>
-                      <td className="border px-4 py-2 text-right">12.12 mm</td>
-                      <td className="border px-4 py-2 text-right">12.12 mm</td>
+                      <td className="border px-4 py-2 text-right">
+                        12.12 mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            結果: 12.12 mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            Substitution: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            Result: 12.12 mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            結果: 12.12 mm
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        12.12 mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            結果: 12.12 mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            Substitution: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            Result: 12.12 mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)<br />
+                            代入: (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)<br />
+                            結果: 12.12 mm
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
                     <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.allowableDeflection}</td>
-                      <td className="border px-4 py-2 text-right">17.08 mm</td>
-                      <td className="border px-4 py-2 text-right">17.08 mm</td>
+                      <td className="border px-4 py-2 text-right">
+                        17.08 mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: δallow = L / 240<br />
+                            代入: 4100 / 240 = 17.08 mm<br />
+                            結果: 17.08 mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: δallow = L / 240<br />
+                            Substitution: 4100 / 240 = 17.08 mm<br />
+                            Result: 17.08 mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: δallow = L / 240<br />
+                            代入: 4100 / 240 = 17.08 mm<br />
+                            結果: 17.08 mm
+                          </>)}
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-right">
+                        17.08 mm
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang === 'ja' && (<>
+                            計算式: δallow = L / 240<br />
+                            代入: 4100 / 240 = 17.08 mm<br />
+                            結果: 17.08 mm
+                          </>)}
+                          {lang === 'en' && (<>
+                            Formula: δallow = L / 240<br />
+                            Substitution: 4100 / 240 = 17.08 mm<br />
+                            Result: 17.08 mm
+                          </>)}
+                          {lang === 'zh-HK' && (<>
+                            計算式: δallow = L / 240<br />
+                            代入: 4100 / 240 = 17.08 mm<br />
+                            結果: 17.08 mm
+                          </>)}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
