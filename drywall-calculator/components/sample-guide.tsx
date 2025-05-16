@@ -767,7 +767,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                       <td className="border px-4 py-2" colSpan={2}>
                         <div className="text-center font-medium text-green-600">
                           {systemResults.bendingMoment.pass
-                            ? (lang === 'ja' ? 'Mb > Mc OK - 曲げに対して安全' : lang === 'en' ? 'Mb > Mc OK - safe from bending moment' : 'Mb > Mc OK - 彎曲安全')
+                            ? (lang === 'ja' ? 'Fv > Vc OK - 曲げに対して安全' : lang === 'en' ? 'Fv > Vc OK - safe from bending moment' : 'Fv > Vc OK - 彎曲安全')
                             : (lang === 'ja' ? 'NG' : lang === 'en' ? 'NG' : 'NG')}
                         </div>
                       </td>
@@ -960,9 +960,11 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">代入:</span> δallow = 4100 / 240 = 17.08 mm</p>
                               <p><span className="font-medium">結果:</span> δallow = 17.08 mm</p>
                             </>)}
-                          </div>
+                            </div>
                         </div>
                       </td>
+                    </tr>
+                    <tr>
                       <td className="border px-4 py-2" colSpan={1}>
                         {lang === 'ja' && '曲げ判定'}
                         {lang === 'en' && 'Bending Check'}
@@ -971,7 +973,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                       <td className="border px-4 py-2" colSpan={2}>
                         <div className="text-center font-medium text-green-600">
                           {systemResults.bendingMoment.pass
-                            ? (lang === 'ja' ? 'Mb > Mc OK - 曲げに対して安全' : lang === 'en' ? 'Mb > Mc OK - safe from bending moment' : 'Mb > Mc OK - 彎曲安全')
+                            ? (lang === 'ja' ? 'δmax > δallow OK - 曲げに対して安全' : lang === 'en' ? 'δmax > δallow OK - safe from bending moment' : 'δmax > δallow OK - 彎曲安全')
                             : (lang === 'ja' ? 'NG' : lang === 'en' ? 'NG' : 'NG')}
                         </div>
                       </td>
