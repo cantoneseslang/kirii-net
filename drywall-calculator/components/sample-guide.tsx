@@ -739,9 +739,6 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             <p><span className="font-medium">計算式:</span> Vc = pv × Av</p>
                             <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
-                            <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
-                            
-                            <p className="mt-2 font-medium">Check shear</p>
                           </div>
                         </div>
                       </td>
@@ -757,10 +754,21 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             <p><span className="font-medium">計算式:</span> Vc = pv × Av</p>
                             <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
-                            <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
-                            
-                            <p className="mt-2 font-medium">Check shear</p>
                           </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2" colSpan={1}>
+                        {lang === 'ja' && '曲げ判定'}
+                        {lang === 'en' && 'Bending Check'}
+                        {lang === 'zh-HK' && '彎曲判定'}
+                      </td>
+                      <td className="border px-4 py-2" colSpan={2}>
+                        <div className="text-center font-medium text-green-600">
+                          {systemResults.bendingMoment.pass
+                            ? (lang === 'ja' ? 'Mb > Mc OK - 曲げに対して安全' : lang === 'en' ? 'Mb > Mc OK - safe from bending moment' : 'Mb > Mc OK - 彎曲安全')
+                            : (lang === 'ja' ? 'NG' : lang === 'en' ? 'NG' : 'NG')}
                         </div>
                       </td>
                       <td className="border px-4 py-2 text-center">
@@ -782,7 +790,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - ウェブ座屈に対して安全</p>
+                              
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
@@ -812,7 +820,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> Pw = 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - ウェブ座屈に対して安全</p>
+                
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
@@ -848,7 +856,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - たわみに対して安全</p>
+                              
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
@@ -878,7 +886,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - たわみに対して安全</p>
+                              
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
@@ -955,6 +963,18 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           </div>
                         </div>
                       </td>
+                      <td className="border px-4 py-2" colSpan={1}>
+                        {lang === 'ja' && '曲げ判定'}
+                        {lang === 'en' && 'Bending Check'}
+                        {lang === 'zh-HK' && '彎曲判定'}
+                      </td>
+                      <td className="border px-4 py-2" colSpan={2}>
+                        <div className="text-center font-medium text-green-600">
+                          {systemResults.bendingMoment.pass
+                            ? (lang === 'ja' ? 'Mb > Mc OK - 曲げに対して安全' : lang === 'en' ? 'Mb > Mc OK - safe from bending moment' : 'Mb > Mc OK - 彎曲安全')
+                            : (lang === 'ja' ? 'NG' : lang === 'en' ? 'NG' : 'NG')}
+                        </div>
+                      </td>
                       <td className="border px-4 py-2 text-center">
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
@@ -969,8 +989,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                     </tr>
                     <tr>
                       <td colSpan={4} className="text-center">
-                        <span className={`font-medium ${systemResults.shearForce.pass ? 'text-green-600' : 'text-red-600'}`}>{systemResults.shearForce.pass ? (lang === 'ja' ? 'Vc > Fv OK - せん断に対して安全' : lang === 'en' ? 'Vc > Fv OK - safe from shear' : 'Vc > Fv OK - 剪力安全') : (lang === 'ja' ? 'NG - せん断NG' : lang === 'en' ? 'NG - shear fail' : 'NG - 剪力NG')}</span>
-                      </td>
+                       </td>
                     </tr>
                     </>
                     )}
