@@ -40,6 +40,134 @@ export default function SampleGuide({ lang }: { lang: string }) {
         <LanguageSwitcher currentLang={lang} />
       </div>
 
+      <div className="mb-8">
+        <div className="rounded-md border p-4">
+          <h2 className="text-xl font-medium mb-2">INTRODUCTION</h2>
+          <p className="text-lg">This set of structural calculations is intended to substantiate the structural adequacy of the proposed KIRII drywall steel C-stud, dimensioned 75mmD x 45mmW x 0.8mm thick, simply supported, from a uniform load. Checking is based on bending strength and deflection limit, whichever is more stringent.</p>
+          <p className="text-lg mt-2">Design and checking of other building elements, anchorage, and wall attachments is beyond the scope of this submittal and is to be by others.</p>
+        </div>
+      </div>
+      
+      <div className="mb-8">
+        <h2 className="text-xl font-medium mb-2">Design Data</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="overflow-x-auto rounded-md border">
+            <table className="min-w-full">
+              <tbody>
+                <tr>
+                  <td className="border px-4 py-2">L:= 4100mm</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Span between supports</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Tw:= 406mm</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Tributary width/stud spacing</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">W:= 0.75kN·m</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Design imposed load at 1.1m AFFL</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Critical load case = Imposed load only</td>
+                  <td className="border px-4 py-2"></td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ok:= 1.6</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Partial load factor - imposed load only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mb-8">
+        <h2 className="text-xl font-medium mb-2">Section Properties</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="overflow-x-auto rounded-md border">
+            <table className="min-w-full">
+              <tbody>
+                <tr>
+                  <td className="border px-4 py-2 font-medium">KIRII steel C-stud 75 x 45 x 0.8t mm</td>
+                  <td className="border px-4 py-2"></td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">A := 136mm²</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Area</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ix:= 131785mm⁴</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Moment of inertia - major axis</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Sx: = 3514mm³</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Elastic section modulus - major axis</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">ly:= 34843 mm⁴</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Moment of inertia - minor axis</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ix := 31.0mm</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Radius of gyration - major axis</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">ty:= 15.9mm</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Radius of gyration - minor axis</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ae:= 136mm²</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Effective section area</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ixe:= 125552mm⁴</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Effective 2nd moment of area</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Sxe:= 2712mm³</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Effective section modulus</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mb-8">
+        <h2 className="text-xl font-medium mb-2">Material Strength</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="overflow-x-auto rounded-md border">
+            <table className="min-w-full">
+              <tbody>
+                <tr>
+                  <td className="border px-4 py-2">Py:= 200MРa</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Design strength</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Pr.y:= 0.6(Py) = 120.N-mm⁻²</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Plastic shear capacity</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Pror = 113.8.N.mm⁻²</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Shear buckling strength</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Py:= Pv.cr = 113.8.N.mm⁻²</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Average shear capacity</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">E := 205000MPa</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Modulus of elasticity</td>
+                </tr>
+                <tr>
+                  <td className="border px-4 py-2">Ym:= 1.2</td>
+                  <td className="border px-4 py-2 text-sm text-gray-600">Material factor</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <p className="text-lg mb-8">{t.description}</p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

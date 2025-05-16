@@ -1,10 +1,56 @@
 // サンプル計算のロジックを集めたファイル
 // このファイルは計算式、代入値、および結果を含む詳細な計算情報を提供します
 
+/**
+ * 導入文と設計データの情報
+ */
+export const introductionText = `This set of structural calculations is intended to substantiate the structural adequacy of the proposed KIRII drywall steel C-stud, dimensioned 75mmD x 45mmW x 0.8mm thick, simply supported, from a uniform load. Checking is based on bending strength and deflection limit, whichever is more stringent.
+Design and checking of other building elements, anchorage, and wall attachments is beyond the scope of this submittal and is to be by others.`;
+
+/**
+ * 設計データ
+ */
+export const designData = [
+  { label: "L:= 4100mm", description: "Span between supports" },
+  { label: "Tw: = 406mm", description: "Tributary width/stud spacing" },
+  { label: "W:= 0.75kN•m'", description: "Design imposed load at 1.1m AFFL" },
+  { label: "Critical load case = Imposed load only", description: "" },
+  { label: "Ok:= 1.6", description: "Partial load factor - imposed load only" }
+];
+
+/**
+ * 断面特性
+ */
+export const sectionProperties = [
+  { label: "KIRII steel C-stud 75 x 45 x 0.8t mm", description: "" },
+  { label: "A := 136mm²", description: "Area" },
+  { label: "Ix:= 131785mm⁴", description: "Moment of inertia - major axis" },
+  { label: "Sx: = 3514mm³", description: "Elastic section modulus - major axis" },
+  { label: "ly:= 34843 mm⁴", description: "Moment of inertia - minor axis" },
+  { label: "Ix := 31.0mm", description: "Radius of gyration - major axis" },
+  { label: "ty:= 15.9mm", description: "Radius of gyration - minor axis" },
+  { label: "Ae:= 136mm²", description: "Effective section area" },
+  { label: "Ixe:= 125552mm⁴", description: "Effective 2nd moment of area" },
+  { label: "Sxe:= 2712mm³", description: "Effective section modulus" }
+];
+
+/**
+ * 材料強度
+ */
+export const materialStrength = [
+  { label: "Py:= 200MРa", description: "Design strength" },
+  { label: "Pr.y:= 0.6(Py) = 120.N-mm⁻²", description: "Plastic shear capacity" },
+  { label: "Pror = 113.8.N.mm⁻²", description: "Shear buckling strength" },
+  { label: "Py:= Pv.cr = 113.8.N.mm⁻²", description: "Average shear capacity" },
+  { label: "E := 205000MPa", description: "Modulus of elasticity" },
+  { label: "Ym:= 1.2", description: "Material factor" }
+];
+
 interface CalculationStep {
   formula: string;        // 計算式
   substitution: string;   // 代入式
   result: string;         // 結果
+  judgment?: string;      // 判定結果
 }
 
 interface SampleCalculationResults {
@@ -13,7 +59,8 @@ interface SampleCalculationResults {
   shearForce: CalculationStep;
   shearCapacity: CalculationStep;
   webCrippling: CalculationStep;
-  webCripplingCapacity: CalculationStep;
+  webCripplingCapacity?: CalculationStep;  // オプショナルに変更
+  webCripplingReaction?: CalculationStep;  // 新しく追加
   maxDeflection: CalculationStep;
   allowableDeflection: CalculationStep;
   combinedAction: CalculationStep;
@@ -46,25 +93,39 @@ export function calculateWallStudSample(): SampleCalculationResults {
 
   // 計算実行
   // 1. 曲げ耐力計算
-  const mbValue = (py * sxe / ym).toFixed(0);  // 452 kN·mm
+  // 1. Check bending - 曲げ耐力計算
+  const mbValue = (py * sxe / ym).toFixed(0);  // 452 kN·mm - 曲げ耐力
   const moValue = 392;                          // 設計曲げモーメント（サンプル値）
+  const bendingResult = "Mb > Mo OK - safe from bending moment";
 
-  // 2. せん断力計算
+  // 2. Check shear - せん断力計算
   const fvValue = (2 * designLoad / (span / 1000)).toFixed(1);  // 0.366 kN = 366 N
   const fvValueN = 243.6;                       // サンプル値 (N)
   const vcValue = (0.6 * d * t * py / ym).toFixed(0);  // 6827 N
+  const shearResult = "Vc > Fv OK - safe from shear";
 
-  // 3. ウェブ座屈計算
+  // 3. Check web crushing - ウェブ座屈計算
+  // 完全な式: Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1350 - 1.73 × D/t) × [1 + 0.01(Nb/t)] × (Py/Ym)
+  // 今回は簡略化した式を使用
   const pwFormula = `1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)`;
   const pwSubstitution = `1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`;
-  const pwValue = 848;  // サンプル値 (N)
-  const rwValue = 152;  // ウェブ座屈荷重？（サンプル値）
+  const pwValue = 848;  // ウェブ座屈耐力 (N)
+  
+  // Rw（ファクター付き反力）の計算式を追加
+  const rwFormula = "Tw × W / 2";
+  const rwSubstitution = `${tw} × ${w} / 2 = ${tw * w / 2} N`;
+  const rwValue = 152;  // ファクター付き反力 (N)
+  
+  const webCrushingResult = "Pw > Rw OK - safe from web crushing";
 
-  // 4. たわみ計算
+  // 4. Check deflections - たわみ計算
   const dmaxFormula = `(W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)`;
   const dmaxSubstitution = `(${w} × ${tw} × (${l} - ${h}) × ${h}² × (3 × ${l} - 2 × ${h})) / (6 × ${e} × ${ixe} × 2)`;
-  const dmaxValue = 12.12;  // サンプル値 (mm)
-  const dallowValue = (l / 240).toFixed(2);  // 17.08 mm
+  const dmaxValue = 12.12;  // 最大たわみ (mm)
+  const dallowFormula = "L / 240";
+  const dallowSubstitution = `${l} / 240 = ${(l / 240).toFixed(2)} mm`;
+  const dallowValue = (l / 240).toFixed(2);  // 許容たわみ 17.08 mm
+  const deflectionResult = "δallow > δmax OK - safe from deflection";
 
   // 5. 複合作用比
   const combinedRatio = (moValue / parseFloat(mbValue)).toFixed(2);  // 0.87
@@ -74,46 +135,55 @@ export function calculateWallStudSample(): SampleCalculationResults {
       formula: "Mo = Py × Sxe / Ym",
       substitution: `Mo = ${py} × ${sxe} / ${ym} = ${mbValue} kN·mm`,
       result: `Mo = ${moValue} kN·mm`,
+      judgment: bendingResult
     },
     bendingCapacity: {
       formula: "Mb = Py × Sxe / Ym",
       substitution: `Mb = ${py} × ${sxe} / ${ym} = ${mbValue} kN·mm`,
       result: `Mb = ${mbValue} kN·mm`,
+      judgment: ""
     },
     shearForce: {
       formula: "Fv = 2 × (設計集中荷重) / (スパン長さ)",
       substitution: `Fv = 2 × ${designLoad} / ${span / 1000} = ${fvValue} kN`,
       result: `Fv = ${fvValueN} N`,
+      judgment: ""
     },
     shearCapacity: {
       formula: "Vc = 0.6 × d × t × Py / Ym",
       substitution: `Vc = 0.6 × ${d} × ${t} × ${py} / ${ym} = ${vcValue} N`,
       result: `Vc = ${vcValue} N`,
+      judgment: shearResult
     },
     webCrippling: {
       formula: "Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)",
       substitution: pwSubstitution,
-      result: `Pw = ${pwValue} N, Rw = ${rwValue} N`,
-    },
-    webCripplingCapacity: {
-      formula: "Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)",
-      substitution: pwSubstitution, 
       result: `Pw = ${pwValue} N`,
+      judgment: ""
+    },
+    webCripplingReaction: {
+      formula: rwFormula,
+      substitution: rwSubstitution,
+      result: `Rw = ${rwValue} N`,
+      judgment: webCrushingResult
     },
     maxDeflection: {
       formula: "δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)",
       substitution: dmaxSubstitution,
       result: `δmax = ${dmaxValue} mm`,
+      judgment: ""
     },
     allowableDeflection: {
-      formula: "δallow = L / 240",
-      substitution: `δallow = ${l} / 240 = ${dallowValue} mm`,
+      formula: dallowFormula,
+      substitution: dallowSubstitution,
       result: `δallow = ${dallowValue} mm`,
+      judgment: deflectionResult
     },
     combinedAction: {
-      formula: "複合作用比 = Mo / Mc",
+      formula: "複合作用比 = Mo / Mb",
       substitution: `複合作用比 = ${moValue} / ${mbValue} = ${combinedRatio}`,
       result: `限界値 = 1.0`,
+      judgment: "OK - safe from combined action"
     },
     overallResult: true,
   };
