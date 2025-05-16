@@ -266,6 +266,11 @@ export function performActualWallStudCalculation(
       substitution: `Pw = 1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`,
       result: `Pw = ${pwValueFormatted} N`,
     },
+    webCripplingReaction: {
+      formula: "Rw = Tw × W / 2",
+      substitution: `${tw} × ${w} / 2 = ${tw * w / 2} N`,
+      result: `Rw = ${rwValue} N`,
+    },
     maxDeflection: {
       formula: "δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)",
       substitution: `δmax = (${w} × ${tw} × (${span} - ${h}) × ${h}² × (3 × ${span} - 2 × ${h})) / (6 × ${e} × ${ixe} × 2)`,
