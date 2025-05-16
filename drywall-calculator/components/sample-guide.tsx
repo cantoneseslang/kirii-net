@@ -715,9 +715,9 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            <p><span className="font-medium">計算式:</span> Vc = pv × Av</p>
-                            <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
-                            <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
+                            <p><span className="font-medium">計算式:</span> Fv = Qk × Tw × W / 2</p>
+                            <p><span className="font-medium">代入:</span> Fv = {systemInputState?.imposedLoadFactor} × {systemInputState?.tributaryWidth} × {systemInputState?.imposedLoad} / 2 = {(systemInputState?.imposedLoadFactor * systemInputState?.tributaryWidth * systemInputState?.imposedLoad / 2).toFixed(2)} kN</p>
+                            <p><span className="font-medium">結果:</span> Fv = {systemResults.shearForce.value.toFixed(2)} N</p>
                           </div>
                         </div>
                       </td>
@@ -737,22 +737,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
-                              <p><span className="font-medium">代入:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
-                              <p><span className="font-medium">結果:</span> 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - せん断に対して安全</p>
+                              <p><span className="font-medium">計算式:</span> Vc = pv × Av</p>
+                              <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
+                              <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Vc = 0.6 × d × t × Py / Ym</p>
-                              <p><span className="font-medium">Substitution:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
-                              <p><span className="font-medium">Result:</span> 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - safe from shear</p>
+                              <p><span className="font-medium">Substitution:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
+                              <p><span className="font-medium">Result:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
-                              <p><span className="font-medium">代入:</span> 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
-                              <p><span className="font-medium">結果:</span> 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - 剪力安全</p>
+                              <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
+                              <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             </>)}
                           </div>
                         </div>
@@ -769,20 +766,20 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'ja' && (<>
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
-                              <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - せん断に対して安全</p>
+                              <p><span className="font-medium">結果:</span> 6827 N</p>
+                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - せん断に対して安全</p>
                             </>)}
                             {lang === 'en' && (<>
                               <p><span className="font-medium">Formula:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">Substitution:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">Result:</span> Vc = 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - safe from shear</p>
+                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - safe from shear</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
                               <p><span className="font-medium">代入:</span> Vc = 0.6 × 75 × 0.8 × 200 / 1.2 = 6827 N</p>
                               <p><span className="font-medium">結果:</span> Vc = 6827 N</p>
-                              <p className="mt-2 font-medium text-green-600">Vc &gt; Fv OK - 剪力安全</p>
+                              <p className="mt-2 font-medium text-green-600">Vc > Fv OK - 剪力安全</p>
                             </>)}
                           </div>
                         </div>
