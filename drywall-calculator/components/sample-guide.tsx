@@ -796,14 +796,12 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">Substitution:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">Result:</span> 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - safe from web crippling</p>
-                            </>)}
+                              </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - 腹板挫屈安全</p>
-                            </>)}
+                              </>)}
                           </div>
                         </div>
                       </td>
@@ -826,14 +824,12 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">Formula:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">Substitution:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">Result:</span> Pw = 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - safe from web crippling</p>
-                            </>)}
+                              </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                               <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
                               <p><span className="font-medium">結果:</span> Pw = 848 N</p>
-                              <p className="mt-2 font-medium text-green-600">Pw is greater than Rw OK - 腹板挫屈安全</p>
-                            </>)}
+                              </>)}
                           </div>
                         </div>
                       </td>
@@ -862,14 +858,12 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">Substitution:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">Result:</span> 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - safe from deflection</p>
-                            </>)}
+                              </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - 撓度安全</p>
-                            </>)}
+                              </>)}
                           </div>
                         </div>
                       </td>
@@ -892,14 +886,12 @@ export default function SampleGuide({ lang }: { lang: string }) {
                               <p><span className="font-medium">Formula:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">Substitution:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">Result:</span> δmax = 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - safe from deflection</p>
-                            </>)}
+                              </>)}
                             {lang === 'zh-HK' && (<>
                               <p><span className="font-medium">計算式:</span> δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)</p>
                               <p><span className="font-medium">代入:</span> δmax = (0.75 × 406 × (4100 - 1100) × 1100² × (3 × 4100 - 2 × 1100)) / (6 × 205000 × 125552 × 2)</p>
                               <p><span className="font-medium">結果:</span> δmax = 12.12 mm</p>
-                              <p className="mt-2 font-medium text-green-600">δallow is greater than δmax OK - 撓度安全</p>
-                            </>)}
+                               </>)}
                           </div>
                         </div>
                       </td>
