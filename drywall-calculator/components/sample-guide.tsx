@@ -187,27 +187,27 @@ export default function SampleGuide({ lang }: { lang: string }) {
             <table className="min-w-full">
               <tbody>
                 <tr>
-                  <td className="border px-4 py-2">Py:= 200MРa</td>
+                  <td className="border px-4 py-2">py: 200 MPa</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Design strength</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">Pr.y:= 0.6(Py) = 120.N-mm⁻²</td>
+                  <td className="border px-4 py-2">pv.y: 0.6 × py = 120 N·mm^-2</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Plastic shear capacity</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">Pror = 113.8.N.mm⁻²</td>
+                  <td className="border px-4 py-2">pv.cr: (1000t / D)^2 = 113.8 N·mm^-2</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Shear buckling strength</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">Py:= Pv.cr = 113.8.N.mm⁻²</td>
+                  <td className="border px-4 py-2">pv: pv.cr = 113.8 N·mm^-2</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Average shear capacity</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">E := 205000MPa</td>
+                  <td className="border px-4 py-2">E: 205000 MPa</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Modulus of elasticity</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">Ym:= 1.2</td>
+                  <td className="border px-4 py-2">γm: 1.2</td>
                   <td className="border px-4 py-2 text-sm text-gray-600">Material factor</td>
                 </tr>
               </tbody>
