@@ -1,0 +1,409 @@
+{
+  "common": {
+    "startCalculation": "Start Calculation",
+    "save": "Save",
+    "calculate": "Calculate",
+    "generateReport": "Generate Report",
+    "back": "Back",
+    "viewDocumentation": "View Documentation"
+  },
+  "home": {
+    "title": "Drywall Partition System Structural Calculation System",
+    "description": "A web-based tool to accurately verify the structural suitability of KIRII dry wall steel C-type studs and ceiling suspension systems",
+    "wallStudModule": "Wall Stud Calculation",
+    "wallStudDescription": "Perform structural calculations for C-type and CT-type steel studs",
+    "wallStudFeature1": "Verification of bending strength, shear strength, web buckling, and deflection limit",
+    "wallStudFeature2": "Verification of combined bending and compression action",
+    "wallStudFeature3": "Consideration of wind loads, imposed loads, dead loads, and loads from wall fixtures",
+    "ceilingModule": "Ceiling Suspension System Calculation",
+    "ceilingDescription": "Perform structural calculations for runners and hanging hangers",
+    "ceilingFeature1": "Verification of bending strength, shear strength, web buckling, and deflection limit",
+    "ceilingFeature2": "Verification of hanger tensile force and anchor tensile resistance",
+    "ceilingFeature3": "Consideration of wind loads and dead loads",
+    "systemFeatures": "System Features",
+    "feature1Title": "Accurate Structural Calculation",
+    "feature1Description": "Ensures design safety and regulatory compliance through rigorous calculations following engineering standards and formulas",
+    "feature2Title": "Detailed Report Generation",
+    "feature2Description": "Generate PDF format reports including input information, calculation process, and pass/fail judgments",
+    "feature3Title": "User-Friendly Interface",
+    "feature3Description": "Intuitive UI/UX allows for complete input of necessary information and clear confirmation of results"
+  },
+  "sampleGuide": {
+    "title": "Sample Calculation Guide",
+    "description": "This guide explains how to input data to get the same results as the sample calculation. Use it for verification during the testing phase.",
+    "tabs": {
+      "overview": "Overview",
+      "inputGuide": "Input Guide",
+      "resultsComparison": "Results Comparison"
+    },
+    "overview": {
+      "title": "Sample Calculation Overview",
+      "subtitle": "Wall stud calculation example for Grantham Hospital",
+      "calculationTarget": "Calculation Target",
+      "targetDescription": "Structural calculation of KIRII drywall steel C-type stud (C 75x45x0.8t)",
+      "studDimensions": "Stud height: 4100mm, Stud spacing: 406mm",
+      "keyInputParameters": "Key Input Parameters",
+      "studType": "Stud Type",
+      "span": "Span between supports (L)",
+      "tributaryWidth": "Tributary width/stud spacing (Tw)",
+      "designLoad": "Design imposed load (W)",
+      "loadHeight": "Impact load action height",
+      "loadFactor": "Imposed load factor (Qk)",
+      "keyResults": "Key Calculation Results",
+      "bendingMoment": "Design bending moment (Mc)",
+      "bendingCapacity": "Bending capacity (Mb)",
+      "maxDeflection": "Max. deflection (δmax)",
+      "allowableDeflection": "Allowable deflection (δallow)",
+      "overallResult": "Overall result",
+      "suitable": "Suitable",
+      "aboutSample": "About this Sample",
+      "sampleDescription": "This sample calculation is based on an actual structural calculation document created for the Grantham Hospital project dated May 16, 2025. It can be used as a test case to verify that the same calculation results are obtained with the same input conditions in this system.",
+      "viewInputGuide": "View Input Guide"
+    },
+    "inputGuide": {
+      "title": "Input Guide",
+      "description": "How to input data to get the same results as the sample calculation",
+      "step1Title": "Step 1: Enter Basic Information",
+      "projectName": "Project Name",
+      "enterProjectName": "Enter \"葛量洪醫院\"",
+      "projectDetail": "Calculation Target Detail",
+      "enterProjectDetail": "Enter \"C 75x45x0.8t/4100H/406o.c.\"",
+      "calculationDate": "Calculation Date",
+      "selectDate": "Select \"2025-05-16\"",
+      "author": "Author",
+      "enterAuthor": "Enter \"TC\"",
+      "step2Title": "Step 2: Enter Material Properties",
+      "yieldStrength": "Yield Strength (MPa)",
+      "enterYieldStrength": "Enter \"200\" (default value)",
+      "elasticModulus": "Elastic Modulus (MPa)",
+      "enterElasticModulus": "Enter \"205000\" (default value)",
+      "materialFactor": "Material Factor",
+      "enterMaterialFactor": "Enter \"1.2\" (default value)",
+      "studType": "Stud Type",
+      "selectStudType": "Select \"C75x45x0.8t\" (default value)",
+      "bearingLength": "Bearing Length (mm)",
+      "enterBearingLength": "Enter \"32\" (default value)",
+      "step3Title": "Step 3: Enter Geometric Configuration",
+      "span": "Span Between Supports (mm)",
+      "enterSpan": "Enter \"4100\"",
+      "tributaryWidth": "Tributary Width/Stud Spacing (mm)",
+      "enterTributaryWidth": "Enter \"406\" (change from default value of 610)",
+      "deflectionCriteria": "Deflection Criteria",
+      "selectDeflectionCriteria": "Select \"L/240\" (default value)",
+      "step4Title": "Step 4: Enter Load Conditions",
+      "windLoadFactor": "Wind Load Factor",
+      "enterWindLoadFactor": "Enter \"1.5\" (default value)",
+      "imposedLoadFactor": "Imposed Load Factor",
+      "enterImposedLoadFactor": "Enter \"1.6\" (change from default value of 1.5)",
+      "deadLoadFactor": "Dead Load Factor",
+      "enterDeadLoadFactor": "Enter \"1.5\" (default value)",
+      "fixtureFactor": "Fixture Load Factor",
+      "enterFixtureFactor": "Enter \"1.5\" (default value)",
+      "windLoad": "Design Uniform Wind Load (kPa)",
+      "enterWindLoad": "Enter \"0\" (wind load is not considered in the sample calculation)",
+      "imposedLoad": "Design Concentrated Impact Load (kN/m)",
+      "enterImposedLoad": "Enter \"0.75\" (default value)",
+      "imposedLoadHeight": "Impact Load Action Height (m)",
+      "enterImposedLoadHeight": "Enter \"1.1\" (default value)",
+      "step5Title": "Step 5: Enter Dead Load and Fixture Data",
+      "deadLoadNote": "The sample calculation does not consider dead load and fixture load, so enter the following values:",
+      "wallBoardLayers": "Wall Board Layers",
+      "enterZero": "Enter \"0\"",
+      "wallBoardWeight": "Wall Board Unit Area Weight (kgf/m²)",
+      "insulationPresent": "Insulation Presence",
+      "selectNo": "Select \"No\"",
+      "metalFrameWeight": "Metal Frame Unit Area Weight (kgf/m²)",
+      "fixtureWeight": "Mass (kgf)",
+      "fixtureHeight": "Mounting Height (m)",
+      "fixtureDistance": "Horizontal Distance from Stud (mm)",
+      "viewResultsComparison": "View Results Comparison"
+    },
+    "resultsComparison": {
+      "title": "Results Comparison",
+      "description": "Comparison of calculation results between the sample calculation document and this system",
+      "verificationItem": "Verification Item",
+      "sampleCalculation": "Sample Calculation",
+      "thisSystem": "This System",
+      "match": "Match",
+      "bendingMoment": "Design Bending Moment (Mc)",
+      "bendingCapacity": "Bending Capacity (Mb)",
+      "shearForce": "Design Shear Force (Fv)",
+      "shearCapacity": "Shear Capacity (Vc)",
+      "webCripplingCapacity": "Web Crippling Capacity (Pw)",
+      "maxDeflection": "Max. Deflection (δmax)",
+      "allowableDeflection": "Allowable Deflection (δallow)",
+      "overallResult": "Overall Result",
+      "suitable": "Suitable",
+      "verificationResult": "Verification Result",
+      "verificationDescription": "As shown in the comparison table above, the calculation results of this system match exactly with the results of the sample calculation document. This confirms the accuracy of the calculation logic in this system.",
+      "testMethod": "Test Method",
+      "testStep1": "Follow the input guide to enter the same parameters as the sample calculation.",
+      "testStep2": "Click the \"Calculate\" button to execute the calculation.",
+      "testStep3": "Compare the displayed results with the sample calculation results.",
+      "testStep4": "Perform similar tests with multiple sample calculations to verify the reliability of the system.",
+      "backToInputGuide": "Back to Input Guide",
+      "startWallStudCalculation": "Start Wall Stud Calculation"
+    }
+  },
+  "wallStud": {
+    "title": "Wall Stud Structural Calculation",
+    "tabs": {
+      "project": "Basic Information",
+      "material": "Material Properties",
+      "geometry": "Geometric Configuration",
+      "loads": "Load Conditions",
+      "fixtures": "Fixtures"
+    },
+    "projectInfo": {
+      "title": "Project Basic Information",
+      "description": "Enter the project information for the calculation target",
+      "projectName": "Project Name",
+      "projectNamePlaceholder": "e.g., XX Building Renovation",
+      "projectDetail": "Calculation Target Detail",
+      "projectDetailPlaceholder": "e.g., 3rd Floor Partition Wall",
+      "calculationDate": "Calculation Date",
+      "author": "Author",
+      "authorPlaceholder": "Name"
+    },
+    "materialProperties": {
+      "title": "Material Properties",
+      "description": "Enter the material properties of the stud",
+      "yieldStrength": "Yield Strength (MPa)",
+      "elasticModulus": "Elastic Modulus (MPa)",
+      "materialFactor": "Material Factor",
+      "studType": "Stud Type",
+      "bearingLength": "Bearing Length (mm)"
+    },
+    "geometricConfig": {
+      "title": "Geometric Configuration",
+      "description": "Enter the installation conditions of the stud",
+      "span": "Span Between Supports (mm)",
+      "tributaryWidth": "Tributary Width/Stud Spacing (mm)",
+      "deflectionCriteria": "Deflection Criteria",
+      "customDeflection": "Custom Deflection Criteria (L/n)",
+      "enterNValue": "Enter n value"
+    },
+    "loadConditions": {
+      "title": "Load Conditions",
+      "description": "Enter the load conditions",
+      "windLoadFactor": "Wind Load Factor",
+      "imposedLoadFactor": "Imposed Load Factor",
+      "deadLoadFactor": "Dead Load Factor",
+      "fixtureFactor": "Fixture Load Factor",
+      "windLoad": "Design Uniform Wind Load (kPa)",
+      "imposedLoad": "Design Concentrated Impact Load (kN/m)",
+      "imposedLoadHeight": "Impact Load Action Height (m)",
+      "deadLoad": "Dead Load",
+      "wallBoardLayers": "Wall Board Layers",
+      "wallBoardWeight": "Wall Board Unit Area Weight (kgf/m²)",
+      "insulationPresent": "Insulation Presence",
+      "insulationPresenceYes": "Yes",
+      "insulationPresenceNo": "No",
+      "insulationThickness": "Insulation Thickness (mm)",
+      "metalFrameWeight": "Metal Frame Unit Area Weight (kgf/m²)"
+    },
+    "fixtures": {
+      "title": "Wall Fixture Data",
+      "description": "Enter information about items attached to the wall",
+      "fixtureWeight": "Mass (kgf)",
+      "fixtureHeight": "Mounting Height (m)",
+      "fixtureDistance": "Horizontal Distance from Stud (mm)"
+    },
+    "results": {
+      "title": "Calculation Results",
+      "description": "Structural calculation results and judgment",
+      "waitingMessage": "Enter the necessary information in the form on the left and click the \"Calculate\" button",
+      "overallJudgment": "Overall Judgment",
+      "suitable": "Suitable",
+      "unsuitable": "Unsuitable",
+      "verificationItem": "Verification Item",
+      "calculatedValueCapacity": "Calculated Value/Capacity",
+      "judgment": "Judgment",
+      "bendingMoment": "Bending Moment",
+      "shearForce": "Shear Force",
+      "webBuckling": "Web Buckling",
+      "deflection": "Deflection",
+      "combinedAction": "Combined Action",
+      "pass": "OK",
+      "fail": "NG"
+    }
+  },
+  "ceiling": {
+    "title": "Ceiling Suspension System Structural Calculation",
+    "tabs": {
+      "project": "Basic Information",
+      "material": "Material Properties",
+      "geometry": "Geometric Configuration",
+      "loads": "Load Conditions",
+      "deflection": "Deflection Criteria"
+    },
+    "projectInfo": {
+      "title": "Project Basic Information",
+      "description": "Enter the project information for the calculation target",
+      "projectName": "Project Name",
+      "projectNamePlaceholder": "e.g., XX Building Renovation",
+      "projectDetail": "Calculation Target Detail",
+      "projectDetailPlaceholder": "e.g., 3rd Floor Ceiling",
+      "calculationDate": "Calculation Date",
+      "author": "Author",
+      "authorPlaceholder": "Name"
+    },
+    "materialProperties": {
+      "title": "Material Properties",
+      "description": "Enter the material properties of the components",
+      "yieldStrength": "Yield Strength (MPa)",
+      "elasticModulus": "Elastic Modulus (MPa)",
+      "materialFactor": "Material Factor",
+      "runnerType": "Runner Type",
+      "hangerType": "Hanger Type",
+      "anchorType": "Anchor Type"
+    },
+    "geometricConfig": {
+      "title": "Geometric Configuration",
+      "description": "Enter the installation conditions of the ceiling system",
+      "runnerSpan": "Runner Support Span (mm)",
+      "hangerSpacing": "Hanger Spacing (mm)",
+      "runnerSpacing": "Runner Spacing (mm)"
+    },
+    "loadConditions": {
+      "title": "Load Conditions",
+      "description": "Enter the load conditions",
+      "windLoadFactor": "Wind Load Factor",
+      "deadLoadFactor": "Dead Load Factor",
+      "installationFactor": "Installation Load Factor",
+      "windLoad": "Design Uniform Wind Load (kPa)",
+      "deadLoad": "Dead Load",
+      "ceilingBoardLayers": "Ceiling Board Layers",
+      "ceilingBoardWeight": "Ceiling Board Unit Area Weight (kgf/m²)",
+      "insulationPresent": "Insulation Presence",
+      "insulationPresenceYes": "Yes",
+      "insulationPresenceNo": "No",
+      "insulationThickness": "Insulation Thickness (mm)",
+      "metalFrameWeight": "Metal Frame Unit Area Weight (kgf/m²)"
+    },
+    "deflectionCriteria": {
+      "title": "Deflection Criteria",
+      "description": "Select the allowable deflection criteria",
+      "deflectionCriteria": "Deflection Criteria",
+      "customDeflection": "Custom Deflection Criteria (L/n)",
+      "enterNValue": "Enter n value"
+    },
+    "results": {
+      "title": "Calculation Results",
+      "description": "Structural calculation results and judgment",
+      "waitingMessage": "Enter the necessary information in the form on the left and click the \"Calculate\" button",
+      "overallJudgment": "Overall Judgment",
+      "suitable": "Suitable",
+      "unsuitable": "Unsuitable",
+      "verificationItem": "Verification Item",
+      "calculatedValueCapacity": "Calculated Value/Capacity",
+      "judgment": "Judgment",
+      "runnerBending": "Runner Bending",
+      "runnerShear": "Runner Shear",
+      "runnerDeflection": "Runner Deflection",
+      "hangerTension": "Hanger Tension",
+      "anchorTension": "Anchor Tension",
+      "pass": "OK",
+      "fail": "NG"
+    }
+  },
+  "documentation": {
+    "title": "System Documentation",
+    "tabs": {
+      "overview": "Overview",
+      "wallStud": "Wall Stud",
+      "ceiling": "Ceiling System",
+      "reference": "Reference Materials"
+    },
+    "overview": {
+      "title": "System Overview",
+      "description": "Overview of the Drywall Partition System Structural Calculation System",
+      "purpose": "Purpose",
+      "purposeText": "This system is a web-based tool for accurately verifying the structural suitability of KIRII dry wall steel C-type studs and ceiling suspension systems. It aims to streamline the design process and ensure design safety and regulatory compliance.",
+      "mainFeatures": "Main Features",
+      "mainFeaturesList": [
+        "Wall Stud Calculation Module: Structural calculation of C-type and CT-type steel studs",
+        "Ceiling Suspension System Calculation Module: Structural calculation of runners and hanging hangers",
+        "Detailed PDF Report Generation Function",
+        "Component Database Reference Function"
+      ],
+      "calculationTargets": "Calculation Targets",
+      "calculationTargetsList": [
+        "Wall Studs: KIRII C-type and CT-type steel studs",
+        "Ceiling Suspension System: KIRII runners (FRC main runners, RRC runners) and M12 threaded rods (hanging hangers), Hilti HST3 wedge anchors"
+      ],
+      "structuralCheckItems": "Structural Check Items",
+      "structuralCheckItemsList": [
+        "Common: Bending strength, shear strength, web buckling, deflection limit",
+        "Wall Studs: Combined bending and compression action",
+        "Ceiling Suspension System: Hanger tensile force, anchor tensile resistance"
+      ]
+    },
+    "wallStud": {
+      "title": "Wall Stud Calculation Module",
+      "description": "How to use the Wall Stud Calculation Module and calculation contents",
+      "inputItems": "Input Items",
+      "inputItemsList": [
+        "Project Basic Information: Project name, calculation target detail, calculation date, author",
+        "Material Properties: Yield strength, elastic modulus, material factor",
+        "Component Section Properties: Stud type, bearing length",
+        "Geometric Configuration: Span between supports, tributary width/stud spacing",
+        "Load Conditions: Wind load, imposed load, dead load, load from wall fixtures",
+        "Deflection Criteria: L/240, L/360, or custom value"
+      ],
+      "calculationContents": "Calculation Contents",
+      "calculationContentsList": [
+        "Bending Moment: Comparison of total bending moment from wind load, imposed load, and wall fixtures with bending capacity",
+        "Shear Force: Comparison of shear force from wind load with shear capacity",
+        "Web Buckling: Comparison of shear force with web buckling capacity",
+        "Deflection: Comparison of deflection from wind load with allowable deflection",
+        "Combined Action: Comparison of combined bending and compression action ratio with limit value"
+      ],
+      "calculationFormulaSummary": "Calculation Formula Summary",
+      "calculationFormulaSummaryText": "This system uses calculation formulas based on design codes such as \"2007 North American Specification LRFD\". Detailed calculation formulas are included in the PDF report."
+    },
+    "ceiling": {
+      "title": "Ceiling Suspension System Calculation Module",
+      "description": "How to use the Ceiling Suspension System Calculation Module and calculation contents",
+      "inputItems": "Input Items",
+      "inputItemsList": [
+        "Project Basic Information: Project name, calculation target detail, calculation date, author",
+        "Material Properties: Yield strength, elastic modulus, material factor",
+        "Component Section Properties: Runner type, hanger type, anchor type",
+        "Geometric Configuration: Runner support span, hanger spacing, runner spacing",
+        "Load Conditions: Wind load, dead load",
+        "Deflection Criteria: L/240, L/360, or custom value"
+      ],
+      "calculationContents": "Calculation Contents",
+      "calculationContentsList": [
+        "Runner Bending: Comparison of bending moment from wind load and dead load with runner's bending capacity",
+        "Runner Shear: Comparison of shear force from wind load and dead load with runner's shear capacity",
+        "Runner Deflection: Comparison of deflection from wind load and dead load with allowable deflection",
+        "Hanger Tension: Comparison of tensile force acting on the hanger with hanger's tensile capacity",
+        "Anchor Tension: Comparison of tensile force acting on the anchor with anchor's tensile capacity"
+      ],
+      "calculationFormulaSummary": "Calculation Formula Summary",
+      "calculationFormulaSummaryText": "This system uses calculation formulas based on design codes such as \"2007 North American Specification LRFD\". Detailed calculation formulas are included in the PDF report."
+    },
+    "reference": {
+      "title": "Reference Materials",
+      "description": "Reference materials and design codes used for calculations",
+      "designCodes": "Design Codes",
+      "designCodesList": [
+        "2007 North American Specification LRFD (Load and Resistance Factor Design)",
+        "Architectural Institute of Japan \"Steel Structure Design Standard\"",
+        "Building Standard Law of Japan and its Enforcement Order"
+      ],
+      "productData": "Product Data",
+      "productDataList": [
+        "KIRII Product Catalog: Section properties of C-type studs, CT-type studs, FRC main runners, RRC runners",
+        "Hilti Product Data Sheet: Performance values of HST3 wedge anchors"
+      ],
+      "technicalDocuments": "Technical Documents",
+      "technicalDocumentsList": [
+        "Technical Guidelines for Light Gauge Steel Framing Work and Commentary (Architectural Institute of Japan)",
+        "Standard Specifications for Building Construction Works and Commentary JASS 26 Interior Work (Architectural Institute of Japan)"
+      ]
+    }
+  }
+}

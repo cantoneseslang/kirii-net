@@ -1,0 +1,409 @@
+{
+  "common": {
+    "startCalculation": "開始計算",
+    "save": "保存",
+    "calculate": "計算",
+    "generateReport": "生成報告",
+    "back": "返回",
+    "viewDocumentation": "查看文檔"
+  },
+  "home": {
+    "title": "乾式牆間隔系統結構計算系統",
+    "description": "一個網絡工具，用於準確驗證KIRII乾式牆鋼C型立柱和天花吊掛系統的結構適用性",
+    "wallStudModule": "牆壁立柱計算",
+    "wallStudDescription": "進行C型和CT型鋼立柱的結構計算",
+    "wallStudFeature1": "彎曲強度、剪切強度、腹板屈曲和撓度限制的驗證",
+    "wallStudFeature2": "彎曲和壓縮複合作用的驗證",
+    "wallStudFeature3": "考慮風荷載、施加荷載、死荷載和牆壁固定裝置的荷載",
+    "ceilingModule": "天花吊掛系統計算",
+    "ceilingDescription": "進行導軌和吊掛支架的結構計算",
+    "ceilingFeature1": "彎曲強度、剪切強度、腹板屈曲和撓度限制的驗證",
+    "ceilingFeature2": "吊掛支架拉力和錨固拉力阻力的驗證",
+    "ceilingFeature3": "考慮風荷載和死荷載",
+    "systemFeatures": "系統特點",
+    "feature1Title": "精確的結構計算",
+    "feature1Description": "通過嚴格遵循工程標準和公式的計算，確保設計安全和符合法規",
+    "feature2Title": "詳細的報告生成",
+    "feature2Description": "生成包含輸入信息、計算過程和通過/失敗判斷的PDF格式報告",
+    "feature3Title": "用戶友好的界面",
+    "feature3Description": "直觀的UI/UX允許完整輸入必要信息並清晰確認結果"
+  },
+  "sampleGuide": {
+    "title": "樣本計算指南",
+    "description": "本指南說明如何輸入數據以獲得與樣本計算相同的結果。在測試階段用於驗證。",
+    "tabs": {
+      "overview": "概述",
+      "inputGuide": "輸入指南",
+      "resultsComparison": "結果比較"
+    },
+    "overview": {
+      "title": "樣本計算概述",
+      "subtitle": "葛量洪醫院牆壁立柱計算示例",
+      "calculationTarget": "計算目標",
+      "targetDescription": "KIRII乾式牆鋼C型立柱(C 75x45x0.8t)的結構計算",
+      "studDimensions": "立柱高度: 4100mm，立柱間距: 406mm",
+      "keyInputParameters": "主要輸入參數",
+      "studType": "立柱類型",
+      "span": "支撐間距離(L)",
+      "tributaryWidth": "負擔寬度/立柱間距(Tw)",
+      "designLoad": "設計施加荷載(W)",
+      "loadHeight": "衝擊荷載作用高度",
+      "loadFactor": "施加荷載係數(Qk)",
+      "keyResults": "主要計算結果",
+      "bendingMoment": "設計彎矩(Mc)",
+      "bendingCapacity": "彎曲容量(Mb)",
+      "maxDeflection": "最大撓度(δmax)",
+      "allowableDeflection": "允許撓度(δallow)",
+      "overallResult": "總體結果",
+      "suitable": "適合",
+      "aboutSample": "關於此樣本",
+      "sampleDescription": "此樣本計算基於2025年5月16日為葛量洪醫院項目創建的實際結構計算文檔。它可用作測試案例，以驗證在本系統中使用相同輸入條件可獲得相同計算結果。",
+      "viewInputGuide": "查看輸入指南"
+    },
+    "inputGuide": {
+      "title": "輸入指南",
+      "description": "如何輸入數據以獲得與樣本計算相同的結果",
+      "step1Title": "步驟1：輸入基本信息",
+      "projectName": "項目名稱",
+      "enterProjectName": "輸入「葛量洪醫院」",
+      "projectDetail": "計算目標詳情",
+      "enterProjectDetail": "輸入「C 75x45x0.8t/4100H/406o.c.」",
+      "calculationDate": "計算日期",
+      "selectDate": "選擇「2025-05-16」",
+      "author": "作者",
+      "enterAuthor": "輸入「TC」",
+      "step2Title": "步驟2：輸入材料特性",
+      "yieldStrength": "屈服強度(MPa)",
+      "enterYieldStrength": "輸入「200」(默認值)",
+      "elasticModulus": "彈性模量(MPa)",
+      "enterElasticModulus": "輸入「205000」(默認值)",
+      "materialFactor": "材料係數",
+      "enterMaterialFactor": "輸入「1.2」(默認值)",
+      "studType": "立柱類型",
+      "selectStudType": "選擇「C75x45x0.8t」(默認值)",
+      "bearingLength": "支承長度(mm)",
+      "enterBearingLength": "輸入「32」(默認值)",
+      "step3Title": "步驟3：輸入幾何配置",
+      "span": "支撐間距離(mm)",
+      "enterSpan": "輸入「4100」",
+      "tributaryWidth": "負擔寬度/立柱間距(mm)",
+      "enterTributaryWidth": "輸入「406」(從默認值610更改)",
+      "deflectionCriteria": "撓度標準",
+      "selectDeflectionCriteria": "選擇「L/240」(默認值)",
+      "step4Title": "步驟4：輸入荷載條件",
+      "windLoadFactor": "風荷載係數",
+      "enterWindLoadFactor": "輸入「1.5」(默認值)",
+      "imposedLoadFactor": "施加荷載係數",
+      "enterImposedLoadFactor": "輸入「1.6」(從默認值1.5更改)",
+      "deadLoadFactor": "死荷載係數",
+      "enterDeadLoadFactor": "輸入「1.5」(默認值)",
+      "fixtureFactor": "固定裝置荷載係數",
+      "enterFixtureFactor": "輸入「1.5」(默認值)",
+      "windLoad": "設計均勻風荷載(kPa)",
+      "enterWindLoad": "輸入「0」(樣本計算中不考慮風荷載)",
+      "imposedLoad": "設計集中衝擊荷載(kN/m)",
+      "enterImposedLoad": "輸入「0.75」(默認值)",
+      "imposedLoadHeight": "衝擊荷載作用高度(m)",
+      "enterImposedLoadHeight": "輸入「1.1」(默認值)",
+      "step5Title": "步驟5：輸入死荷載和固定裝置數據",
+      "deadLoadNote": "樣本計算不考慮死荷載和固定裝置荷載，因此輸入以下值：",
+      "wallBoardLayers": "牆板層數",
+      "enterZero": "輸入「0」",
+      "wallBoardWeight": "牆板單位面積重量(kgf/m²)",
+      "insulationPresent": "隔熱材料存在",
+      "selectNo": "選擇「否」",
+      "metalFrameWeight": "金屬框架單位面積重量(kgf/m²)",
+      "fixtureWeight": "質量(kgf)",
+      "fixtureHeight": "安裝高度(m)",
+      "fixtureDistance": "與立柱的水平距離(mm)",
+      "viewResultsComparison": "查看結果比較"
+    },
+    "resultsComparison": {
+      "title": "結果比較",
+      "description": "樣本計算文檔與本系統計算結果的比較",
+      "verificationItem": "驗證項目",
+      "sampleCalculation": "樣本計算",
+      "thisSystem": "本系統",
+      "match": "匹配",
+      "bendingMoment": "設計彎矩(Mc)",
+      "bendingCapacity": "彎曲容量(Mb)",
+      "shearForce": "設計剪力(Fv)",
+      "shearCapacity": "剪切容量(Vc)",
+      "webCripplingCapacity": "腹板屈曲容量(Pw)",
+      "maxDeflection": "最大撓度(δmax)",
+      "allowableDeflection": "允許撓度(δallow)",
+      "overallResult": "總體結果",
+      "suitable": "適合",
+      "verificationResult": "驗證結果",
+      "verificationDescription": "如上表比較所示，本系統的計算結果與樣本計算文檔的結果完全匹配。這確認了本系統計算邏輯的準確性。",
+      "testMethod": "測試方法",
+      "testStep1": "按照輸入指南輸入與樣本計算相同的參數。",
+      "testStep2": "點擊「計算」按鈕執行計算。",
+      "testStep3": "比較顯示的結果與樣本計算結果。",
+      "testStep4": "使用多個樣本計算進行類似測試，以驗證系統的可靠性。",
+      "backToInputGuide": "返回輸入指南",
+      "startWallStudCalculation": "開始牆壁立柱計算"
+    }
+  },
+  "wallStud": {
+    "title": "牆壁立柱結構計算",
+    "tabs": {
+      "project": "基本信息",
+      "material": "材料特性",
+      "geometry": "幾何配置",
+      "loads": "荷載條件",
+      "fixtures": "固定裝置"
+    },
+    "projectInfo": {
+      "title": "項目基本信息",
+      "description": "輸入計算目標的項目信息",
+      "projectName": "項目名稱",
+      "projectNamePlaceholder": "例如：XX大廈翻新工程",
+      "projectDetail": "計算目標詳情",
+      "projectDetailPlaceholder": "例如：3樓間隔牆",
+      "calculationDate": "計算日期",
+      "author": "作者",
+      "authorPlaceholder": "姓名"
+    },
+    "materialProperties": {
+      "title": "材料特性",
+      "description": "輸入立柱的材料特性",
+      "yieldStrength": "屈服強度(MPa)",
+      "elasticModulus": "彈性模量(MPa)",
+      "materialFactor": "材料係數",
+      "studType": "立柱類型",
+      "bearingLength": "支承長度(mm)"
+    },
+    "geometricConfig": {
+      "title": "幾何配置",
+      "description": "輸入立柱的安裝條件",
+      "span": "支撐間距離(mm)",
+      "tributaryWidth": "負擔寬度/立柱間距(mm)",
+      "deflectionCriteria": "撓度標準",
+      "customDeflection": "自定義撓度標準(L/n)",
+      "enterNValue": "輸入n值"
+    },
+    "loadConditions": {
+      "title": "荷載條件",
+      "description": "輸入荷載條件",
+      "windLoadFactor": "風荷載係數",
+      "imposedLoadFactor": "施加荷載係數",
+      "deadLoadFactor": "死荷載係數",
+      "fixtureFactor": "固定裝置荷載係數",
+      "windLoad": "設計均勻風荷載(kPa)",
+      "imposedLoad": "設計集中衝擊荷載(kN/m)",
+      "imposedLoadHeight": "衝擊荷載作用高度(m)",
+      "deadLoad": "死荷載",
+      "wallBoardLayers": "牆板層數",
+      "wallBoardWeight": "牆板單位面積重量(kgf/m²)",
+      "insulationPresent": "隔熱材料存在",
+      "insulationPresenceYes": "是",
+      "insulationPresenceNo": "否",
+      "insulationThickness": "隔熱材料厚度(mm)",
+      "metalFrameWeight": "金屬框架單位面積重量(kgf/m²)"
+    },
+    "fixtures": {
+      "title": "牆壁固定裝置數據",
+      "description": "輸入有關安裝在牆上的物品的信息",
+      "fixtureWeight": "質量(kgf)",
+      "fixtureHeight": "安裝高度(m)",
+      "fixtureDistance": "與立柱的水平距離(mm)"
+    },
+    "results": {
+      "title": "計算結果",
+      "description": "結構計算結果和判斷",
+      "waitingMessage": "在左側表格中輸入必要信息並點擊「計算」按鈕",
+      "overallJudgment": "總體判斷",
+      "suitable": "適合",
+      "unsuitable": "不適合",
+      "verificationItem": "驗證項目",
+      "calculatedValueCapacity": "計算值/容量",
+      "judgment": "判斷",
+      "bendingMoment": "彎矩",
+      "shearForce": "剪力",
+      "webBuckling": "腹板屈曲",
+      "deflection": "撓度",
+      "combinedAction": "複合作用",
+      "pass": "合格",
+      "fail": "不合格"
+    }
+  },
+  "ceiling": {
+    "title": "天花吊掛系統結構計算",
+    "tabs": {
+      "project": "基本信息",
+      "material": "材料特性",
+      "geometry": "幾何配置",
+      "loads": "荷載條件",
+      "deflection": "撓度標準"
+    },
+    "projectInfo": {
+      "title": "項目基本信息",
+      "description": "輸入計算目標的項目信息",
+      "projectName": "項目名稱",
+      "projectNamePlaceholder": "例如：XX大廈翻新工程",
+      "projectDetail": "計算目標詳情",
+      "projectDetailPlaceholder": "例如：3樓天花",
+      "calculationDate": "計算日期",
+      "author": "作者",
+      "authorPlaceholder": "姓名"
+    },
+    "materialProperties": {
+      "title": "材料特性",
+      "description": "輸入組件的材料特性",
+      "yieldStrength": "屈服強度(MPa)",
+      "elasticModulus": "彈性模量(MPa)",
+      "materialFactor": "材料係數",
+      "runnerType": "導軌類型",
+      "hangerType": "吊掛支架類型",
+      "anchorType": "錨固類型"
+    },
+    "geometricConfig": {
+      "title": "幾何配置",
+      "description": "輸入天花系統的安裝條件",
+      "runnerSpan": "導軌支撐跨度(mm)",
+      "hangerSpacing": "吊掛支架間距(mm)",
+      "runnerSpacing": "導軌間距(mm)"
+    },
+    "loadConditions": {
+      "title": "荷載條件",
+      "description": "輸入荷載條件",
+      "windLoadFactor": "風荷載係數",
+      "deadLoadFactor": "死荷載係數",
+      "installationFactor": "安裝荷載係數",
+      "windLoad": "設計均勻風荷載(kPa)",
+      "deadLoad": "死荷載",
+      "ceilingBoardLayers": "天花板層數",
+      "ceilingBoardWeight": "天花板單位面積重量(kgf/m²)",
+      "insulationPresent": "隔熱材料存在",
+      "insulationPresenceYes": "是",
+      "insulationPresenceNo": "否",
+      "insulationThickness": "隔熱材料厚度(mm)",
+      "metalFrameWeight": "金屬框架單位面積重量(kgf/m²)"
+    },
+    "deflectionCriteria": {
+      "title": "撓度標準",
+      "description": "選擇允許的撓度標準",
+      "deflectionCriteria": "撓度標準",
+      "customDeflection": "自定義撓度標準(L/n)",
+      "enterNValue": "輸入n值"
+    },
+    "results": {
+      "title": "計算結果",
+      "description": "結構計算結果和判斷",
+      "waitingMessage": "在左側表格中輸入必要信息並點擊「計算」按鈕",
+      "overallJudgment": "總體判斷",
+      "suitable": "適合",
+      "unsuitable": "不適合",
+      "verificationItem": "驗證項目",
+      "calculatedValueCapacity": "計算值/容量",
+      "judgment": "判斷",
+      "runnerBending": "導軌彎曲",
+      "runnerShear": "導軌剪切",
+      "runnerDeflection": "導軌撓度",
+      "hangerTension": "吊掛支架拉力",
+      "anchorTension": "錨固拉力",
+      "pass": "合格",
+      "fail": "不合格"
+    }
+  },
+  "documentation": {
+    "title": "系統文檔",
+    "tabs": {
+      "overview": "概述",
+      "wallStud": "牆壁立柱",
+      "ceiling": "天花系統",
+      "reference": "參考資料"
+    },
+    "overview": {
+      "title": "系統概述",
+      "description": "乾式牆間隔系統結構計算系統概述",
+      "purpose": "目的",
+      "purposeText": "本系統是一個網絡工具，用於準確驗證KIRII乾式牆鋼C型立柱和天花吊掛系統的結構適用性。它旨在簡化設計過程並確保設計安全和符合法規。",
+      "mainFeatures": "主要功能",
+      "mainFeaturesList": [
+        "牆壁立柱計算模塊：C型和CT型鋼立柱的結構計算",
+        "天花吊掛系統計算模塊：導軌和吊掛支架的結構計算",
+        "詳細的PDF報告生成功能",
+        "組件數據庫參考功能"
+      ],
+      "calculationTargets": "計算目標",
+      "calculationTargetsList": [
+        "牆壁立柱：KIRII C型和CT型鋼立柱",
+        "天花吊掛系統：KIRII導軌（FRC主導軌，RRC導軌）和M12螺紋桿（吊掛支架），Hilti HST3楔形錨固"
+      ],
+      "structuralCheckItems": "結構檢查項目",
+      "structuralCheckItemsList": [
+        "共同：彎曲強度、剪切強度、腹板屈曲、撓度限制",
+        "牆壁立柱：彎曲和壓縮複合作用",
+        "天花吊掛系統：吊掛支架拉力、錨固拉力阻力"
+      ]
+    },
+    "wallStud": {
+      "title": "牆壁立柱計算模塊",
+      "description": "如何使用牆壁立柱計算模塊和計算內容",
+      "inputItems": "輸入項目",
+      "inputItemsList": [
+        "項目基本信息：項目名稱、計算目標詳情、計算日期、作者",
+        "材料特性：屈服強度、彈性模量、材料係數",
+        "組件截面特性：立柱類型、支承長度",
+        "幾何配置：支撐間距離、負擔寬度/立柱間距",
+        "荷載條件：風荷載、施加荷載、死荷載、牆壁固定裝置的荷載",
+        "撓度標準：L/240、L/360或自定義值"
+      ],
+      "calculationContents": "計算內容",
+      "calculationContentsList": [
+        "彎矩：風荷載、施加荷載和牆壁固定裝置產生的總彎矩與彎曲容量的比較",
+        "剪力：風荷載產生的剪力與剪切容量的比較",
+        "腹板屈曲：剪力與腹板屈曲容量的比較",
+        "撓度：風荷載產生的撓度與允許撓度的比較",
+        "複合作用：彎曲和壓縮複合作用比率與限制值的比較"
+      ],
+      "calculationFormulaSummary": "計算公式摘要",
+      "calculationFormulaSummaryText": "本系統使用基於設計規範的計算公式，如「2007 North American Specification LRFD」。詳細計算公式包含在PDF報告中。"
+    },
+    "ceiling": {
+      "title": "天花吊掛系統計算模塊",
+      "description": "如何使用天花吊掛系統計算模塊和計算內容",
+      "inputItems": "輸入項目",
+      "inputItemsList": [
+        "項目基本信息：項目名稱、計算目標詳情、計算日期、作者",
+        "材料特性：屈服強度、彈性模量、材料係數",
+        "組件截面特性：導軌類型、吊掛支架類型、錨固類型",
+        "幾何配置：導軌支撐跨度、吊掛支架間距、導軌間距",
+        "荷載條件：風荷載、死荷載",
+        "撓度標準：L/240、L/360或自定義值"
+      ],
+      "calculationContents": "計算內容",
+      "calculationContentsList": [
+        "導軌彎曲：風荷載和死荷載產生的彎矩與導軌的彎曲容量的比較",
+        "導軌剪切：風荷載和死荷載產生的剪力與導軌的剪切容量的比較",
+        "導軌撓度：風荷載和死荷載產生的撓度與允許撓度的比較",
+        "吊掛支架拉力：作用於吊掛支架的拉力與吊掛支架的拉力容量的比較",
+        "錨固拉力：作用於錨固的拉力與錨固的拉力容量的比較"
+      ],
+      "calculationFormulaSummary": "計算公式摘要",
+      "calculationFormulaSummaryText": "本系統使用基於設計規範的計算公式，如「2007 North American Specification LRFD」。詳細計算公式包含在PDF報告中。"
+    },
+    "reference": {
+      "title": "參考資料",
+      "description": "計算使用的參考資料和設計規範",
+      "designCodes": "設計規範",
+      "designCodesList": [
+        "2007 North American Specification LRFD (Load and Resistance Factor Design)",
+        "日本建築學會「鋼結構設計標準」",
+        "建築基準法及其實施條例"
+      ],
+      "productData": "產品數據",
+      "productDataList": [
+        "KIRII產品目錄：C型立柱、CT型立柱、FRC主導軌、RRC導軌的截面特性",
+        "Hilti產品數據表：HST3楔形錨固的性能值"
+      ],
+      "technicalDocuments": "技術文件",
+      "technicalDocumentsList": [
+        "輕鋼框架工程技術指南及解釋（日本建築學會）",
+        "建築工程標準規範及解釋 JASS 26 內裝工程（日本建築學會）"
+      ]
+    }
+  }
+}
