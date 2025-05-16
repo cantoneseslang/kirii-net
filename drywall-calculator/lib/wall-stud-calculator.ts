@@ -55,6 +55,20 @@ export function calculateWallStud(formData: any, studData: any) {
   // 曲げ耐力
   const bendingCapacity = (effectiveSectionModulus * yieldStrength) / materialFactor // kN·mm
 
+  // 設計せん断力（Fv）
+  const Qk = formData.imposedLoadFactor; // 施加荷重係数
+  const Tw = tributaryWidth; // mm
+  const W = imposedLoad; // kN/m
+  const Fv = Qk * Tw * W / 2; // kN
+
+  // せん断有効断面積（Av）
+  const Av = webHeight * thickness; // mm^2
+
+  // せん断耐力（Vc）
+  // pvはformData.pvがあればそれを使い、なければyieldStrengthや0.6*yieldStrength等で仮定
+  const pv = formData.pv ? formData.pv : (formData.pv_cr ? formData.pv_cr : (0.6 * yieldStrength)); // N/mm^2
+  const Vc = pv * Av; // N
+
   // せん断力計算
   const windShear = (designWindLoad * (span / 1000)) / 2 // kN
   const imposedShear = calculateImposedShear(designImposedLoad, span, imposedLoadHeight) // kN
@@ -62,8 +76,8 @@ export function calculateWallStud(formData: any, studData: any) {
   const fixtureShear = designFixtureLoad / 2 // kN
   const totalShear = (windShear + imposedShear + deadShear + fixtureShear) * 1000 // N
 
-  // せん断耐力
-  const shearCapacity = (0.6 * webHeight * thickness * yieldStrength) / materialFactor // N
+  // 判定
+  const shearPass = Fv * 1000 <= Vc; // FvはkNなのでNに換算
 
   // ウェブ座屈計算
   const webCripplingForce = totalShear // N (簡易計算)
@@ -110,7 +124,6 @@ export function calculateWallStud(formData: any, studData: any) {
 
   // 判定
   const bendingPass = totalMoment <= bendingCapacity
-  const shearPass = totalShear <= shearCapacity
   const webCripplingPass = webCripplingForce <= webCripplingCapacity
   const deflectionPass = deflection <= deflectionLimit
   const combinedActionPass = combinedActionRatio <= combinedActionLimit
@@ -170,9 +183,9 @@ export function calculateWallStud(formData: any, studData: any) {
       pass: bendingPass,
     },
     shearForce: {
-      value: totalShear,
-      capacity: shearCapacity,
-      ratio: totalShear / shearCapacity,
+      value: Fv * 1000, // N
+      capacity: Vc, // N
+      ratio: (Fv * 1000) / Vc,
       pass: shearPass,
     },
     webCrippling: {

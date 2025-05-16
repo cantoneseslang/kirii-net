@@ -689,19 +689,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                           </p>
                           <div className="text-sm">
                             {lang === 'ja' && (<>
-                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷重) / (スパン長さ)</p>
-                              <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">結果:</span> 243.6 N</p>
+                              <p><span className="font-medium">計算式:</span> Fv = Qk × Tw × W / 2</p>
+                              <p><span className="font-medium">代入:</span> Fv = {systemInputState?.imposedLoadFactor} × {systemInputState?.tributaryWidth} × {systemInputState?.imposedLoad} / 2 = {(systemInputState?.imposedLoadFactor * systemInputState?.tributaryWidth * systemInputState?.imposedLoad / 2).toFixed(2)} kN</p>
+                              <p><span className="font-medium">結果:</span> Fv = {(systemResults.shearForce.value).toFixed(2)} N</p>
                             </>)}
                             {lang === 'en' && (<>
-                              <p><span className="font-medium">Formula:</span> Fv = 2 × (Design Imposed Load) / (Span)</p>
-                              <p><span className="font-medium">Substitution:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">Result:</span> 243.6 N</p>
+                              <p><span className="font-medium">Formula:</span> Fv = Qk × Tw × W / 2</p>
+                              <p><span className="font-medium">Substitution:</span> Fv = {systemInputState?.imposedLoadFactor} × {systemInputState?.tributaryWidth} × {systemInputState?.imposedLoad} / 2 = {(systemInputState?.imposedLoadFactor * systemInputState?.tributaryWidth * systemInputState?.imposedLoad / 2).toFixed(2)} kN</p>
+                              <p><span className="font-medium">Result:</span> Fv = {(systemResults.shearForce.value).toFixed(2)} N</p>
                             </>)}
                             {lang === 'zh-HK' && (<>
-                              <p><span className="font-medium">計算式:</span> Fv = 2 × (設計集中荷載) / (跨度)</p>
-                              <p><span className="font-medium">代入:</span> 2 × 0.75 / 4.1 = 0.366 kN</p>
-                              <p><span className="font-medium">結果:</span> 243.6 N</p>
+                              <p><span className="font-medium">計算式:</span> Fv = Qk × Tw × W / 2</p>
+                              <p><span className="font-medium">代入:</span> Fv = {systemInputState?.imposedLoadFactor} × {systemInputState?.tributaryWidth} × {systemInputState?.imposedLoad} / 2 = {(systemInputState?.imposedLoadFactor * systemInputState?.tributaryWidth * systemInputState?.imposedLoad / 2).toFixed(2)} kN</p>
+                              <p><span className="font-medium">結果:</span> Fv = {(systemResults.shearForce.value).toFixed(2)} N</p>
                             </>)}
                           </div>
                         </div>
@@ -715,7 +715,8 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            <p><span className="font-medium">計算式:</span> Vc = 0.6 × {systemInputState?.webHeight} × {systemInputState?.thickness} × {systemInputState?.yieldStrength} / {systemInputState?.materialFactor}</p>
+                            <p><span className="font-medium">計算式:</span> Vc = pv × Av</p>
+                            <p><span className="font-medium">代入:</span> Vc = {systemInputState?.pv ? systemInputState?.pv : (systemInputState?.pv_cr ? systemInputState?.pv_cr : (0.6 * systemInputState?.yieldStrength))} × {systemInputState?.webHeight} × {systemInputState?.thickness} = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                             <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                           </div>
                         </div>
