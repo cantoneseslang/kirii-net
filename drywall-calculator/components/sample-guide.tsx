@@ -19,6 +19,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
   const [activeTab, setActiveTab] = useState("overview")
   const [calculationResults, setCalculationResults] = useState<any>(null)
   const [systemResults, setSystemResults] = useState<any>(null)
+  const [systemInputState, setSystemInputState] = useState<any>(null)
 
   // Use static dictionaries instead of dynamic loading
   const dictionaries = {
@@ -60,7 +61,10 @@ export default function SampleGuide({ lang }: { lang: string }) {
       fixtureDistance: 0,
       deflectionCriteria: "L/240",
       customDeflection: 0,
+      webHeight: 75,
+      thickness: 0.8
     }
+    setSystemInputState(systemInput)
     const stud = {
       id: "C75x45x0.8t",
       name: "C75x45x0.8t",
@@ -711,8 +715,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
                             {lang === 'zh-HK' && '計算式與代入値:'}
                           </p>
                           <div className="text-sm">
-                            <p><span className="font-medium">計算式:</span> Vc = 0.6 × d × t × Py / Ym</p>
-                            <p><span className="font-medium">代入:</span> Vc = 0.6 × {systemInput.webHeight} × {systemInput.thickness} × {systemInput.yieldStrength} / {systemInput.materialFactor}</p>
+                            <p><span className="font-medium">計算式:</span> Vc = 0.6 × {systemInputState?.webHeight} × {systemInputState?.thickness} × {systemInputState?.yieldStrength} / {systemInputState?.materialFactor}</p>
                             <p><span className="font-medium">結果:</span> Vc = {systemResults.shearForce.capacity.toFixed(2)} N</p>
                           </div>
                         </div>
