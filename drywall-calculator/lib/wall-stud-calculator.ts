@@ -58,8 +58,8 @@ export function calculateWallStud(formData: any, studData: any) {
   // 設計せん断力（Fv）
   const Qk = formData.imposedLoadFactor; // 施加荷重係数
   const Tw = tributaryWidth; // mm
-  const W = imposedLoad; // kN/m
-  const Fv = Qk * Tw * W / 2; // kN
+  const shearW = imposedLoad; // kN/m（せん断用）
+  const Fv = Qk * Tw * shearW / 2; // kN
 
   // せん断有効断面積（Av）
   const Av = webHeight * thickness; // mm^2
@@ -110,13 +110,13 @@ export function calculateWallStud(formData: any, studData: any) {
   // サンプル計算書に合わせたたわみ計算式
   const L = span // mm
   const h = imposedLoadHeight * 1000 // mm
-  const W = designImposedLoad // kN/m
+  const deflectionW = designImposedLoad // kN/m（たわみ用）
   const Tw = tributaryWidth // mm
   const Ixe = effectiveMomentOfInertia * 10000 // mm⁴
   const E = elasticModulus // MPa
 
   // 積載荷重によるたわみ計算（サンプル計算書の式に合わせる）
-  const deflection = (W * Tw * (L - h) * h * h * (3 * L - 2 * h)) / (6 * E * Ixe * 2) // mm
+  const deflection = (deflectionW * Tw * (L - h) * h * h * (3 * L - 2 * h)) / (6 * E * Ixe * 2) // mm
 
   // 複合作用（曲げと圧縮）
   const combinedActionRatio = totalMoment / bendingCapacity
