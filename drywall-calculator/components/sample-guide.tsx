@@ -971,6 +971,14 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <CheckCircle2 className="h-5 w-5 mx-auto text-green-600" />
                       </td>
                     </tr>
+                    <tr>
+                      <td className="border px-4 py-2"></td>
+                      <td className="border px-4 py-2"></td>
+                      <td className="border px-4 py-2 text-center" colSpan={1}>
+                        <span className={`font-medium ${systemResults.shearForce.pass ? 'text-green-600' : 'text-red-600'}`}>{systemResults.shearForce.pass ? (lang === 'ja' ? 'Vc > Fv OK - せん断に対して安全' : lang === 'en' ? 'Vc > Fv OK - safe from shear' : 'Vc > Fv OK - 剪力安全') : (lang === 'ja' ? 'NG - せん断NG' : lang === 'en' ? 'NG - shear fail' : 'NG - 剪力NG')}</span>
+                      </td>
+                      <td className="border px-4 py-2"></td>
+                    </tr>
                     </>
                     )}
                   </tbody>
