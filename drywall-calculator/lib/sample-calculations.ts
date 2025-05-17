@@ -168,7 +168,12 @@ export function calculateWallStudSample(): SampleCalculationResults {
       result: `Pw = ${pwValue} N`,
       judgment: ""
     },
-    webCripplingReaction: {
+    webCripplingCapacity: {
+      formula: "Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)",
+      substitution: `Pw = 1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`,
+      result: `Pw = ${pwValue} N`,
+    },
+    Factoredreactionforceoneachweb: {
       formula: rwFormula,
       substitution: rwSubstitution,
       result: `Rw = ${rwValue} N`,
@@ -193,12 +198,6 @@ export function calculateWallStudSample(): SampleCalculationResults {
       judgment: "OK - safe from combined action"
     },
     overallResult: true,
-    Factoredreactionforceoneachweb: {
-      formula: rwFormula,
-      substitution: rwSubstitution,
-      result: `Rw = ${rwValue} N`,
-      judgment: webCrushingResult
-    },
   };
 }
 
@@ -277,12 +276,6 @@ export function performActualWallStudCalculation(
       formula: "Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)",
       substitution: `Pw = 1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`,
       result: `Pw = ${pwValueFormatted} N`,
-    },
-    webCripplingReaction: {
-      formula: rwFormula,
-      substitution: rwSubstitution,
-      result: `Rw = ${rwValue} N`,
-      judgment: webCrushingResult
     },
     Factoredreactionforceoneachweb: {
       formula: rwFormula,
