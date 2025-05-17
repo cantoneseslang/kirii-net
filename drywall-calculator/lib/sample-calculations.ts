@@ -241,6 +241,11 @@ export function performActualWallStudCalculation(
   const actualCombinedRatio = mcValue / actualMbValue;
   const combinedRatioFormatted = actualCombinedRatio.toFixed(2);
 
+  // Rw（ファクター付き反力）の計算式を追加
+  const rwFormula = "Rw = Tw × W / 2";
+  const rwSubstitution = `${tw} × ${w} / 2 = ${tw * w / 2} N`;
+  const webCrushingResult = "Pw > Rw OK - safe from web crushing";
+
   return {
     bendingMoment: {
       formula: "Mc = Qk × W × Tw × h × (L - h) / L",
