@@ -172,7 +172,7 @@ export function calculateWallStudSample(): SampleCalculationResults {
       formula: rwFormula,
       substitution: rwSubstitution,
       result: `Rw = ${rwValue} N`,
-      judgment: webCripplingJudgment
+      judgment: webCrushingResult
     },
     maxDeflection: {
       formula: "δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)",
@@ -194,9 +194,10 @@ export function calculateWallStudSample(): SampleCalculationResults {
     },
     overallResult: true,
     Factoredreactionforceoneachweb: {
-      formula: "Rw = Tw × W / 2",
-      substitution: `${tw} × ${w} / 2 = ${tw * w / 2} N`,
+      formula: rwFormula,
+      substitution: rwSubstitution,
       result: `Rw = ${rwValue} N`,
+      judgment: webCrushingResult
     },
   };
 }
@@ -272,10 +273,17 @@ export function performActualWallStudCalculation(
       substitution: `Pw = 1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`,
       result: `Pw = ${pwValueFormatted} N`,
     },
-    Factoredreactionforceoneachweb: {
-      formula: "Rw = Tw × W / 2",
-      substitution: `${tw} × ${w} / 2 = ${tw * w / 2} N`,
+    webCripplingReaction: {
+      formula: rwFormula,
+      substitution: rwSubstitution,
       result: `Rw = ${rwValue} N`,
+      judgment: webCrushingResult
+    },
+    Factoredreactionforceoneachweb: {
+      formula: rwFormula,
+      substitution: rwSubstitution,
+      result: `Rw = ${rwValue} N`,
+      judgment: webCrushingResult
     },
     maxDeflection: {
       formula: "δmax = (W × Tw × (L - h) × h² × (3L - 2h)) / (6 × E × Ixe × 2)",
