@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, BookOpen } from "lucide-react"
-import { calculateWallStud } from "@/components/wall-stud-calculator"
+import { calculateWallStud } from "@/lib/wall-stud-calculator"
 import LanguageSwitcher from "@/components/language-switcher"
 
 const formSchema = z.object({
@@ -110,20 +110,66 @@ const studDatabase = [
   },
 ]
 
-// ダミーの計算関数（本実装は後で差し替え）
-export function calculateWallStud(values, stud) {
+// ダミーの計算関数（本来は使用しないが、型の互換性のため残しておく）
+export function calculateWallStudDummy(values: any, stud: any) {
   return {
     bendingMoment: { value: 0, capacity: 0, ratio: 0, pass: true },
     shearForce: { value: 0, capacity: 0, ratio: 0, pass: true },
     webCrippling: { value: 0, capacity: 0, ratio: 0, pass: true },
+    Factoredreactionforceoneachweb: {
+      formula: "Tw × W / 2",
+      substitution: "406 × 0.75 / 2 = 152 N",
+      result: "Rw = 152 N",
+      judgment: "Pw > Rw OK - safe from web crushing"
+    },
     deflection: { value: 0, limit: 0, ratio: 0, pass: true },
     combinedAction: { value: 0, limit: 0, pass: true },
     overallResult: true,
   }
 }
 
+// 計算結果の型定義
+interface WallStudResults {
+  bendingMoment: {
+    value: number
+    capacity: number
+    ratio: number
+    pass: boolean
+  }
+  shearForce: {
+    value: number
+    capacity: number
+    ratio: number
+    pass: boolean
+  }
+  webCrippling: {
+    value: number
+    capacity: number
+    ratio: number
+    pass: boolean
+  }
+  Factoredreactionforceoneachweb?: {
+    formula: string
+    substitution: string
+    result: string
+    judgment?: string
+  }
+  deflection: {
+    value: number
+    limit: number
+    ratio: number
+    pass: boolean
+  }
+  combinedAction: {
+    value: number
+    limit: number
+    pass: boolean
+  }
+  overallResult: boolean
+}
+
 export default function WallStudCalculator({ dict, lang }: { dict: any; lang: string }) {
-  const [calculationResults, setCalculationResults] = useState(null)
+  const [calculationResults, setCalculationResults] = useState<WallStudResults | null>(null)
 
   // Get current date
   const today = new Date().toISOString().split("T")[0]

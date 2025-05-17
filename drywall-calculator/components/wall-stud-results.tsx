@@ -24,6 +24,12 @@ interface WallStudResultsProps {
       ratio: number
       pass: boolean
     }
+    Factoredreactionforceoneachweb?: {
+      formula: string
+      substitution: string
+      result: string
+      judgment?: string
+    }
     deflection: {
       value: number
       limit: number
@@ -118,7 +124,7 @@ export default function WallStudResults({ results, dict }: WallStudResultsProps)
                 <div className="text-sm">
                   <p><span className="font-medium">計算式:</span> Pw = 1.21 × t² × kw × c3 × c4 × c12 × (1 + 0.01 × (Ny / t)) × (Py / Ym)</p>
                   <p><span className="font-medium">代入:</span> Pw = 1.21 × 0.8² × 0.73 × 1.038 × 0.869 × 1 × (1 + 0.01 × (32 / 0.8)) × (200 / 1.2)</p>
-                  <p><span className="font-medium">結果:</span> Pw = 848 N, Rw = 152 N</p>
+                  <p><span className="font-medium">結果:</span> Pw = {results.webCrippling.capacity.toFixed(0)} N{results.Factoredreactionforceoneachweb && `, ${results.Factoredreactionforceoneachweb.result}`}</p>
                 </div>
               </div>
             </div>

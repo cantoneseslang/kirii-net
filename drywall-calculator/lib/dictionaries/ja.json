@@ -146,13 +146,13 @@
     }
   },
   "wallStud": {
-    "title": "壁スタッド構造計算",
+    "title": "Wall Stud Structural Calculation",
     "tabs": {
-      "project": "基本情報",
-      "material": "材料特性",
-      "geometry": "幾何学的配置",
-      "loads": "荷重条件",
-      "fixtures": "取り付け物"
+      "project": "Basic Information",
+      "material": "Material Properties",
+      "geometry": "Geometric Configuration",
+      "loads": "Load Conditions",
+      "fixtures": "Fixtures"
     },
     "projectInfo": {
       "title": "プロジェクト基本情報",
