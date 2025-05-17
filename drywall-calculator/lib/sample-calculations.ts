@@ -65,6 +65,7 @@ interface SampleCalculationResults {
   allowableDeflection: CalculationStep;
   combinedAction: CalculationStep;
   overallResult: boolean;
+  Factoredreactionforceoneachweb?: CalculationStep;
 }
 
 /**
@@ -192,6 +193,11 @@ export function calculateWallStudSample(): SampleCalculationResults {
       judgment: "OK - safe from combined action"
     },
     overallResult: true,
+    Factoredreactionforceoneachweb: {
+      formula: "Rw = Tw × W / 2",
+      substitution: `${tw} × ${w} / 2 = ${tw * w / 2} N`,
+      result: `Rw = ${rwValue} N`,
+    },
   };
 }
 
@@ -266,7 +272,7 @@ export function performActualWallStudCalculation(
       substitution: `Pw = 1.21 × ${t}² × ${kw} × ${c3} × ${c4} × ${c12} × (1 + 0.01 × (${ny} / ${t})) × (${py} / ${ym})`,
       result: `Pw = ${pwValueFormatted} N`,
     },
-    webCripplingReaction: {
+    Factoredreactionforceoneachweb: {
       formula: "Rw = Tw × W / 2",
       substitution: `${tw} × ${w} / 2 = ${tw * w / 2} N`,
       result: `Rw = ${rwValue} N`,

@@ -838,6 +838,44 @@ export default function SampleGuide({ lang }: { lang: string }) {
                       </td>
                     </tr>
                     <tr>
+                      <td className="border px-4 py-2">Factored Reaction Force (Rw)</td>
+                      <td className="border px-4 py-2">{/* サンプル側は空白trで高さ揃え */}</td>
+                      <td className="border px-4 py-2">
+                        <div className="text-right font-medium">{systemResults.webCripplingReaction?.result}</div>
+                        <div className="bg-gray-50 p-2 mt-1 rounded-sm border border-gray-200">
+                          <p className="font-medium text-sm text-gray-800 mb-1">
+                            {lang === 'ja' && '計算式と代入値:'}
+                            {lang === 'en' && 'Formula and Substitution:'}
+                            {lang === 'zh-HK' && '計算式與代入値:'}
+                          </p>
+                          <div className="text-sm">
+                            <p><span className="font-medium">計算式:</span> {systemResults.webCripplingReaction?.formula}</p>
+                            <p><span className="font-medium">代入:</span> {systemResults.webCripplingReaction?.substitution}</p>
+                            <p><span className="font-medium">結果:</span> {systemResults.webCripplingReaction?.result}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 text-center"></td>
+                    </tr>
+                    <tr>
+                      <td className="border px-4 py-2">{/* 判定行 */}</td>
+                      <td className="border px-4 py-2">{/* サンプル側は空白trで高さ揃え */}</td>
+                      <td className="border px-4 py-2" colSpan={2}>
+                        <div className="text-center font-medium text-green-600">
+                          {systemResults.webCrippling && systemResults.webCripplingReaction &&
+                            (parseFloat(systemResults.webCrippling.result.replace(/[^\d.\-]/g, '')) >
+                             parseFloat(systemResults.webCripplingReaction.result.replace(/[^\d.\-]/g, ''))
+                              ? (lang === 'ja'
+                                  ? 'Pw > Rw OK - ウェブ座屈に対して安全'
+                                  : lang === 'en'
+                                    ? 'Pw > Rw OK - safe from web crushing'
+                                    : 'Pw > Rw OK - 腹板挫屈安全')
+                              : (lang === 'ja' ? 'NG - ウェブ座屈NG' : lang === 'en' ? 'NG - web crushing fail' : 'NG - 腹板挫屈NG'))
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
                       <td className="border px-4 py-2">{t.resultsComparison.maxDeflection}</td>
                       <td className="border px-4 py-2">
                         <div className="text-right font-medium">12.12 mm</div>
