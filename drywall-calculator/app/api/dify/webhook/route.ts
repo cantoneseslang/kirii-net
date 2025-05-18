@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-let lastWebhookData: any = null; // メモリ保存（本番はDB推奨）
+// ファイルIDごとに解析完了フラグを保存（本番はDB推奨）
+const completedFiles = new Set<string>();
+let lastWebhookData: any = null;
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     console.log("Dify Webhook 受信データ:", data);
-    lastWebhookData = data; // データを保存
+    lastWebhookData = data;
+    // fileId（または適切なID）で完了フラグを保存
+    const fileId = data.fileId || data.file_id || data.id;
+    if (fileId) {
+      completedFiles.add(fileId);
+    }
     return NextResponse.json({ status: "ok" });
   } catch (error) {
     console.error("Webhook受信エラー:", error);
@@ -14,7 +21,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Webhookで受信した最新データを取得するGETエンドポイント
-export async function GET() {
+// GET: ?fileId=xxx で完了状態を返す
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const fileId = searchParams.get("fileId");
+  if (fileId) {
+    return NextResponse.json({ completed: completedFiles.has(fileId) });
+  }
+  // fileId指定なしの場合は最新データを返す（従来通り）
   return NextResponse.json(lastWebhookData || {});
 } 

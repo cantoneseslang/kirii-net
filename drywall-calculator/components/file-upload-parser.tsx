@@ -43,6 +43,8 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
   const [progress, setProgress] = useState(0);
   const [isApiProcessing, setIsApiProcessing] = useState(false);
   const [extractedValues, setExtractedValues] = useState<ExtractedValues | null>(null);
+  const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'done' | 'error'>('idle');
+  const [fileId, setFileId] = useState<string | null>(null);
 
   // Get the appropriate text based on language
   const getText = () => {
@@ -261,6 +263,7 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
 
   // Function to extract text from file using Dify API via Next.js API routes
   const extractTextFromFile = async (file: File): Promise<string> => {
+    setStatus('uploading');
     setIsApiProcessing(true);
     setProgress(10);
     console.log(`Processing file using Dify API: ${file.name}`);
@@ -295,35 +298,37 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       if (!fileId) {
         throw new Error("No file ID returned from API");
       }
+      setFileId(fileId);
+      setStatus('processing');
+      setProgress(30);
       
-      // Step 2: Webhook通知をポーリングして解析完了を待つ
-      console.log("Waiting for Dify webhook notification...");
-      let webhookData = null;
-      for (let i = 0; i < 30; i++) { // 最大30秒待つ
-        const res = await fetch('/api/dify/webhook');
-        webhookData = await res.json();
-        if (webhookData && webhookData.files) {
+      // 2. 解析完了をfileIdでポーリング
+      let completed = false;
+      for (let i = 0; i < 60; i++) { // 最大60秒待つ
+        const res = await fetch(`/api/dify/webhook?fileId=${fileId}`);
+        const statusData = await res.json();
+        if (statusData.completed) {
+          completed = true;
           break;
         }
-        await new Promise(r => setTimeout(r, 1000)); // 1秒待つ
+        await new Promise(r => setTimeout(r, 1000));
       }
-      if (!webhookData || !webhookData.files) {
-        throw new Error("Webhook通知が受信できませんでした。ファイル解析に失敗した可能性があります。");
-      }
+      if (!completed) throw new Error("Webhook通知が受信できませんでした。ファイル解析に失敗した可能性があります。");
+      setProgress(60);
+      
       // Step 3: Extract APIを呼ぶ
-      const fileObject = webhookData.files;
       const extractResponse = await fetch('/api/dify/extract', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          fileObject,
+          fileObject: fileResult,
           query
         })
       });
       
-      setProgress(75);
+      setProgress(80);
       
       if (!extractResponse.ok) {
         const errorData = await extractResponse.json();
@@ -333,9 +338,9 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       
       const extractResult = await extractResponse.json();
       console.log("Extract response:", extractResult);
-      setProgress(90);
-      
-      console.log("Extract API response:", extractResult);
+      setProgress(100);
+      setIsApiProcessing(false);
+      setStatus('done');
       
       // レスポンス構造を詳細にデバッグ
       console.log("Response structure:", JSON.stringify(extractResult, null, 2));
@@ -344,8 +349,6 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       // ワークフローAPIの新しいレスポンス形式に対応
       if (extractResult.answer && typeof extractResult.answer === 'string') {
         console.log("Answer directly available in response");
-        setProgress(100);
-        setIsApiProcessing(false);
         return extractResult.answer;
       }
       
@@ -358,29 +361,21 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
         // ワークフローレスポンス形式の処理
         if (resp.outputs && resp.outputs.answer) {
           console.log("Found answer in originalResponse.outputs.answer");
-          setProgress(100);
-          setIsApiProcessing(false);
           return resp.outputs.answer;
         }
         
         if (resp.answer) {
           console.log("Found answer in originalResponse.answer");
-          setProgress(100);
-          setIsApiProcessing(false);
           return resp.answer;
         }
         
         if (resp.response) {
           console.log("Found answer in originalResponse.response");
-          setProgress(100);
-          setIsApiProcessing(false);
           return resp.response;
         }
         
         if (resp.output) {
           console.log("Found answer in originalResponse.output");
-          setProgress(100);
-          setIsApiProcessing(false);
           return resp.output;
         }
       }
@@ -388,13 +383,12 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       // デバッグ用に応答全体を文字列化
       const responseStr = JSON.stringify(extractResult);
       console.log("Fallback - using entire response as string:", responseStr.substring(0, 200) + "...");
-      setProgress(100);
-      setIsApiProcessing(false);
       return responseStr;
     } catch (error) {
       console.error("Error processing file:", error);
       setIsApiProcessing(false);
       setProgress(0);
+      setStatus('error');
       throw error;
     }
   };
@@ -403,6 +397,7 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setStatus('uploading');
     setIsUploading(true);
     setUploadStatus('idle');
     setErrorMessage("");
