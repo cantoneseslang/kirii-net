@@ -296,22 +296,22 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
         throw new Error("No file ID returned from API");
       }
       
-      // Step 2: Extract text from file
-      console.log("Extracting text from uploaded file...");
-      setProgress(50);
-      
-      // Set up query based on language
-      const queryByLang = {
-        'ja': "このファイルから計算に必要なすべての数値と項目名を日本語で抽出してください。計算書の内容を解析し、プロジェクト名、詳細情報、計算日付、強度値、寸法などを抽出してください。",
-        'zh-HK': "請從這個文件中抽取計算所需的所有數值和項目名稱（繁體中文）。解析計算書內容並提取項目名稱、詳細信息、計算日期、強度值、尺寸等。",
-        'en': "Please extract all numerical values and item names required for calculation from this file in English. Analyze the calculation document and extract project name, details, calculation date, strength values, dimensions, etc."
-      };
-      
-      const query = queryByLang[lang as keyof typeof queryByLang] || queryByLang.en;
-      console.log(`Using query for language ${lang}: "${query}"`);
-      
-      // fileResultがidしか持っていない場合でもfileObjectとして渡す
-      const fileObject = { ...fileResult };
+      // Step 2: Webhook通知をポーリングして解析完了を待つ
+      console.log("Waiting for Dify webhook notification...");
+      let webhookData = null;
+      for (let i = 0; i < 30; i++) { // 最大30秒待つ
+        const res = await fetch('/api/dify/webhook');
+        webhookData = await res.json();
+        if (webhookData && webhookData.files) {
+          break;
+        }
+        await new Promise(r => setTimeout(r, 1000)); // 1秒待つ
+      }
+      if (!webhookData || !webhookData.files) {
+        throw new Error("Webhook通知が受信できませんでした。ファイル解析に失敗した可能性があります。");
+      }
+      // Step 3: Extract APIを呼ぶ
+      const fileObject = webhookData.files;
       const extractResponse = await fetch('/api/dify/extract', {
         method: 'POST',
         headers: {
