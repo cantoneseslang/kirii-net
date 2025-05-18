@@ -10,6 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoIcon, CheckCircle2, ArrowRight, XCircle } from "lucide-react"
 import Link from "next/link"
 import LanguageSwitcher from "@/components/language-switcher"
+import FileUploadParser, { ExtractedValues } from "@/components/file-upload-parser"
 
 // Import dictionaries directly to avoid dynamic imports
 import enDict from "@/lib/dictionaries/en.json"
@@ -21,6 +22,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
   const [calculationResults, setCalculationResults] = useState<any>(null)
   const [systemResults, setSystemResults] = useState<any>(null)
   const [systemInputState, setSystemInputState] = useState<any>(null)
+  const [extractedValues, setExtractedValues] = useState<ExtractedValues | null>(null)
 
   // Use static dictionaries instead of dynamic loading
   const dictionaries = {
@@ -29,30 +31,49 @@ export default function SampleGuide({ lang }: { lang: string }) {
     ja: jaDict,
   }
 
+  // アップロードされたファイルから抽出された値を取得するための状態更新関数
+  useEffect(() => {
+    // ページ更新時にローカルストレージから値を確認
+    const storedValues = localStorage.getItem('extractedValues');
+    if (storedValues) {
+      try {
+        const parsedValues = JSON.parse(storedValues);
+        console.log("Retrieved values from localStorage:", parsedValues);
+        setExtractedValues(parsedValues);
+      } catch (e) {
+        console.error("Error parsing stored values:", e);
+      }
+    }
+  }, []);
+
   // 計算結果を取得
   useEffect(() => {
     const results = calculateWallStudSample()
     setCalculationResults(results)
+    
+    console.log("Using extracted values for calculation:", extractedValues);
+    
     // システム値（サンプルと同じ入力値で実際のロジックを通す）
+    // Default values or use extracted values if available
     const systemInput = {
-      projectName: "葛量洪醫院",
-      projectDetail: "C 75x45x0.8t/4100H/406o.c.",
-      calculationDate: "2025-05-16",
-      author: "TC",
-      yieldStrength: 200,
-      elasticModulus: 205000,
-      materialFactor: 1.2,
-      studType: "C75x45x0.8t",
-      bearingLength: 32,
-      span: 4100,
-      tributaryWidth: 406,
+      projectName: extractedValues?.projectName || "葛量洪醫院",
+      projectDetail: extractedValues?.projectDetail || "C 75x45x0.8t/4100H/406o.c.",
+      calculationDate: extractedValues?.calculationDate || "2025-05-16",
+      author: extractedValues?.author || "TC",
+      yieldStrength: extractedValues?.yieldStrength || 200,
+      elasticModulus: extractedValues?.elasticModulus || 205000,
+      materialFactor: extractedValues?.materialFactor || 1.2,
+      studType: extractedValues?.studType || "C75x45x0.8t",
+      bearingLength: extractedValues?.bearingLength || 32,
+      span: extractedValues?.span || 4100,
+      tributaryWidth: extractedValues?.tributaryWidth || 406,
       windLoadFactor: 1.5,
-      imposedLoadFactor: 1.6,
+      imposedLoadFactor: extractedValues?.loadFactor || 1.6,
       deadLoadFactor: 1.5,
       fixtureFactor: 1.5,
       windLoad: 0,
-      imposedLoad: 0.75,
-      imposedLoadHeight: 1.1,
+      imposedLoad: extractedValues?.designLoad || 0.75,
+      imposedLoadHeight: extractedValues?.loadHeight || 1.1,
       wallBoardLayers: 0,
       wallBoardWeight: 0,
       insulationPresent: "no",
@@ -63,38 +84,41 @@ export default function SampleGuide({ lang }: { lang: string }) {
       fixtureDistance: 0,
       deflectionCriteria: "L/240",
       customDeflection: 0,
-      webHeight: 75,
-      thickness: 0.8
+      webHeight: extractedValues?.webHeight || 75,
+      thickness: extractedValues?.thickness || 0.8
     }
     setSystemInputState(systemInput)
     const stud = {
-      id: "C75x45x0.8t",
-      name: "C75x45x0.8t",
-      webHeight: 75,
-      flangeWidth: 45,
-      thickness: 0.8,
+      id: extractedValues?.studType || "C75x45x0.8t",
+      name: extractedValues?.studType || "C75x45x0.8t",
+      webHeight: extractedValues?.webHeight || 75,
+      flangeWidth: extractedValues?.flangeWidth || 45,
+      thickness: extractedValues?.thickness || 0.8,
       cornerRadius: 1.587,
       area: 136.8,
-      momentOfInertia: 13.1785,
+      momentOfInertia: extractedValues?.momentOfInertia || 13.1785,
       sectionModulus: 3.5143,
       effectiveArea: 136.8,
-      effectiveMomentOfInertia: 12.5552,
-      effectiveSectionModulus: 2.712,
+      effectiveMomentOfInertia: extractedValues?.momentOfInertia || 12.5552,
+      effectiveSectionModulus: extractedValues?.effectiveSectionModulus || 2.712,
     }
     setSystemResults(calculateWallStud(systemInput, stud))
-  }, [])
+  }, [extractedValues]) // Recalculate when extracted values change
 
   // Select the appropriate language content
   const t = lang === "zh-HK" ? dictionaries["zh-HK"].sampleGuide : 
             lang === "ja" ? dictionaries.ja.sampleGuide : dictionaries.en.sampleGuide
 
   // デバッグ用 - これにより、Factoredreactionforceoneachwebがあるかどうかを確認できます
-  console.log("System Results:", systemResults)
+  console.log("System Results:", systemResults);
+  console.log("Current extracted values:", extractedValues);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{t.title}</h1>
+        <div className="flex items-center">
+          <h1 className="text-3xl font-bold">{t.title}</h1>
+        </div>
         <LanguageSwitcher currentLang={lang} />
       </div>
 
@@ -175,8 +199,10 @@ export default function SampleGuide({ lang }: { lang: string }) {
               <CardDescription>{t.inputGuide.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              <FileUploadParser lang={lang} />
+              
               <h3 className="text-lg font-medium mb-4">
-                {lang === 'en' ? 'Input Values Used in Sample Calculation' : '樣本計算中使用的輸入值'}
+                {lang === 'en' ? 'Input Values Used in Sample Calculation' : lang === 'ja' ? 'サンプル計算に使用される入力値' : '樣本計算中使用的輸入值'}
               </h3>
               
               {calculationResults && (
@@ -189,19 +215,19 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <tbody>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Project Name:' : '項目名稱：'}</td>
-                            <td>葛量洪醫院</td>
+                            <td>{extractedValues?.projectName || '葛量洪醫院'}</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Details:' : '詳細信息：'}</td>
-                            <td>C 75x45x0.8t/4100H/406o.c.</td>
+                            <td>{extractedValues?.projectDetail || 'C 75x45x0.8t/4100H/406o.c.'}</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Calculation Date:' : '計算日期：'}</td>
-                            <td>2025-05-16</td>
+                            <td>{extractedValues?.calculationDate || '2025-05-16'}</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Author:' : '作者：'}</td>
-                            <td>TC</td>
+                            <td>{extractedValues?.author || 'TC'}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -214,15 +240,15 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <tbody>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Yield Strength (Py):' : '降伏強度 (Py)：'}</td>
-                            <td>200 MPa</td>
+                            <td>{extractedValues?.yieldStrength || '200'} MPa</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Elastic Modulus (E):' : '彈性模量 (E)：'}</td>
-                            <td>205000 MPa</td>
+                            <td>{extractedValues?.elasticModulus || '205000'} MPa</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Material Factor (γm):' : '材料係數 (γm)：'}</td>
-                            <td>1.2</td>
+                            <td>{extractedValues?.materialFactor || '1.2'}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -235,31 +261,31 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <tbody>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Stud Type:' : '立筋類型：'}</td>
-                            <td>C75x45x0.8t</td>
+                            <td>{extractedValues?.studType || 'C75x45x0.8t'}</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Web Height:' : '腹板高度：'}</td>
-                            <td>75 mm</td>
+                            <td>{extractedValues?.webHeight || '75'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Flange Width:' : '翼緣寬度：'}</td>
-                            <td>45 mm</td>
+                            <td>{extractedValues?.flangeWidth || '45'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Thickness:' : '厚度：'}</td>
-                            <td>0.8 mm</td>
+                            <td>{extractedValues?.thickness || '0.8'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Bearing Length:' : '支承長度：'}</td>
-                            <td>32 mm</td>
+                            <td>{extractedValues?.bearingLength || '32'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Moment of Inertia:' : '慣性矩：'}</td>
-                            <td>125552 mm⁴</td>
+                            <td>{extractedValues?.momentOfInertia || '125552'} mm⁴</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Effective Section Modulus:' : '有效截面模數：'}</td>
-                            <td>2712 mm³</td>
+                            <td>{extractedValues?.effectiveSectionModulus || '2712'} mm³</td>
                           </tr>
                         </tbody>
                       </table>
@@ -272,23 +298,23 @@ export default function SampleGuide({ lang }: { lang: string }) {
                         <tbody>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Span (L):' : '跨度 (L)：'}</td>
-                            <td>4100 mm</td>
+                            <td>{extractedValues?.span || '4100'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Stud Spacing (Tw):' : '立筋間距 (Tw)：'}</td>
-                            <td>406 mm</td>
+                            <td>{extractedValues?.tributaryWidth || '406'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Design Load (W):' : '設計荷載 (W)：'}</td>
-                            <td>0.75 kN/m</td>
+                            <td>{extractedValues?.designLoad || '0.75'} kN/m</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Load Height (h):' : '荷載高度 (h)：'}</td>
-                            <td>1100 mm</td>
+                            <td>{extractedValues?.loadHeight ? (extractedValues.loadHeight * 1000).toFixed(0) : '1100'} mm</td>
                           </tr>
                           <tr>
                             <td className="py-1 font-medium">{lang === 'en' ? 'Load Factor:' : '荷載係數：'}</td>
-                            <td>1.6</td>
+                            <td>{extractedValues?.loadFactor || '1.6'}</td>
                           </tr>
                         </tbody>
                       </table>

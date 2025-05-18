@@ -8,7 +8,7 @@
     "viewDocumentation": "查看文檔"
   },
   "home": {
-    "title": "乾式牆間隔系統結構計算系統",
+    "title": "乾式牆間隔及天花吊掛結構計算系統",
     "description": "一個網絡工具，用於準確驗證KIRII乾式牆鋼C型立柱和天花吊掛系統的結構適用性",
     "wallStudModule": "牆壁立柱計算",
     "wallStudDescription": "進行C型和CT型鋼立柱的結構計算",

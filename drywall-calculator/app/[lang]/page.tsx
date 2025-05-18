@@ -3,24 +3,25 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, Calculator, FileText, LayoutGrid, BookOpen } from "lucide-react"
 import { getDictionary } from "@/lib/dictionaries"
-import LanguageSwitcher from "@/components/language-switcher"
+import { SiteHeader } from "@/components/site-header"
 
-export default async function Home({ params }: { params: { lang: string } }) {
-  const dict = await getDictionary(params.lang)
+interface HomeProps {
+  params: { lang: string }
+}
+
+export default async function Home(props: HomeProps) {
+  // Extract params to avoid direct access
+  const { params } = props;
+  // Store the lang in a separate variable
+  const lang = String(params?.lang || 'en');
+  const dict = await getDictionary(lang);
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="flex justify-end mb-4">
-        <LanguageSwitcher currentLang={params.lang} />
-      </div>
-
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">{dict.home.title}</h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">{dict.home.description}</p>
-      </div>
+      <SiteHeader title={dict.home.title} lang={lang} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col min-h-[450px]">
           <CardHeader className="bg-slate-50 rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
               <LayoutGrid className="h-5 w-5 text-slate-700" />
@@ -28,7 +29,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             </CardTitle>
             <CardDescription>{dict.home.wallStudDescription}</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 flex-grow">
             <ul className="space-y-2 text-sm">
               <li className="flex items-start">
                 <ArrowRight className="h-4 w-4 mr-2 mt-0.5 text-slate-600" />
@@ -45,7 +46,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             </ul>
           </CardContent>
           <CardFooter>
-            <Link href={`/${params.lang}/wall-stud`} className="w-full">
+            <Link href={`/${lang}/wall-stud`} className="w-full">
               <Button className="w-full">
                 {dict.common.startCalculation}
                 <Calculator className="ml-2 h-4 w-4" />
@@ -54,7 +55,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
           </CardFooter>
         </Card>
 
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col min-h-[450px]">
           <CardHeader className="bg-slate-50 rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
               <LayoutGrid className="h-5 w-5 text-slate-700" />
@@ -62,7 +63,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             </CardTitle>
             <CardDescription>{dict.home.ceilingDescription}</CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 flex-grow">
             <ul className="space-y-2 text-sm">
               <li className="flex items-start">
                 <ArrowRight className="h-4 w-4 mr-2 mt-0.5 text-slate-600" />
@@ -79,7 +80,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
             </ul>
           </CardContent>
           <CardFooter>
-            <Link href={`/${params.lang}/ceiling-system`} className="w-full">
+            <Link href={`/${lang}/ceiling-system`} className="w-full">
               <Button className="w-full">
                 {dict.common.startCalculation}
                 <Calculator className="ml-2 h-4 w-4" />
@@ -88,36 +89,36 @@ export default async function Home({ params }: { params: { lang: string } }) {
           </CardFooter>
         </Card>
 
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col min-h-[450px]">
           <CardHeader className="bg-slate-50 rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-slate-700" />
-              {params.lang === "en" ? "Sample Calculation Guide" : "樣本計算指南"}
+              {lang === "en" ? "Sample Calculation Guide" : "樣本計算指南"}
             </CardTitle>
             <CardDescription>
-              {params.lang === "en"
+              {lang === "en"
                 ? "Input guide to get the same results as the sample calculation document"
                 : "輸入指南以獲得與樣本計算相同的結果"}
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 flex-grow">
             <ul className="space-y-2 text-sm">
               <li className="flex items-start">
                 <ArrowRight className="h-4 w-4 mr-2 mt-0.5 text-slate-600" />
                 <span>
-                  {params.lang === "en"
+                  {lang === "en"
                     ? "Overview of sample calculation document and explanation of input parameters"
                     : "樣本計算文檔概述和輸入參數說明"}
                 </span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-4 w-4 mr-2 mt-0.5 text-slate-600" />
-                <span>{params.lang === "en" ? "Step-by-step input guide" : "逐步輸入指南"}</span>
+                <span>{lang === "en" ? "Step-by-step input guide" : "逐步輸入指南"}</span>
               </li>
               <li className="flex items-start">
                 <ArrowRight className="h-4 w-4 mr-2 mt-0.5 text-slate-600" />
                 <span>
-                  {params.lang === "en"
+                  {lang === "en"
                     ? "Comparison of calculation results and verification method"
                     : "計算結果比較和驗證方法"}
                 </span>
@@ -125,9 +126,9 @@ export default async function Home({ params }: { params: { lang: string } }) {
             </ul>
           </CardContent>
           <CardFooter>
-            <Link href={`/${params.lang}/sample-guide`} className="w-full">
+            <Link href={`/${lang}/sample-guide`} className="w-full">
               <Button className="w-full">
-                {params.lang === "en" ? "View Guide" : "查看指南"}
+                {lang === "en" ? "View Guide" : "查看指南"}
                 <BookOpen className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -154,7 +155,7 @@ export default async function Home({ params }: { params: { lang: string } }) {
       </div>
 
       <div className="mt-12 text-center">
-        <Link href={`/${params.lang}/documentation`}>
+        <Link href={`/${lang}/documentation`}>
           <Button variant="outline" className="gap-2">
             <FileText className="h-4 w-4" />
             {dict.common.viewDocumentation}

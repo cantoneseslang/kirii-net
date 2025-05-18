@@ -7,20 +7,22 @@ import { getDictionary } from "@/lib/dictionaries"
 import LanguageSwitcher from "@/components/language-switcher"
 
 export default async function Documentation({ params }: { params: { lang: string } }) {
-  const dict = await getDictionary(params.lang)
+  // Use Promise.resolve to properly await the params.lang
+  const langValue = await Promise.resolve(params.lang);
+  const dict = await getDictionary(langValue)
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center">
-          <Link href={`/${params.lang}`} className="mr-4">
+          <Link href={`/${langValue}`} className="mr-4">
             <Button variant="outline" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
           <h1 className="text-3xl font-bold">{dict.documentation.title}</h1>
         </div>
-        <LanguageSwitcher currentLang={params.lang} />
+        <LanguageSwitcher currentLang={langValue} />
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
@@ -164,7 +166,7 @@ export default async function Documentation({ params }: { params: { lang: string
       </Tabs>
 
       <div className="mt-8 text-center">
-        <Link href={`/${params.lang}`}>
+        <Link href={`/${langValue}`}>
           <Button variant="outline" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             {dict.common.back}

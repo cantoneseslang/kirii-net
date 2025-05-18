@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Calculator, FileText, Save } from "lucide-react"
-import { calculateCeilingSystem } from "@/components/ceiling-system-calculator"
+import { calculateCeilingSystem as ceilingCalcImport } from "@/lib/ceiling-system-calculator"
 import CeilingSystemResults from "@/components/ceiling-system-results"
-import LanguageSwitcher from "@/components/language-switcher"
+import { SiteHeader } from "@/components/site-header"
 
 const formSchema = z.object({
   // Project basic info
@@ -143,7 +143,12 @@ const anchorDatabase = [
 ]
 
 // ダミーの計算関数（本実装は後で差し替え）
-export function calculateCeilingSystem(values, runner, hanger, anchor) {
+export function calculateCeilingSystem(
+  values: z.infer<typeof formSchema>, 
+  runner: typeof runnerDatabase[0], 
+  hanger: typeof hangerDatabase[0], 
+  anchor: typeof anchorDatabase[0]
+) {
   return {
     runnerBending: { value: 0, capacity: 0, ratio: 0, pass: true },
     runnerShear: { value: 0, capacity: 0, ratio: 0, pass: true },
@@ -155,7 +160,7 @@ export function calculateCeilingSystem(values, runner, hanger, anchor) {
 }
 
 export default function CeilingSystemCalculator({ dict, lang }: { dict: any; lang: string }) {
-  const [calculationResults, setCalculationResults] = useState(null)
+  const [calculationResults, setCalculationResults] = useState<ReturnType<typeof calculateCeilingSystem> | null>(null)
 
   // Get current date
   const today = new Date().toISOString().split("T")[0]
@@ -217,23 +222,16 @@ export default function CeilingSystemCalculator({ dict, lang }: { dict: any; lan
     }
 
     // Execute calculation
+    // Using the actual implementation from the imported function or the local dummy
+    // Uncomment the line below to use the actual implementation when ready
+    // const results = ceilingCalcImport(values, selectedRunner, selectedHanger, selectedAnchor);
     const results = calculateCeilingSystem(values, selectedRunner, selectedHanger, selectedAnchor)
     setCalculationResults(results)
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <Link href={`/${lang}`} className="mr-4">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold">{dict.ceiling.title}</h1>
-        </div>
-        <LanguageSwitcher currentLang={lang} />
-      </div>
+      <SiteHeader title={dict.ceiling.title} lang={lang} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">

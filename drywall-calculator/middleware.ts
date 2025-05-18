@@ -1,19 +1,10 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { i18n } from "@/lib/i18n-config"
-import Negotiator from "negotiator"
-import { match } from "@formatjs/intl-localematcher"
 
 function getLocale(request: NextRequest): string {
-  // Negotiator expects plain object so we need to transform headers
-  const negotiatorHeaders: Record<string, string> = {}
-  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value))
-
-  // Use negotiator and intl-localematcher to get best locale
-  const languages = new Negotiator({ headers: negotiatorHeaders }).languages()
-  // @ts-ignore locales are readonly
-  const locales: string[] = i18n.locales
-  return match(languages, locales, i18n.defaultLocale)
+  // Always return the default locale (zh-HK) for Vercel deployment
+  return i18n.defaultLocale
 }
 
 export function middleware(request: NextRequest) {

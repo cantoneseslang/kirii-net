@@ -8,7 +8,7 @@
     "viewDocumentation": "ドキュメントを見る"
   },
   "home": {
-    "title": "乾式壁間仕切りシステム構造計算システム",
+    "title": "乾式壁間仕切り及び天井吊下げ構造計算システム",
     "description": "KIRII乾式壁用スチールC型スタッドおよび天井吊り下げシステムの構造的適合性を精確に検証するウェブベースのツール",
     "wallStudModule": "壁スタッド計算",
     "wallStudDescription": "C型およびCT型スチールスタッドの構造計算を実行",

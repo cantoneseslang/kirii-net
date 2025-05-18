@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, BookOpen } from "lucide-react"
 import { calculateWallStud } from "@/lib/wall-stud-calculator"
-import LanguageSwitcher from "@/components/language-switcher"
+import { SiteHeader } from "@/components/site-header"
 
 const formSchema = z.object({
   // Project basic info
@@ -296,22 +296,12 @@ export default function WallStudCalculator({ dict, lang }: { dict: any; lang: st
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <Link href={`/${lang}`} className="mr-4">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold">{dict.wallStud.title}</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={loadSampleData} className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            サンプルデータ読込
-          </Button>
-          <LanguageSwitcher currentLang={lang} />
-        </div>
+      <SiteHeader title={dict.wallStud.title} lang={lang} />
+      <div className="flex justify-end mb-4">
+        <Button variant="outline" onClick={loadSampleData} className="flex items-center gap-2">
+          <BookOpen className="h-4 w-4" />
+          サンプルデータ読込
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

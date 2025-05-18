@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { InfoIcon, CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import LanguageSwitcher from "@/components/language-switcher"
+import { SiteHeader } from "@/components/site-header"
 
 // Import dictionaries directly to avoid dynamic imports
 import enDict from "@/lib/dictionaries/en.json"
@@ -93,10 +93,7 @@ export default function SampleGuide({ lang }: { lang: string }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{t.title}</h1>
-        <LanguageSwitcher currentLang={lang} />
-      </div>
+      <SiteHeader title={t.title} lang={lang} />
 
       <p className="text-lg mb-8">{t.description}</p>
 

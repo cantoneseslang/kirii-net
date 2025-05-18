@@ -8,7 +8,7 @@
     "viewDocumentation": "View Documentation"
   },
   "home": {
-    "title": "Drywall Partition System Structural Calculation System",
+    "title": "Drywall Partition and Ceiling Suspension Structural Calculation System",
     "description": "A web-based tool to accurately verify the structural suitability of KIRII dry wall steel C-type studs and ceiling suspension systems",
     "wallStudModule": "Wall Stud Calculation",
     "wallStudDescription": "Perform structural calculations for C-type and CT-type steel studs",
