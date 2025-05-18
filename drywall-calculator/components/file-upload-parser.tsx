@@ -310,13 +310,15 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       const query = queryByLang[lang as keyof typeof queryByLang] || queryByLang.en;
       console.log(`Using query for language ${lang}: "${query}"`);
       
+      // fileResultがidしか持っていない場合でもfileObjectとして渡す
+      const fileObject = { ...fileResult };
       const extractResponse = await fetch('/api/dify/extract', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          fileId,
+          fileObject,
           query
         })
       });
