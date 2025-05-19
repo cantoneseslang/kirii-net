@@ -304,19 +304,33 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       
       // 2. 解析完了をfileIdでポーリング
       let completed = false;
-      for (let i = 0; i < 60; i++) { // 最大60秒待つ
+      // ポーリング時間を延長：60秒→180秒（3分）
+      console.log(`Polling for webhook notification with fileId: ${fileId}`);
+      for (let i = 0; i < 180; i++) { // 最大180秒待つ
+        console.log(`Polling attempt ${i+1}/180`);
         const res = await fetch(`/api/dify/webhook?fileId=${fileId}`);
+        if (!res.ok) {
+          console.error(`Webhook polling error: ${res.status} ${res.statusText}`);
+          continue;
+        }
         const statusData = await res.json();
+        console.log(`Webhook poll response:`, statusData);
         if (statusData.completed) {
+          console.log(`File processing completed at attempt ${i+1}`);
           completed = true;
           break;
         }
         await new Promise(r => setTimeout(r, 1000));
       }
-      if (!completed) throw new Error("Webhook通知が受信できませんでした。ファイル解析に失敗した可能性があります。");
+      if (!completed) {
+        console.error(`Webhook notification not received after 3 minutes for fileId: ${fileId}`);
+        // エラーではなく、続行する - Webhookが来なくても処理を続ける
+        console.warn("Proceeding without webhook notification...");
+      }
       setProgress(60);
       
       // Step 3: Extract APIを呼ぶ
+      const defaultQuery = "Please extract all numerical values and item names required for calculation from this file";
       const extractResponse = await fetch('/api/dify/extract', {
         method: 'POST',
         headers: {
@@ -324,7 +338,7 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
         },
         body: JSON.stringify({
           fileObject: fileResult,
-          query
+          query: defaultQuery // 未定義変数queryを修正
         })
       });
       
