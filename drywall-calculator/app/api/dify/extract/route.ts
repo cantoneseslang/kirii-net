@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Dify API credentials - 正しい値に更新
 const DIFY_API_KEY = "app-yXT2ARodfzwNJnLEMb3zVILQ"; // 元々のAPIキー
-const WORKFLOW_ID = "JZ7hOWH3CbN26zBo"; // ワークフローID
+const APP_ID = "JZ7hOWH3CbN26zBo"; // アプリケーションID（以前のワークフローID）
 const API_BASE_URL = "https://api.dify.ai";
-// ワークフローAPIエンドポイント
-const DIFY_ENDPOINT = `${API_BASE_URL}/v1/workflows/${WORKFLOW_ID}/run`;
+
+// 正しいDify APIエンドポイント - v1/chat-messagesエンドポイントを使用
+const DIFY_ENDPOINT = `${API_BASE_URL}/v1/chat-messages`;
 
 // ファイルID→テキスト変換用のメモリキャッシュ
 interface WebhookData {
@@ -19,7 +20,7 @@ const webhookCache = new Map<string, WebhookData>();
 // デバッグ出力強化
 console.log('Extract API Route loaded');
 console.log(`DIFY_ENDPOINT: ${DIFY_ENDPOINT}`);
-console.log(`WORKFLOW_ID: ${WORKFLOW_ID}`);
+console.log(`APP_ID: ${APP_ID}`);
 
 export async function POST(request: NextRequest) {
   console.log("Extract API Route: Received POST request");
@@ -52,20 +53,18 @@ export async function POST(request: NextRequest) {
     const userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     console.log(`Generated user ID: ${userId}`);
     
-    // DifyのワークフローUIと同じ形式でリクエストを作成
+    // Difyのチャットメッセージ形式でリクエストを作成
     const requestBody = {
-      inputs: {
-        file_path: fileObject, // ファイル情報オブジェクトをそのまま渡す
-        ...(pages ? { pages } : {}),
-        sys_query: query || "Please extract all numerical values and item names required for calculation from this file"
-      },
+      inputs: {},
+      query: query || "Please extract all numerical values and item names required for calculation from this file",
       response_mode: "blocking",
-      user: userId
+      user: userId,
+      files: [fileObject.id]  // ファイルIDを配列として渡す
     };
     
     console.log(`Request body to Dify: ${JSON.stringify(requestBody, null, 2)}`);
     
-    // Forward the request to Dify API chat-messages endpoint
+    // Send request to Dify API chat-messages endpoint
     console.log(`Sending request to Dify API: ${DIFY_ENDPOINT}`);
     const response = await fetch(DIFY_ENDPOINT, {
       method: 'POST',
@@ -93,60 +92,32 @@ export async function POST(request: NextRequest) {
     console.log("API Route: Extraction successful");
     console.log("API Response structure:", Object.keys(data));
     
-    // Difyワークフローのレスポンスを処理
+    // Difyレスポンスから抽出テキストを取得
     let extractedText = "";
     
-    // 新しいレスポンス形式の処理（webhookと同じ形式）
-    if (data.json && Array.isArray(data.json) && data.json.length > 0) {
-      console.log("Processing JSON array format response");
-      const docResult = data.json[0];
-      
-      // ページオブジェクトの型を定義
-      interface PageObject {
-        markdown?: string;
-        dimensions?: any;
-        images?: any[];
-        index?: number;
-      }
-      
-      // pages配列からmarkdownを連結
-      if (docResult.pages && Array.isArray(docResult.pages)) {
-        extractedText = docResult.pages
-          .filter((page: PageObject) => page && typeof page.markdown === 'string')
-          .map((page: PageObject) => page.markdown || '')
-          .join('\n\n');
-        
-        console.log(`Extracted markdown from ${docResult.pages.length} pages`);
-        console.log("Sample markdown:", extractedText.substring(0, 200) + "...");
-      } else {
-        console.log("No pages array found in the document result");
-      }
+    // 様々なレスポンス形式に対応
+    if (data.answer && typeof data.answer === 'string') {
+      extractedText = data.answer;
+      console.log("Found direct answer field");
+    } else if (data.text && typeof data.text === 'string') {
+      extractedText = data.text;
+      console.log("Found text field");
+    } else if (data.message && typeof data.message === 'string') {
+      extractedText = data.message;
+      console.log("Found message field");
+    } else if (data.content && typeof data.content === 'string') {
+      extractedText = data.content;
+      console.log("Found content field");
+    } else if (data.response && typeof data.response === 'string') {
+      extractedText = data.response;
+      console.log("Found response field");
+    } else if (data.assistant_response && typeof data.assistant_response === 'string') {
+      extractedText = data.assistant_response;
+      console.log("Found assistant_response field");
     } else {
-      console.log("Processing traditional API response format");
-      // 従来のワークフローAPIの応答形式を処理
-      if (data.outputs && data.outputs.answer) {
-        extractedText = data.outputs.answer;
-        console.log("Found answer in outputs.answer");
-      } else if (data.answer) {
-        extractedText = data.answer;
-        console.log("Found direct answer field");
-      } else if (data.response) {
-        extractedText = data.response;
-        console.log("Found response field");
-      } else if (data.output) {
-        extractedText = data.output;
-        console.log("Found output field");
-      } else if (data.result) {
-        extractedText = data.result;
-        console.log("Found result field");
-      } else if (data.text) {
-        extractedText = data.text;
-        console.log("Found text field");
-      } else {
-        // 構造を解析できない場合はJSONを文字列化
-        extractedText = JSON.stringify(data, null, 2);
-        console.log("No recognized fields found, stringifying entire response");
-      }
+      // 構造を解析できない場合はJSONを文字列化
+      extractedText = JSON.stringify(data, null, 2);
+      console.log("No recognized text fields found, stringifying entire response");
     }
     
     // 最終的な抽出テキストをログ出力

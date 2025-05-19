@@ -60,6 +60,8 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
   const [extractedValues, setExtractedValues] = useState<ExtractedValues | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'done' | 'error'>('idle');
   const [fileId, setFileId] = useState<string | null>(null);
+  // リトライ処理のための状態を追加
+  const [retryCount, setRetryCount] = useState(0);
 
   // Get the appropriate text based on language
   const getText = () => {
@@ -278,7 +280,6 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
   // Dify APIレスポンスからmarkdownテキストを抽出する関数
   const extractMarkdownFromDifyResponse = (response: any): string => {
     console.log("Extracting markdown from Dify response");
-    let markdownText = "";
     
     // API応答構造をログ出力
     try {
@@ -386,87 +387,87 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
     setProgress(10);
     console.log(`Processing file using Dify API: ${file.name}`);
     
-      try {
-        // Create FormData for file upload
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        console.log("Uploading file to API...");
-        console.log(`File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
-        
-        // Step 1: Upload file to our Next.js API route - 絶対パスを使用
-        setProgress(25);
-        // 現在のURLからAPIのベースURLを構築
-        const baseUrl = window.location.protocol + '//' + window.location.host;
-        const apiUrl = `${baseUrl}/api/dify/upload`;
-        console.log(`Sending file to API endpoint: ${apiUrl}`);
-        
-        const fileUploadResponse = await fetch(apiUrl, {
-          method: 'POST',
-          body: formData
-        });
-        
-        if (!fileUploadResponse.ok) {
-          const errorData = await fileUploadResponse.json();
-          console.error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
-          throw new Error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
-        }
-        
-        const fileResult = await fileUploadResponse.json();
-        console.log("File upload response:", fileResult);
-        
-        // Get file ID
-        const fileId = fileResult.id;
-        if (!fileId) {
-          throw new Error("No file ID returned from API");
-        }
-        setFileId(fileId);
-        setStatus('processing');
-        setProgress(40);
-        
-        // Step 2: API抽出リクエストを直接実行（webhookを介さず）
-        const extractApiUrl = `${baseUrl}/api/dify/extract`;
-        console.log(`Sending extraction request to: ${extractApiUrl}`);
-        const extractResponse = await fetch(extractApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            fileObject: fileResult,
-            query: "Please extract all numerical values and item names required for calculation from this file"
-          })
-        });
-        
-        setProgress(70);
-        
-        if (!extractResponse.ok) {
-          const errorData = await extractResponse.json();
-          console.error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
-          throw new Error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
-        }
-        
-        const extractResult = await extractResponse.json();
-        console.log("Extract response:", extractResult);
-        setProgress(100);
-        setIsApiProcessing(false);
-        setStatus('done');
-        
-        // レスポンス構造を詳細にデバッグ
-        console.log("Response structure:", JSON.stringify(extractResult, null, 2));
-        
-        // 専用関数でmarkdownを抽出
-        const extractedMarkdown = extractMarkdownFromDifyResponse(extractResult);
-        console.log("Final extracted markdown (first 200 chars):", extractedMarkdown.substring(0, 200) + "...");
-        
-        return extractedMarkdown;
-      } catch (error) {
-        console.error("Error processing file:", error);
-        setIsApiProcessing(false);
-        setProgress(0);
-        setStatus('error');
-        throw error;
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      console.log("Uploading file to API...");
+      console.log(`File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
+      
+      // Step 1: Upload file to our Next.js API route - 絶対パスを使用
+      setProgress(25);
+      // 現在のURLからAPIのベースURLを構築
+      const baseUrl = window.location.protocol + '//' + window.location.host;
+      const apiUrl = `${baseUrl}/api/dify/upload`;
+      console.log(`Sending file to API endpoint: ${apiUrl}`);
+      
+      const fileUploadResponse = await fetch(apiUrl, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!fileUploadResponse.ok) {
+        const errorData = await fileUploadResponse.json();
+        console.error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
+        throw new Error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
       }
+      
+      const fileResult = await fileUploadResponse.json();
+      console.log("File upload response:", fileResult);
+      
+      // Get file ID
+      const fileId = fileResult.id;
+      if (!fileId) {
+        throw new Error("No file ID returned from API");
+      }
+      setFileId(fileId);
+      setStatus('processing');
+      setProgress(40);
+      
+      // Step 2: API抽出リクエストを直接実行（webhookを介さず）
+      const extractApiUrl = `${baseUrl}/api/dify/extract`;
+      console.log(`Sending extraction request to: ${extractApiUrl}`);
+      const extractResponse = await fetch(extractApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fileObject: fileResult,
+          query: "Please extract all numerical values and item names required for calculation from this file"
+        })
+      });
+      
+      setProgress(70);
+      
+      if (!extractResponse.ok) {
+        const errorData = await extractResponse.json();
+        console.error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
+        throw new Error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
+      }
+      
+      const extractResult = await extractResponse.json();
+      console.log("Extract response:", extractResult);
+      setProgress(100);
+      setIsApiProcessing(false);
+      setStatus('done');
+      
+      // レスポンス構造を詳細にデバッグ
+      console.log("Response structure:", JSON.stringify(extractResult, null, 2));
+      
+      // 専用関数でmarkdownを抽出
+      const extractedMarkdown = extractMarkdownFromDifyResponse(extractResult);
+      console.log("Final extracted markdown (first 200 chars):", extractedMarkdown.substring(0, 200) + "...");
+      
+      return extractedMarkdown;
+    } catch (error) {
+      console.error("Error processing file:", error);
+      setIsApiProcessing(false);
+      setProgress(0);
+      setStatus('error');
+      throw error;
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -609,7 +610,6 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
           </AlertDescription>
         </Alert>
       )}
-
     </div>
   );
 }

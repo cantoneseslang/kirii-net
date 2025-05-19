@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "app/api/dify/extract/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/dify/upload/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/dify/webhook/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
