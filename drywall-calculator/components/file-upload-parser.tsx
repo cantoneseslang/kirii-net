@@ -34,6 +34,21 @@ interface FileUploadParserProps {
   lang: string;
 }
 
+// インターフェース定義を追加して型安全に
+interface DifyPageData {
+  dimensions?: any;
+  images?: any[];
+  index?: number;
+  markdown: string;
+}
+
+interface DifyDocumentData {
+  document_annotation?: any;
+  model?: string;
+  pages?: DifyPageData[];
+  usage_info?: any;
+}
+
 export default function FileUploadParser({ lang }: FileUploadParserProps) {
   const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
@@ -260,6 +275,109 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
     return values;
   };
 
+  // Dify APIレスポンスからmarkdownテキストを抽出する関数
+  const extractMarkdownFromDifyResponse = (response: any): string => {
+    console.log("Extracting markdown from Dify response");
+    let markdownText = "";
+    
+    // API応答構造をログ出力
+    try {
+      console.log("Response keys:", Object.keys(response));
+      
+      // 直接データがある場合
+      if (response.answer && typeof response.answer === 'string') {
+        console.log("Found direct answer field");
+        return response.answer;
+      }
+      
+      // json配列構造の場合（新形式）
+      if (response.json && Array.isArray(response.json) && response.json.length > 0) {
+        console.log("Found json array with length:", response.json.length);
+        const docData = response.json[0] as DifyDocumentData;
+        
+        // pagesが存在する場合
+        if (docData.pages && Array.isArray(docData.pages) && docData.pages.length > 0) {
+          console.log("Found pages array with length:", docData.pages.length);
+          
+          // すべてのページのmarkdownを連結
+          const allMarkdown = docData.pages
+            .filter(page => page && typeof page.markdown === 'string')
+            .map(page => page.markdown)
+            .join('\n\n');
+          
+          console.log("Extracted markdown from all pages, total length:", allMarkdown.length);
+          if (allMarkdown.length > 0) {
+            return allMarkdown;
+          }
+        } else {
+          console.log("No pages array found in json data");
+        }
+      } else {
+        console.log("No json array found, or it's empty");
+      }
+      
+      // オリジナルレスポンスがある場合（旧形式）
+      if (response.originalResponse) {
+        console.log("Checking originalResponse");
+        const resp = response.originalResponse;
+        
+        // json配列構造の場合（新形式）
+        if (resp.json && Array.isArray(resp.json) && resp.json.length > 0) {
+          console.log("Found json array in originalResponse");
+          const docData = resp.json[0] as DifyDocumentData;
+          
+          // pagesが存在する場合
+          if (docData.pages && Array.isArray(docData.pages) && docData.pages.length > 0) {
+            console.log("Found pages array in originalResponse");
+            
+            // すべてのページのmarkdownを連結
+            const allMarkdown = docData.pages
+              .filter(page => page && typeof page.markdown === 'string')
+              .map(page => page.markdown)
+              .join('\n\n');
+            
+            console.log("Extracted markdown from all pages in originalResponse, total length:", allMarkdown.length);
+            if (allMarkdown.length > 0) {
+              return allMarkdown;
+            }
+          }
+        }
+        
+        // ワークフローレスポンス形式
+        if (resp.outputs && resp.outputs.answer) {
+          console.log("Found answer in outputs");
+          return resp.outputs.answer;
+        }
+        
+        // その他の可能なフィールド
+        if (resp.answer) {
+          console.log("Found answer in originalResponse");
+          return resp.answer;
+        }
+        
+        if (resp.response) {
+          console.log("Found response field");
+          return resp.response;
+        }
+        
+        if (resp.output) {
+          console.log("Found output field");
+          return resp.output;
+        }
+        
+        // フィールドが見つからない場合はJSONをそのまま文字列化
+        console.log("No specific field found, stringifying originalResponse");
+        return JSON.stringify(resp, null, 2);
+      }
+      
+      // どのパターンにも当てはまらない場合は元のレスポンスを文字列化
+      console.log("No expected patterns found, stringifying entire response");
+      return JSON.stringify(response, null, 2);
+    } catch (error) {
+      console.error("Error extracting markdown:", error);
+      return JSON.stringify(response, null, 2);
+    }
+  };
 
   // Function to extract text from file using Dify API via Next.js API routes
   const extractTextFromFile = async (file: File): Promise<string> => {
@@ -276,136 +394,79 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
         console.log("Uploading file to API...");
         console.log(`File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
         
-        // Step 1: Upload file to our Next.js API route
+        // Step 1: Upload file to our Next.js API route - 絶対パスを使用
         setProgress(25);
-        console.log("Sending file to /api/dify/upload endpoint");
-        const fileUploadResponse = await fetch('/api/dify/upload', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!fileUploadResponse.ok) {
-        const errorData = await fileUploadResponse.json();
-        console.error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
-        throw new Error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
-      }
-      
-      const fileResult = await fileUploadResponse.json();
-      console.log("File upload response:", fileResult);
-      
-      // Get file ID
-      const fileId = fileResult.id;
-      if (!fileId) {
-        throw new Error("No file ID returned from API");
-      }
-      setFileId(fileId);
-      setStatus('processing');
-      setProgress(30);
-      
-      // 2. ポーリングを完全にスキップして直接処理に進む
-      console.log(`Skipping webhook polling and proceeding directly with fileId: ${fileId}`);
-      
-      // 事前登録リクエスト（バックグラウンドで行い結果を待たない）
-      try {
-        fetch(`/api/dify/webhook`, {
+        // 現在のURLからAPIのベースURLを構築
+        const baseUrl = window.location.protocol + '//' + window.location.host;
+        const apiUrl = `${baseUrl}/api/dify/upload`;
+        console.log(`Sending file to API endpoint: ${apiUrl}`);
+        
+        const fileUploadResponse = await fetch(apiUrl, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!fileUploadResponse.ok) {
+          const errorData = await fileUploadResponse.json();
+          console.error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
+          throw new Error(`File upload failed: ${errorData.error || fileUploadResponse.statusText}`);
+        }
+        
+        const fileResult = await fileUploadResponse.json();
+        console.log("File upload response:", fileResult);
+        
+        // Get file ID
+        const fileId = fileResult.id;
+        if (!fileId) {
+          throw new Error("No file ID returned from API");
+        }
+        setFileId(fileId);
+        setStatus('processing');
+        setProgress(40);
+        
+        // Step 2: API抽出リクエストを直接実行（webhookを介さず）
+        const extractApiUrl = `${baseUrl}/api/dify/extract`;
+        console.log(`Sending extraction request to: ${extractApiUrl}`);
+        const extractResponse = await fetch(extractApiUrl, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'x-file-id': fileId
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            fileId: fileId,
-            status: 'processing'
+            fileObject: fileResult,
+            query: "Please extract all numerical values and item names required for calculation from this file"
           })
-        }).then(res => {
-          console.log(`Pre-registration response status: ${res.status}`);
-        }).catch(err => {
-          console.warn('Pre-registration request error (non-critical):', err);
         });
+        
+        setProgress(70);
+        
+        if (!extractResponse.ok) {
+          const errorData = await extractResponse.json();
+          console.error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
+          throw new Error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
+        }
+        
+        const extractResult = await extractResponse.json();
+        console.log("Extract response:", extractResult);
+        setProgress(100);
+        setIsApiProcessing(false);
+        setStatus('done');
+        
+        // レスポンス構造を詳細にデバッグ
+        console.log("Response structure:", JSON.stringify(extractResult, null, 2));
+        
+        // 専用関数でmarkdownを抽出
+        const extractedMarkdown = extractMarkdownFromDifyResponse(extractResult);
+        console.log("Final extracted markdown (first 200 chars):", extractedMarkdown.substring(0, 200) + "...");
+        
+        return extractedMarkdown;
       } catch (error) {
-        console.warn('Failed to send pre-registration request:', error);
+        console.error("Error processing file:", error);
+        setIsApiProcessing(false);
+        setProgress(0);
+        setStatus('error');
+        throw error;
       }
-      
-      // 少し待機してからDifYのAPI処理が完了していると仮定して進む
-      await new Promise(r => setTimeout(r, 2000));
-      setProgress(60);
-      
-      // Step 3: Extract APIを呼ぶ
-      const defaultQuery = "Please extract all numerical values and item names required for calculation from this file";
-      const extractResponse = await fetch('/api/dify/extract', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          fileObject: fileResult,
-          query: defaultQuery // 未定義変数queryを修正
-        })
-      });
-      
-      setProgress(80);
-      
-      if (!extractResponse.ok) {
-        const errorData = await extractResponse.json();
-        console.error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
-        throw new Error(`Text extraction failed: ${errorData.error || extractResponse.statusText}`);
-      }
-      
-      const extractResult = await extractResponse.json();
-      console.log("Extract response:", extractResult);
-      setProgress(100);
-      setIsApiProcessing(false);
-      setStatus('done');
-      
-      // レスポンス構造を詳細にデバッグ
-      console.log("Response structure:", JSON.stringify(extractResult, null, 2));
-      
-      // APIから返された抽出テキストを取得
-      // ワークフローAPIの新しいレスポンス形式に対応
-      if (extractResult.answer && typeof extractResult.answer === 'string') {
-        console.log("Answer directly available in response");
-        return extractResult.answer;
-      }
-      
-      // オリジナルのレスポンスから抽出
-      if (extractResult.originalResponse) {
-        console.log("Using original response from API");
-        
-        const resp = extractResult.originalResponse;
-        
-        // ワークフローレスポンス形式の処理
-        if (resp.outputs && resp.outputs.answer) {
-          console.log("Found answer in originalResponse.outputs.answer");
-          return resp.outputs.answer;
-        }
-        
-        if (resp.answer) {
-          console.log("Found answer in originalResponse.answer");
-          return resp.answer;
-        }
-        
-        if (resp.response) {
-          console.log("Found answer in originalResponse.response");
-          return resp.response;
-        }
-        
-        if (resp.output) {
-          console.log("Found answer in originalResponse.output");
-          return resp.output;
-        }
-      }
-      
-      // デバッグ用に応答全体を文字列化
-      const responseStr = JSON.stringify(extractResult);
-      console.log("Fallback - using entire response as string:", responseStr.substring(0, 200) + "...");
-      return responseStr;
-    } catch (error) {
-      console.error("Error processing file:", error);
-      setIsApiProcessing(false);
-      setProgress(0);
-      setStatus('error');
-      throw error;
-    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
