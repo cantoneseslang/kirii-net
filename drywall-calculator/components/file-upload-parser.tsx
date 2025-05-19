@@ -302,31 +302,32 @@ export default function FileUploadParser({ lang }: FileUploadParserProps) {
       setStatus('processing');
       setProgress(30);
       
-      // 2. 解析完了をfileIdでポーリング
-      let completed = false;
-      // ポーリング時間を延長：60秒→180秒（3分）
-      console.log(`Polling for webhook notification with fileId: ${fileId}`);
-      for (let i = 0; i < 180; i++) { // 最大180秒待つ
-        console.log(`Polling attempt ${i+1}/180`);
-        const res = await fetch(`/api/dify/webhook?fileId=${fileId}`);
-        if (!res.ok) {
-          console.error(`Webhook polling error: ${res.status} ${res.statusText}`);
-          continue;
-        }
-        const statusData = await res.json();
-        console.log(`Webhook poll response:`, statusData);
-        if (statusData.completed) {
-          console.log(`File processing completed at attempt ${i+1}`);
-          completed = true;
-          break;
-        }
-        await new Promise(r => setTimeout(r, 1000));
+      // 2. ポーリングを完全にスキップして直接処理に進む
+      console.log(`Skipping webhook polling and proceeding directly with fileId: ${fileId}`);
+      
+      // 事前登録リクエスト（バックグラウンドで行い結果を待たない）
+      try {
+        fetch(`/api/dify/webhook`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-file-id': fileId
+          },
+          body: JSON.stringify({
+            fileId: fileId,
+            status: 'processing'
+          })
+        }).then(res => {
+          console.log(`Pre-registration response status: ${res.status}`);
+        }).catch(err => {
+          console.warn('Pre-registration request error (non-critical):', err);
+        });
+      } catch (error) {
+        console.warn('Failed to send pre-registration request:', error);
       }
-      if (!completed) {
-        console.error(`Webhook notification not received after 3 minutes for fileId: ${fileId}`);
-        // エラーではなく、続行する - Webhookが来なくても処理を続ける
-        console.warn("Proceeding without webhook notification...");
-      }
+      
+      // 少し待機してからDifYのAPI処理が完了していると仮定して進む
+      await new Promise(r => setTimeout(r, 2000));
       setProgress(60);
       
       // Step 3: Extract APIを呼ぶ
