@@ -31,7 +31,7 @@ export default function ContactPage() {
         />
 
         <section className="py-20 md:py-24 bg-slate-900 text-white relative">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?key=dz9dy')] opacity-10 bg-cover bg-center" />
+          <div className="absolute inset-0 bg-[url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg')] opacity-10 bg-cover bg-center" />
 
           <div className="container mx-auto px-4 md:px-6 relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
