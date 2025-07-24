@@ -30,11 +30,20 @@ export const metadata = {
     siteName: "Kirii Construction Materials",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Kirii Construction Materials Building",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
     description: "Leading provider of professional ceiling systems and building materials in Hong Kong and China",
+    images: ["https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg"],
   },
 }
 
