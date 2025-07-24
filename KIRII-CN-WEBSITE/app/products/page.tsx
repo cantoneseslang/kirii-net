@@ -163,30 +163,28 @@ export default function ProductsPage() {
   const buildingAccessoriesData = [
     {
       id: "access-hatches",
-      title: "Access Hatches",
-      subtitle: "Secure Access Solutions",
-      description:
-        "High-quality access hatches providing secure and durable access points with fire-rated options available.",
+      title: t.accessHatches,
+      subtitle: t.secureAccessSolutions,
+      description: t.accessHatchesDesc,
       image:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Access-hatch-01.jpg-5wN8pLbYBh5a9HKMFEvbRqwTGo4oR2.jpeg",
       features: [
-        "High-Quality Access: Secure and durable access points",
-        "Fire-Rated Options: Safety compliance available",
-        "Custom Sizes: Tailored to specific requirements",
+        t.highQualityAccess,
+        t.fireRatedOptionsFeature,
+        t.customSizes,
       ],
     },
     {
       id: "mounting-systems",
-      title: "Mounting & Fastening Systems",
-      subtitle: "Professional Hardware Solutions",
-      description:
-        "Comprehensive collection of mounting brackets, fasteners, and specialized components for ceiling installations.",
+      title: t.mountingFasteningSystems,
+      subtitle: t.professionalHardwareSolutions,
+      description: t.mountingSystemsDesc,
       image:
         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Accessories_001.jpg-LHv640e1ZzSCYsYx5rnUlYWaPONvNr.jpeg",
       features: [
-        "Professional Hardware: Mounting brackets and fasteners",
-        "Specialized Components: Custom building accessories",
-        "Quality Materials: Corrosion-resistant finishes",
+        t.professionalHardware,
+        t.specializedComponents,
+        t.qualityMaterials,
       ],
     },
   ]
@@ -651,7 +649,7 @@ export default function ProductsPage() {
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                         style={{ fontFamily: "Arial, sans-serif" }}
                       >
-                        Request Quote
+                        {t.requestQuote}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </CardContent>
@@ -665,33 +663,33 @@ export default function ProductsPage() {
                   className="text-2xl font-bold text-gray-900 mb-8 text-center"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  Accessories Collection
+                  {t.accessoriesCollection}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
+                  [
                     {
-                      title: "CP022 Clip-in Accessories",
+                      title: t.cp022ClipinAccessories,
                       image:
                         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Accessories_001.jpg-LHv640e1ZzSCYsYx5rnUlYWaPONvNr.jpeg",
-                      description: "Complete accessories for CP022 clip-in ceiling systems",
+                      description: t.cp022AccessoriesDesc,
                     },
                     {
-                      title: "Linear Ceiling Accessories",
+                      title: t.linearCeilingAccessories,
                       image:
                         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Accessories_002.jpg-nSAhDnaBEm8TG2OxrdW5RdbU0euol8.jpeg",
-                      description: "HP-type, CH/CP-type, and KT-type accessories",
+                      description: t.linearAccessoriesDesc,
                     },
                     {
-                      title: "Baffle Ceiling Accessories",
+                      title: t.baffleCeilingAccessories,
                       image:
                         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Accessories_003.jpg-83QBcj7cBf2PEWSfjaKYFi9UrHG8RZ.jpeg",
-                      description: "UQ-type baffle and angle trimming components",
+                      description: t.baffleAccessoriesDesc,
                     },
                     {
-                      title: "General Accessories",
+                      title: t.generalAccessories,
                       image:
                         "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Accessories_004.jpg-ejpOuXwSbkLOmjJLW22GlWTxY6XPSa.jpeg",
-                      description: "Complete range of building accessories and trimming",
+                      description: t.generalAccessoriesDesc,
                     },
                   ].map((item, index) => (
                     <Card
@@ -715,7 +713,7 @@ export default function ProductsPage() {
                           className="w-full bg-transparent"
                           style={{ fontFamily: "Arial, sans-serif" }}
                         >
-                          View Details
+                          {t.viewDetails}
                         </Button>
                       </CardContent>
                     </Card>

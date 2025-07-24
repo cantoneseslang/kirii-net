@@ -898,6 +898,32 @@ export const translations: Record<Language, TranslationStrings> = {
     // Tab names
     ceilingSystems: "Ceiling Systems",
     buildingAccessories: "Building Accessories",
+    
+    // Building Accessories Section
+    accessHatches: "Access Hatches",
+    secureAccessSolutions: "Secure Access Solutions",
+    accessHatchesDesc: "High-quality access hatches providing secure and durable access points with fire-rated options available.",
+    highQualityAccess: "High-Quality Access: Secure and durable access points",
+    fireRatedOptionsFeature: "Fire-Rated Options: Safety compliance available",
+    customSizes: "Custom Sizes: Tailored to specific requirements",
+    requestQuote: "Request Quote",
+    
+    mountingFasteningSystems: "Mounting & Fastening Systems",
+    professionalHardwareSolutions: "Professional Hardware Solutions",
+    mountingSystemsDesc: "Comprehensive collection of mounting brackets, fasteners, and specialized components for ceiling installations.",
+    professionalHardware: "Professional Hardware: Mounting brackets and fasteners",
+    specializedComponents: "Specialized Components: Custom building accessories",
+    qualityMaterials: "Quality Materials: Corrosion-resistant finishes",
+    
+    accessoriesCollection: "Accessories Collection",
+    cp022ClipinAccessories: "CP022 Clip-in Accessories",
+    cp022AccessoriesDesc: "Complete accessories for CP022 clip-in ceiling systems",
+    linearCeilingAccessories: "Linear Ceiling Accessories",
+    linearAccessoriesDesc: "HP-type, CH/CP-type, and KT-type accessories",
+    baffleCeilingAccessories: "Baffle Ceiling Accessories",
+    baffleAccessoriesDesc: "UQ-type baffle and angle trimming components",
+    generalAccessories: "General Accessories",
+    generalAccessoriesDesc: "Complete range of building accessories and trimming",
     technicalSpecifications: "Technical Specifications",
     
     // Commercial and Infrastructure Projects
@@ -1572,6 +1598,32 @@ export const translations: Record<Language, TranslationStrings> = {
     // Tab names
     ceilingSystems: "天花系統",
     buildingAccessories: "建築配件",
+    
+    // Building Accessories Section
+    accessHatches: "檢修口",
+    secureAccessSolutions: "安全通道解決方案",
+    accessHatchesDesc: "提供安全耐用通道點的高品質檢修口，備有防火等級選項。",
+    highQualityAccess: "高品質通道：安全耐用的通道點",
+    fireRatedOptionsFeature: "防火等級選項：符合安全規範",
+    customSizes: "定制尺寸：按特定要求量身定制",
+    requestQuote: "獲取報價",
+    
+    mountingFasteningSystems: "安裝及緊固系統",
+    professionalHardwareSolutions: "專業五金解決方案",
+    mountingSystemsDesc: "全面的安裝支架、緊固件及天花安裝專用組件系列。",
+    professionalHardware: "專業五金：安裝支架及緊固件",
+    specializedComponents: "專業組件：定制建築配件",
+    qualityMaterials: "優質材料：抗腐蝕表面處理",
+    
+    accessoriesCollection: "配件系列",
+    cp022ClipinAccessories: "CP022卡扣式配件",
+    cp022AccessoriesDesc: "CP022卡扣式天花系統完整配件",
+    linearCeilingAccessories: "線性天花配件",
+    linearAccessoriesDesc: "HP型、CH/CP型及KT型配件",
+    baffleCeilingAccessories: "格柵天花配件",
+    baffleAccessoriesDesc: "UQ型格柵及角飾組件",
+    generalAccessories: "通用配件",
+    generalAccessoriesDesc: "全系列建築配件及裝飾",
     technicalSpecifications: "技術規格",
     
     // Commercial and Infrastructure Projects
@@ -2246,6 +2298,32 @@ export const translations: Record<Language, TranslationStrings> = {
     // Tab names
     ceilingSystems: "天花系统",
     buildingAccessories: "建筑配件",
+    
+    // Building Accessories Section
+    accessHatches: "检修口",
+    secureAccessSolutions: "安全通道解决方案",
+    accessHatchesDesc: "提供安全耐用通道点的高品质检修口，备有防火等级选项。",
+    highQualityAccess: "高品质通道：安全耐用的通道点",
+    fireRatedOptionsFeature: "防火等级选项：符合安全规范",
+    customSizes: "定制尺寸：按特定要求量身定制",
+    requestQuote: "获取报价",
+    
+    mountingFasteningSystems: "安装及紧固系统",
+    professionalHardwareSolutions: "专业五金解决方案",
+    mountingSystemsDesc: "全面的安装支架、紧固件及天花安装专用组件系列。",
+    professionalHardware: "专业五金：安装支架及紧固件",
+    specializedComponents: "专业组件：定制建筑配件",
+    qualityMaterials: "优质材料：抗腐蚀表面处理",
+    
+    accessoriesCollection: "配件系列",
+    cp022ClipinAccessories: "CP022卡扣式配件",
+    cp022AccessoriesDesc: "CP022卡扣式天花系统完整配件",
+    linearCeilingAccessories: "线性天花配件",
+    linearAccessoriesDesc: "HP型、CH/CP型及KT型配件",
+    baffleCeilingAccessories: "格栅天花配件",
+    baffleAccessoriesDesc: "UQ型格栅及角饰组件",
+    generalAccessories: "通用配件",
+    generalAccessoriesDesc: "全系列建筑配件及装饰",
     technicalSpecifications: "技术规格",
     
     // Commercial and Infrastructure Projects
