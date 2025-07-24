@@ -528,7 +528,7 @@ export default function ProductsPage() {
                   <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                     <div className="relative h-48">
                       <Image
-                        src="/placeholder.svg?height=300&width=500&text=Corridor+Ceiling+Series"
+                        src="/images/Corridor Ceiling Series.jpeg"
                         alt="Corridor Ceiling Series"
                         fill
                         className="object-cover"
@@ -559,7 +559,7 @@ export default function ProductsPage() {
                   <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                     <div className="relative h-48">
                       <Image
-                        src="/placeholder.svg?height=300&width=500&text=Home+Ceiling+Series"
+                        src="/images/Home Ceiling Series.jpeg"
                         alt="Home Ceiling Series"
                         fill
                         className="object-cover"
