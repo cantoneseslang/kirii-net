@@ -924,6 +924,37 @@ export const translations: Record<Language, TranslationStrings> = {
     baffleAccessoriesDesc: "UQ-type baffle and angle trimming components",
     generalAccessories: "General Accessories",
     generalAccessoriesDesc: "Complete range of building accessories and trimming",
+    
+    // Technical Documentation Section
+    technicalDocumentation: "Technical Documentation",
+    technicalDocumentationDesc: "Comprehensive technical documentation and specifications for all ceiling systems.",
+    
+    acousticCeilingSpecs: "Acoustic Ceiling Specifications",
+    acousticCeilingSpecsDesc: "Detailed acoustic performance data and installation specifications",
+    structuralLoadCalc: "Structural Load Calculations",
+    structuralLoadCalcDesc: "Load-bearing capacity and structural integrity specifications",
+    installationGuidelines: "Installation Guidelines",
+    installationGuidelinesDesc: "Step-by-step installation procedures and safety requirements",
+    fireSafetyRatings: "Fire Safety Ratings",
+    fireSafetyRatingsDesc: "Fire resistance ratings and safety compliance documentation",
+    materialSpecifications: "Material Specifications",
+    materialSpecificationsDesc: "Detailed material properties and quality standards",
+    maintenanceProcedures: "Maintenance Procedures",
+    maintenanceProceduresDesc: "Long-term maintenance guidelines and service requirements",
+    downloadPdf: "Download PDF",
+    
+    technicalFeatures: "Technical Features",
+    materialProperties: "Material Properties",
+    aluminumAlloys: "Aluminum Alloys: Grade specifications and treatment processes",
+    steelComponents: "Steel Components: Galvanization and coating standards",
+    fireResistance: "Fire Resistance: Tested fire ratings and safety compliance",
+    corrosionResistance: "Corrosion Resistance: Environmental durability testing",
+    performanceStandards: "Performance Standards",
+    structuralIntegritySpec: "Structural Integrity: Load-bearing capacity testing",
+    weatherResistance: "Weather Resistance: Environmental exposure testing",
+    acousticPerformance: "Acoustic Performance: Sound transmission class ratings",
+    thermalProperties: "Thermal Properties: Insulation and expansion characteristics",
+    
     technicalSpecifications: "Technical Specifications",
     
     // Commercial and Infrastructure Projects
@@ -1624,6 +1655,37 @@ export const translations: Record<Language, TranslationStrings> = {
     baffleAccessoriesDesc: "UQ型格柵及角飾組件",
     generalAccessories: "通用配件",
     generalAccessoriesDesc: "全系列建築配件及裝飾",
+    
+    // Technical Documentation Section
+    technicalDocumentation: "技術文檔",
+    technicalDocumentationDesc: "所有天花系統的全面技術文檔及規格。",
+    
+    acousticCeilingSpecs: "聲學天花規格",
+    acousticCeilingSpecsDesc: "詳細聲學性能數據及安裝規格",
+    structuralLoadCalc: "結構載重計算",
+    structuralLoadCalcDesc: "承載能力及結構完整性規格",
+    installationGuidelines: "安裝指引",
+    installationGuidelinesDesc: "逐步安裝程序及安全要求",
+    fireSafetyRatings: "防火安全等級",
+    fireSafetyRatingsDesc: "防火等級及安全合規文檔",
+    materialSpecifications: "材料規格",
+    materialSpecificationsDesc: "詳細材料特性及品質標準",
+    maintenanceProcedures: "維護程序",
+    maintenanceProceduresDesc: "長期維護指引及服務要求",
+    downloadPdf: "下載PDF",
+    
+    technicalFeatures: "技術特點",
+    materialProperties: "材料特性",
+    aluminumAlloys: "鋁合金：等級規格及處理工藝",
+    steelComponents: "鋼組件：鍍鋅及塗層標準",
+    fireResistance: "防火性能：經測試防火等級及安全合規",
+    corrosionResistance: "抗腐蝕性：環境耐久性測試",
+    performanceStandards: "性能標準",
+    structuralIntegritySpec: "結構完整性：承載能力測試",
+    weatherResistance: "耐候性：環境暴露測試",
+    acousticPerformance: "聲學性能：聲音傳播等級評級",
+    thermalProperties: "熱性能：絕緣及膨脹特性",
+    
     technicalSpecifications: "技術規格",
     
     // Commercial and Infrastructure Projects
@@ -2324,6 +2386,37 @@ export const translations: Record<Language, TranslationStrings> = {
     baffleAccessoriesDesc: "UQ型格栅及角饰组件",
     generalAccessories: "通用配件",
     generalAccessoriesDesc: "全系列建筑配件及装饰",
+    
+    // Technical Documentation Section
+    technicalDocumentation: "技术文档",
+    technicalDocumentationDesc: "所有天花系统的全面技术文档及规格。",
+    
+    acousticCeilingSpecs: "声学天花规格",
+    acousticCeilingSpecsDesc: "详细声学性能数据及安装规格",
+    structuralLoadCalc: "结构载重计算",
+    structuralLoadCalcDesc: "承载能力及结构完整性规格",
+    installationGuidelines: "安装指引",
+    installationGuidelinesDesc: "逐步安装程序及安全要求",
+    fireSafetyRatings: "防火安全等级",
+    fireSafetyRatingsDesc: "防火等级及安全合规文档",
+    materialSpecifications: "材料规格",
+    materialSpecificationsDesc: "详细材料特性及品质标准",
+    maintenanceProcedures: "维护程序",
+    maintenanceProceduresDesc: "长期维护指引及服务要求",
+    downloadPdf: "下载PDF",
+    
+    technicalFeatures: "技术特点",
+    materialProperties: "材料特性",
+    aluminumAlloys: "铝合金：等级规格及处理工艺",
+    steelComponents: "钢组件：镀锌及涂层标准",
+    fireResistance: "防火性能：经测试防火等级及安全合规",
+    corrosionResistance: "抗腐蚀性：环境耐久性测试",
+    performanceStandards: "性能标准",
+    structuralIntegritySpec: "结构完整性：承载能力测试",
+    weatherResistance: "耐候性：环境暴露测试",
+    acousticPerformance: "声学性能：声音传播等级评级",
+    thermalProperties: "热性能：绝缘及膨胀特性",
+    
     technicalSpecifications: "技术规格",
     
     // Commercial and Infrastructure Projects

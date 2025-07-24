@@ -726,43 +726,43 @@ export default function ProductsPage() {
             <TabsContent value="technical-specs" className="space-y-12">
               <div className="text-center mb-12">
                 <h3 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  📐 {t.technicalDocumentationTitle}
+                  📐 {t.technicalDocumentation}
                 </h3>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: "Arial, sans-serif" }}>
-                  {t.technicalDocumentationFullDesc}
+                  {t.technicalDocumentationDesc}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                {[
+                [
                   {
-                    title: "Acoustic Ceiling Specifications",
-                    description: "Detailed acoustic performance data and installation specifications",
+                    title: t.acousticCeilingSpecs,
+                    description: t.acousticCeilingSpecsDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Acoustic+Drawings",
                   },
                   {
-                    title: "Structural Load Calculations",
-                    description: "Load-bearing capacity and structural integrity specifications",
+                    title: t.structuralLoadCalc,
+                    description: t.structuralLoadCalcDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Structural+Specs",
                   },
                   {
-                    title: "Installation Guidelines",
-                    description: "Step-by-step installation procedures and safety requirements",
+                    title: t.installationGuidelines,
+                    description: t.installationGuidelinesDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Installation+Guide",
                   },
                   {
-                    title: "Fire Safety Ratings",
-                    description: "Fire resistance ratings and safety compliance documentation",
+                    title: t.fireSafetyRatings,
+                    description: t.fireSafetyRatingsDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Fire+Safety",
                   },
                   {
-                    title: "Material Specifications",
-                    description: "Detailed material properties and quality standards",
+                    title: t.materialSpecifications,
+                    description: t.materialSpecificationsDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Material+Specs",
                   },
                   {
-                    title: "Maintenance Procedures",
-                    description: "Long-term maintenance guidelines and service requirements",
+                    title: t.maintenanceProcedures,
+                    description: t.maintenanceProceduresDesc,
                     image: "/placeholder.svg?height=300&width=400&text=Maintenance+Guide",
                   },
                 ].map((spec, index) => (
@@ -788,7 +788,7 @@ export default function ProductsPage() {
                         style={{ fontFamily: "Arial, sans-serif" }}
                       >
                         <Download className="mr-2 h-4 w-4" />
-                        Download PDF
+                        {t.downloadPdf}
                       </Button>
                     </CardContent>
                   </Card>
@@ -798,29 +798,29 @@ export default function ProductsPage() {
               {/* Technical Features */}
               <div className="bg-white p-8 rounded-lg shadow-lg">
                 <h4 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Technical Features
+                  {t.technicalFeatures}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
                     <h5 className="font-semibold text-gray-900 mb-3" style={{ fontFamily: "Arial, sans-serif" }}>
-                      Material Properties
+                      {t.materialProperties}
                     </h5>
                     <ul className="space-y-2 text-sm text-gray-700" style={{ fontFamily: "Arial, sans-serif" }}>
-                      <li>• Aluminum Alloys: Grade specifications and treatment processes</li>
-                      <li>• Steel Components: Galvanization and coating standards</li>
-                      <li>• Fire Resistance: Tested fire ratings and safety compliance</li>
-                      <li>• Corrosion Resistance: Environmental durability testing</li>
+                      <li>• {t.aluminumAlloys}</li>
+                      <li>• {t.steelComponents}</li>
+                      <li>• {t.fireResistance}</li>
+                      <li>• {t.corrosionResistance}</li>
                     </ul>
                   </div>
                   <div>
                     <h5 className="font-semibold text-gray-900 mb-3" style={{ fontFamily: "Arial, sans-serif" }}>
-                      Performance Standards
+                      {t.performanceStandards}
                     </h5>
                     <ul className="space-y-2 text-sm text-gray-700" style={{ fontFamily: "Arial, sans-serif" }}>
-                      <li>• Structural Integrity: Load-bearing capacity testing</li>
-                      <li>• Weather Resistance: Environmental exposure testing</li>
-                      <li>• Acoustic Performance: Sound transmission class ratings</li>
-                      <li>• Thermal Properties: Insulation and expansion characteristics</li>
+                      <li>• {t.structuralIntegritySpec}</li>
+                      <li>• {t.weatherResistance}</li>
+                      <li>• {t.acousticPerformance}</li>
+                      <li>• {t.thermalProperties}</li>
                     </ul>
                   </div>
                 </div>
