@@ -1185,6 +1185,16 @@ export const translations: Record<Language, TranslationStrings> = {
     buildingAccessoriesTrimming: "Building Accessories and Trimming",
     accessoriesTrimming: "Accessories & Trimming",
     completeRangeBuildingAccessories: "Complete range of building accessories and trimming",
+    // Testimonials
+    mtrTestimonial: "Kirii Construction Materials consistently delivers high-quality ceiling systems for our MTR projects. Their technical expertise and reliability make them our preferred supplier.",
+    mtrCorporation: "MTR Corporation",
+    infrastructureDevelopment: "Infrastructure Development",
+    hendersonTestimonial: "Outstanding building materials and professional service. Kirii's custom solutions perfectly matched our commercial project requirements with excellent quality assurance.",
+    hendersonLandDevelopment: "Henderson Land Development",
+    commercialDevelopment: "Commercial Development",
+    chinaStateTestimonial: "Reliable partner for large-scale construction projects. Their comprehensive material supply and technical consultation services have been invaluable to our success.",
+    chinaStateConstruction: "China State Construction",
+    generalContractor: "General Contractor",
     },
 
   "zh-HK": {
@@ -1849,6 +1859,16 @@ export const translations: Record<Language, TranslationStrings> = {
     buildingAccessoriesTrimming: "建築配件及裝飾",
     accessoriesTrimming: "配件及裝飾",
     completeRangeBuildingAccessories: "全系列建築配件及裝飾",
+    // Testimonials
+    mtrTestimonial: "桐井建築材料一直為我們的港鐵項目提供高品質的天花系統。他們的技術專業知識和可靠性使他們成為我們的首選供應商。",
+    mtrCorporation: "港鐵公司",
+    infrastructureDevelopment: "基礎設施發展",
+    hendersonTestimonial: "優秀的建築材料和專業服務。桐井的定制解決方案完美匹配我們的商業項目要求，並提供卓越的品質保證。",
+    hendersonLandDevelopment: "恒基兆業地產",
+    commercialDevelopment: "商業發展",
+    chinaStateTestimonial: "大型建築項目的可靠合作夥伴。他們全面的材料供應和技術諮詢服務對我們的成功非常寶貴。",
+    chinaStateConstruction: "中國建築",
+    generalContractor: "總承包商",
   },
 
   "zh-CN": {
@@ -2513,6 +2533,16 @@ export const translations: Record<Language, TranslationStrings> = {
     buildingAccessoriesTrimming: "建筑配件及装饰",
     accessoriesTrimming: "配件及装饰",
     completeRangeBuildingAccessories: "全系列建筑配件及装饰",
+    // Testimonials
+    mtrTestimonial: "桐井建筑材料一直为我们的港铁项目提供高品质的天花系统。他们的技术专业知识和可靠性使他们成为我们的首选供应商。",
+    mtrCorporation: "港铁公司",
+    infrastructureDevelopment: "基础设施发展",
+    hendersonTestimonial: "优秀的建筑材料和专业服务。桐井的定制解决方案完美匹配我们的商业项目要求，并提供卓越的品质保证。",
+    hendersonLandDevelopment: "恒基兆业地产",
+    commercialDevelopment: "商业发展",
+    chinaStateTestimonial: "大型建筑项目的可靠合作伙伴。他们全面的材料供应和技术咨询服务对我们的成功非常宝贵。",
+    chinaStateConstruction: "中国建筑",
+    generalContractor: "总承包商",
   },
 }
 

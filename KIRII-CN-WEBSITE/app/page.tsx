@@ -537,8 +537,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  "Kirii Construction Materials consistently delivers high-quality ceiling systems for our MTR projects.
-                  Their technical expertise and reliability make them our preferred supplier."
+                  "{t.mtrTestimonial}"
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
@@ -546,10 +545,10 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900" style={{ fontFamily: "Arial, sans-serif" }}>
-                      MTR Corporation
+                      {t.mtrCorporation}
                     </div>
                     <div className="text-sm text-gray-500" style={{ fontFamily: "Arial, sans-serif" }}>
-                      Infrastructure Development
+                      {t.infrastructureDevelopment}
                     </div>
                   </div>
                 </div>
@@ -564,8 +563,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  "Outstanding building materials and professional service. Kirii's custom solutions perfectly matched
-                  our commercial project requirements with excellent quality assurance."
+                  "{t.hendersonTestimonial}"
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
@@ -573,10 +571,10 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900" style={{ fontFamily: "Arial, sans-serif" }}>
-                      Henderson Land Development
+                      {t.hendersonLandDevelopment}
                     </div>
                     <div className="text-sm text-gray-500" style={{ fontFamily: "Arial, sans-serif" }}>
-                      Commercial Development
+                      {t.commercialDevelopment}
                     </div>
                   </div>
                 </div>
@@ -591,8 +589,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  "Reliable partner for large-scale construction projects. Their comprehensive material supply and
-                  technical consultation services have been invaluable to our success."
+                  "{t.chinaStateTestimonial}"
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
@@ -600,10 +597,10 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900" style={{ fontFamily: "Arial, sans-serif" }}>
-                      China State Construction
+                      {t.chinaStateConstruction}
                     </div>
                     <div className="text-sm text-gray-500" style={{ fontFamily: "Arial, sans-serif" }}>
-                      General Contractor
+                      {t.generalContractor}
                     </div>
                   </div>
                 </div>
