@@ -54,7 +54,7 @@ export default function ProductsPage() {
       title: t.chTypeLinearCeiling,
       subtitle: t.modernLinearDesign,
       description: t.modernLinearDesignDesc,
-      image: "/placeholder.svg?height=400&width=600&text=CH-type+Linear+Ceiling",
+      image: "/images/CH-type_Linear_Ceiling_Series_RGB_10.jpg",
       features: [
         t.sleekLinearDesign,
         t.easyInstallation,
@@ -70,7 +70,7 @@ export default function ProductsPage() {
       title: t.cp022ClipinCeilingTitle,
       subtitle: t.easyInstallClipinSolutions,
       description: t.efficientClipinDesc,
-      image: "/placeholder.svg?height=400&width=600&text=CP022+Clip-in+Ceiling",
+      image: "/images/CP022_Clip-in_Ceiling_RGB_07.jpg",
       features: [
         t.quickInstallation,
         t.maintenanceAccess,
@@ -91,7 +91,7 @@ export default function ProductsPage() {
       title: t.crTypeWideCeiling,
       subtitle: t.wideLinearDesignLargeSpaces,
       description: t.wideLinearDesignDesc,
-      image: "/placeholder.svg?height=400&width=600&text=CR-type+Wide+Linear",
+      image: "/images/CR-type_Wide_Linear_Ceiling_Series_RGB_06.jpg",
       features: [
         t.wideLinearPanels,
         t.architecturalAppeal,
@@ -106,7 +106,7 @@ export default function ProductsPage() {
       title: t.hpTypeHookOnCeiling,
       subtitle: t.flexibleHookonInstallation,
       description: t.flexibleHookonDesc,
-      image: "/placeholder.svg?height=400&width=600&text=HP-type+Hook-on",
+      image: "/images/HP-type_Hook-on_Ceiling_Series_RGB_02.jpg",
       features: [
         t.hookonSystem,
         t.maintenanceAccess,
@@ -121,7 +121,7 @@ export default function ProductsPage() {
       title: t.ktTypeLayinCeiling,
       subtitle: t.traditionalLayinGrid,
       description: t.traditionalLayinDesc,
-      image: "/placeholder.svg?height=400&width=600&text=KT-type+Lay-in",
+      image: "/images/KT-type_Lay-in_Ceiling_Series_RGB_03.jpg",
       features: [
         t.standardGridSystem,
         t.easyAccess,
@@ -139,7 +139,7 @@ export default function ProductsPage() {
       title: t.tgTypeTartanGrid,
       subtitle: t.decorativeGridPattern,
       description: t.uniqueTartanGrid,
-      image: "/placeholder.svg?height=300&width=400&text=TG-type+Tartan+Grid",
+      image: "/images/TG-type_Tartan_Grid_Ceiling_Series_RGB_01.jpg",
       category: t.specialized,
     },
     {
@@ -147,7 +147,7 @@ export default function ProductsPage() {
       title: t.uoBaffleCeiling,
       subtitle: t.linearBaffleDesign,
       description: t.linearBaffleDesc,
-      image: "/placeholder.svg?height=300&width=400&text=UO-type+Baffle",
+      image: "/images/UO-type_Baffle_Ceiling_Series_RGB_03.jpg",
       category: t.specialized,
     },
     {
@@ -155,7 +155,7 @@ export default function ProductsPage() {
       title: t.wgWideGridCeiling,
       subtitle: t.wideGridConfiguration,
       description: t.wideGridDesc,
-      image: "/placeholder.svg?height=300&width=400&text=WG-type+Wide+Grid",
+      image: "/images/WG-type_Wide_Grid_Ceiling_Series_RGB_09.jpg",
       category: t.specialized,
     },
   ]
