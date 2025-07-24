@@ -17,12 +17,25 @@ const playfair = Playfair_Display({
 })
 
 export const metadata = {
-  title: "CHEVAL MIRROR | Premium Glass & Aluminium Solutions",
+  title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
   description:
-    "CHEVAL MIRROR is Tanzania's premier provider of European aluminium and glass solutions, specializing in custom mirrors, shower enclosures, glass partitions, and more.",
+    "Kirii Construction Materials (三水桐井) is a leading provider of professional ceiling systems and building materials in Hong Kong and China, specializing in aluminum ceiling systems, building accessories, and custom construction solutions.",
   keywords:
-    "glass, mirrors, aluminium, shower enclosures, glass partitions, Dar es Salaam, Tanzania, custom mirrors, bathroom solutions",
-  generator: "v0.dev",
+    "ceiling systems, aluminum ceiling, building materials, construction materials, Hong Kong, China, Foshan, building accessories, commercial ceiling, residential ceiling, MTR projects",
+  generator: "Next.js",
+  openGraph: {
+    title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
+    description: "Leading provider of professional ceiling systems and building materials in Hong Kong and China",
+    url: "https://kirii.cn",
+    siteName: "Kirii Construction Materials",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
+    description: "Leading provider of professional ceiling systems and building materials in Hong Kong and China",
+  },
 }
 
 export default function RootLayout({
