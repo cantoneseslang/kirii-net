@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://chevalmirror.co.tz/sitemap.xml
+
+# Disallow admin and private areas (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Allow important directories
+Allow: /images/
+Allow: /videos/
+Allow: /public/
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block unwanted bots (optional)
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

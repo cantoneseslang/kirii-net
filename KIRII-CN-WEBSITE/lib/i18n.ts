@@ -1,0 +1,2480 @@
+export type Language = "en" | "zh-HK" | "zh-CN"
+
+export interface TranslationStrings {
+  // Navigation
+  home: string
+  about: string
+  products: string
+  projects: string
+  contact: string
+  getQuote: string
+
+  // Homepage Hero
+  heroTitle: string
+  heroSubtitle: string
+  heroDescription: string
+  viewProjects: string
+
+  // Stats
+  projectsCompleted: string
+  yearsExperience: string
+  qualityGuarantee: string
+  majorMarkets: string
+
+  // About Section
+  aboutKirii: string
+  professionalSolutions: string
+  aboutDescription: string
+  modernFacilities: string
+  modernFacilitiesDesc: string
+  professionalConsultation: string
+  qualityAssuranceGuarantee: string
+  technicalCompliance: string
+
+  // Products Section
+  ourProducts: string
+  comprehensiveSolutions: string
+  productsDescription: string
+  ceilingSystems: string
+  ceilingSystemsDesc: string
+  buildingAccessories: string
+  buildingAccessoriesDesc: string
+  customSolutions: string
+  customSolutionsDesc: string
+  learnMore: string
+  getCustomQuote: string
+
+  // Services Section
+  ourServices: string
+  comprehensiveSupport: string
+  servicesDescription: string
+  materialSupply: string
+  materialSupplyDesc: string
+  technicalConsultation: string
+  technicalConsultationDesc: string
+  projectSupport: string
+  projectSupportDesc: string
+  qualityAssurance: string
+  qualityAssuranceDesc: string
+
+  // Testimonials
+  clientTestimonials: string
+  trustedByLeaders: string
+
+  // CTA Section
+  readyToStart: string
+  ctaDescription: string
+  getFreeConsultation: string
+  browseProducts: string
+
+  // About Page
+  buildingExcellence: string
+  since2008: string
+  aboutCompanyDesc1: string
+  aboutCompanyDesc2: string
+  aboutCompanyDesc3: string
+  yearsOfExperience: string
+  projectsCompleted: string
+  satisfiedClients: string
+  companyOverview: string
+  leadingSupplier: string
+
+  // Products Page
+  comprehensiveBuildingSolutions: string
+  kiriiProducts: string
+  productsPageDesc: string
+  viewProducts: string
+  ceilingSystemsTitle: string
+  buildingAccessoriesTitle: string
+  customSolutionsTitle: string
+
+  // Projects Page
+  ourProjectPortfolio: string
+  projectPortfolio: string
+  projectsPageDesc: string
+  projectCategories: string
+  mtrProjects: string
+  commercialProjects: string
+  residentialProjects: string
+  projectInquiries: string
+  projectDevelopmentTeam: string
+  directContact: string
+
+  // Contact Page
+  contactUs: string
+  getInTouch: string
+  contactPageDesc: string
+  weWouldLoveToHear: string
+  hearFromYou: string
+  contactDescription: string
+  companyInformation: string
+  kiriiSanshuiBuilding: string
+
+  // Footer
+  quickLinks: string
+  followUs: string
+  newsletter: string
+  newsletterDesc: string
+  subscribe: string
+  enterEmail: string
+  allRightsReserved: string
+  
+  // Footer Company Info
+  companyName: string
+  companyAddress: string
+  postalCode: string
+  addressLine: string
+  telephone: string
+  fax: string
+  email: string
+  
+  // Homepage additional content
+  productSpecifications: string
+  technicalDocumentation: string
+  technicalDocumentationDesc: string
+  
+  // About page content
+  qualityGuarantee: string
+  modernCeilingSystems: string
+  professionalInstallation: string
+  companyHeadquarters: string
+  professionalServiceCenter: string
+  ourExpertise: string
+  specializedBuildingSolutions: string
+  ourExpertiseDesc: string
+  innovativeCeilingSystems: string
+  innovativeCeilingDesc: string
+  chTypeLinearCeiling: string
+  cp022ClipinCeiling: string
+  variousSuspendedCeiling: string
+  constructionAccessories: string
+  constructionAccessoriesDesc: string
+  highQualityAccessHatches: string
+  professionalMountingBrackets: string
+  specializedFasteningSystem: string
+  customBuildingAccessories: string
+  customBuildingSolutions: string
+  customBuildingSolutionsDesc: string
+  tailoredProjectSolutions: string
+  technicalSpecCompliance: string
+  commercialProjectSpecialization: string
+  infrastructureProjectExpertise: string
+  partnerWithUs: string
+  readyToStartProject: string
+  readyToStartProjectDesc: string
+  contactOurTeam: string
+  viewOurProducts: string
+  
+  // Projects page content
+  ourProjectPortfolio: string
+  projectPortfolio: string
+  projectsPageDesc: string
+  projectCategories: string
+  
+  // Contact page content
+  contactPageDesc: string
+  weWouldLoveToHear: string
+  hearFromYou: string
+  contactDescription: string
+  getInTouch: string
+  kiriiSanshuiBuilding: string
+  sendMessage: string
+  yourName: string
+  yourEmail: string
+  subject: string
+  message: string
+  namePlaceholder: string
+  emailPlaceholder: string
+  subjectPlaceholder: string
+  messagePlaceholder: string
+  
+  // Products page content  
+  productsPageDesc: string
+  viewProducts: string
+  ceilingSystems: string
+  comprehensiveCeilingSystemsDesc: string
+  specializedCeilingSystems: string
+  cp022ClipinCeilingTitle: string
+  cp022ClipinCeilingDesc: string
+  technicalDocumentationTitle: string
+  technicalDocumentationFullDesc: string
+  diverseApplications: string
+  diverseApplicationsDesc: string
+  retailSpaces: string
+  educationalInstitutions: string
+  officeBuildings: string
+  healthcareFacilities: string
+  
+  // Additional products page content
+  productCategoriesOverview: string
+  kiriiSpecializesDesc: string
+  yearsExperience: string
+  projectsCompleted: string
+  productLines: string
+  buildingAccessories: string
+  technicalSpecifications: string
+  acousticCeilingSpecs: string
+  acousticCeilingDesc: string
+  downloadPdf: string
+  structuralLoadCalc: string
+  structuralLoadDesc: string
+  installationGuidelines: string
+  installationGuidelinesDesc: string
+  fireSafetyRatings: string
+  fireSafetyDesc: string
+  materialSpecifications: string
+  materialSpecDesc: string
+  maintenanceProcedures: string
+  maintenanceDesc: string
+  technicalFeatures: string
+  materialProperties: string
+  aluminumAlloys: string
+  steelComponents: string
+  fireResistance: string
+  corrosionResistance: string
+  performanceStandards: string
+  structuralIntegrity: string
+  weatherResistance: string
+  acousticPerformance: string
+  thermalProperties: string
+  infrastructureProjects: string
+  transportationHubs: string
+  publicBuildings: string
+  culturalCenters: string
+  mixedUseDevelopments: string
+  productAdvantages: string
+  qualityAssurance: string
+  premiumMaterials: string
+  rigorousTesting: string
+  internationalStandards: string
+  professionalInstallation: string
+  designFlexibility: string
+  customizationOptions: string
+  colorVariations: string
+  sizeAdaptability: string
+  integrationCapability: string
+  performanceBenefits: string
+  durability: string
+  fireSafety: string
+  acousticControl: string
+  easyMaintenance: string
+  productInquiries: string
+  productInquiriesDesc: string
+  contactProductDept: string
+  requestTechnicalSpecs: string
+  technicalSpecsAvailable: string
+  customSolutions: string
+  professionalInstallationSupport: string
+  
+  // Product details content
+  all: string
+  linearSystems: string
+  clipinSystems: string
+  wideLinearSystems: string
+  hookonSystems: string
+  layinSystems: string
+  specialized: string
+  modernLinearDesign: string
+  modernLinearDesignDesc: string
+  keyFeatures: string
+  sleekLinearDesign: string
+  easyInstallation: string
+  versatileApplications: string
+  applications: string
+  commercialBuildings: string
+  commercialCenters: string
+  publicAreas: string
+  viewDetails: string
+  easyInstallClipinSolutions: string
+  efficientClipinDesc: string
+  quickInstallation: string
+  professionalFinish: string
+  healthcareFacilitiesApp: string
+  educationalInstitutionsApp: string
+  retailEnvironments: string
+  wideLinearDesignLargeSpaces: string
+  wideLinearDesignDesc: string
+  wideLinearPanels: string
+  architecturalAppeal: string
+  largeCommercialSpaces: string
+  conventionCenters: string
+  airportTerminals: string
+  shoppingMalls: string
+  flexibleHookonInstallation: string
+  flexibleHookonDesc: string
+  hookonSystem: string
+  maintenanceAccess: string
+  industrialFacilities: string
+  warehouses: string
+  manufacturingPlants: string
+  serviceCenters: string
+  traditionalLayinGrid: string
+  traditionalLayinDesc: string
+  standardGridSystem: string
+  easyAccess: string
+  versatileIntegration: string
+  schools: string
+  hospitals: string
+  governmentBuildings: string
+  decorativeGridPattern: string
+  uniqueTartanGrid: string
+  learnMore: string
+  linearBaffleDesign: string
+  linearBaffleDesc: string
+  wideGridConfiguration: string
+  wideGridDesc: string
+  specializedApplications: string
+  corridorCeilingSpecialized: string
+  corridorCeilingDesc: string
+  viewSpecifications: string
+  homeCeilingResidential: string
+  homeCeilingDesc: string
+  
+  // Additional product keys
+  chTypeLinearCeiling: string
+  customizableLengths: string
+  highQualityMaterials: string
+  fireRatedOptions: string
+  costEffective: string
+  crTypeWideCeiling: string
+  hpTypeHookOnCeiling: string
+  ktTypeLayinCeiling: string
+  tgTypeTartanGrid: string
+  uoBaffleCeiling: string
+  wgWideGridCeiling: string
+  corridorCeilingSeries: string
+  homeCeilingSeries: string
+  designFlexibility: string
+  structuralIntegrity: string
+  
+  // Product Advantages section
+  productAdvantages: string
+  qualityAssurance: string
+  premiumMaterials: string
+  rigorousTesting: string
+  internationalStandards: string
+  professionalInstallation: string
+  customizationOptions: string
+  colorVariations: string
+  sizeAdaptability: string
+  integrationCapability: string
+  performanceBenefits: string
+  durability: string
+  fireSafety: string
+  acousticControl: string
+  easyMaintenance: string
+  
+  // Contact section
+  contactProductDept: string
+  requestTechnicalSpecs: string
+  technicalSpecsAvailable: string
+  customSolutions: string
+  professionalInstallationSupport: string
+  
+  // Tab names
+  ceilingSystems: string
+  buildingAccessories: string
+  technicalSpecifications: string
+  
+  // Commercial and Infrastructure Projects
+  commercialProjects: string
+  officeBuildings: string
+  officeBuildingsDesc: string
+  retailSpacesDesc: string
+  healthcareFacilitiesDesc: string
+  educationalInstitutionsDesc: string
+  infrastructureProjects: string
+  transportationHubsDesc: string
+  publicBuildingsDesc: string
+  culturalCentersDesc: string
+  mixedUseDevelopmentsDesc: string
+  
+  // Button text
+  getQuote: string
+  
+  // Projects page content
+  mtrProjects: string
+  healthcare: string
+  commercial: string
+  residential: string
+  cultural: string
+  mtrProjectsTitle: string
+  infrastructureExcellence: string
+  featuredStation: string
+  admiraltyStation: string
+  admiraltyLocation: string
+  admiraltyApplication: string
+  admiraltyFeatures: string
+  admiraltyScope: string
+  cheKungTempleStation: string
+  cheKungLocation: string
+  cheKungSpecialization: string
+  cheKungDesign: string
+  hongKongStation: string
+  hongKongLocation: string
+  hongKongFeatures: string
+  hongKongApplication: string
+  additionalMtrProjects: string
+  projectCategorySummary: string
+  mtrInfrastructure: string
+  scope: string
+  network: string
+  features: string
+  coverage: string
+  publicHealthcare: string
+  projects: string
+  easternHospital: string
+  yanChaiHospital: string
+  commercialDevelopments: string
+  grandPromenade: string
+  sciencePark: string
+  residentialProjects: string
+  florientRise: string
+  application: string
+  culturalFacilities: string
+  wuzhouCultureArtCentre: string
+  sectorExpertise: string
+  transportationInfrastructure: string
+  expertise: string
+  specialization: string
+  standards: string
+  healthcareFacilities: string
+  experience: string
+  commercialMixedUse: string
+  portfolio: string
+  versatility: string
+  culturalPublicBuildings: string
+  capability: string
+  projectInquiries: string
+  projectDevelopmentTeam: string
+  portfolioDesc: string
+  references: string
+  consultation: string
+  directContact: string
+  technicalSupport: string
+  projectPlanning: string
+  customSolutionsDesc: string
+  requestProjectConsultation: string
+  viewOurProducts: string
+  
+  // Healthcare tab content
+  publicFacilitiesHealthcare: string
+  hospitalProjects: string
+  majorHospital: string
+  easternHospital: string
+  easternHospitalFull: string
+  type: string
+  majorPublicHospitalFacility: string
+  hygienicCeilingSystems: string
+  easyCleanSurfaces: string
+  compliance: string
+  healthcareFacilityStandards: string
+  multipleWards: string
+  yanChaiHospital: string
+  yanChaiHospitalFull: string
+  medicalCenterExpansion: string
+  modernMedicalFacility: string
+  infectionControlSystems: string
+  
+  // Commercial tab content
+  commercialDevelopmentsTitle: string
+  mixedUseDevelopments: string
+  majorDevelopment: string
+  grandPromenadeFull: string
+  mixedUseMegaDevelopment: string
+  retailOfficeResidential: string
+  largeDevelopmentScale: string
+  comprehensiveCeilingInstallation: string
+  scienceParkFull: string
+  highTechResearchFacility: string
+  researchAndDevelopment: string
+  innovationEnvironment: string
+  cleanroomSpecifications: string
+  
+  // Residential tab content
+  residentialDevelopments: string
+  luxuryResidential: string
+  luxuryDevelopment: string
+  florientRiseFull: string
+  highEndResidentialComplex: string
+  premiumAestheticSolutions: string
+  privateUnitsCommonAreas: string
+  residentialQuality: string
+  soundInsulation: string
+  
+  // Cultural tab content
+  culturalVenues: string
+  performanceVenues: string
+  artsCenter: string
+  wuzhouCultureArtCentreFull: string
+  performanceVenue: string
+  acousticOptimizedSystems: string
+  performanceHallsCulturalSpaces: string
+  culturalFacilityRequirements: string
+  acousticPerformance: string
+}
+
+export const translations: Record<Language, TranslationStrings> = {
+  en: {
+    // Navigation
+    home: "Home",
+    about: "About",
+    products: "Products",
+    projects: "Projects",
+    contact: "Contact",
+    getQuote: "Get Quote",
+
+    // Homepage Hero
+    heroTitle: "Premium Building Materials &\nCeiling Systems",
+    heroSubtitle: "Professional Building Materials Since 2003",
+    heroDescription:
+      "Leading supplier of high-quality building materials and innovative ceiling solutions for commercial and infrastructure projects across Hong Kong and China.",
+    viewProjects: "View Projects",
+
+    // Stats
+    projectsCompleted: "Projects Completed",
+    yearsExperience: "Years Experience",
+    qualityGuarantee: "Quality Guarantee",
+    majorMarkets: "Major Markets",
+
+    // About Section
+    aboutKirii: "About Kirii Sanshui",
+    professionalSolutions: "Professional Building Solutions",
+    aboutDescription:
+      "Established in 2003, Kirii Sanshui Building Materials Co., Ltd. has been providing premium building materials and ceiling systems across Hong Kong and China.",
+    modernFacilities: "Modern Facilities & Professional Service",
+    modernFacilitiesDesc:
+      "Our state-of-the-art facilities and professional team ensure the highest quality building materials and ceiling systems for your projects. From our headquarters in Hong Kong and Guangzhou, we serve clients across the region with comprehensive technical support and custom solutions.",
+    professionalConsultation: "Professional consultation services",
+    qualityAssuranceGuarantee: "Quality assurance guarantee",
+    technicalCompliance: "Technical specification compliance",
+
+    // Products Section
+    ourProducts: "Our Products",
+    comprehensiveSolutions: "Comprehensive Building Solutions",
+    productsDescription:
+      "From ceiling systems to building accessories, we provide complete solutions for your construction needs.",
+    ceilingSystems: "Ceiling Systems",
+    ceilingSystemsDesc:
+      "Advanced ceiling solutions including CH-type Linear Ceiling Series, CP022 Clip-in systems, and comprehensive suspended ceiling options.",
+    buildingAccessories: "Building Accessories",
+    buildingAccessoriesDesc:
+      "Professional-grade accessories including access hatches, mounting brackets, fasteners, and specialized building components.",
+    customSolutions: "Custom Solutions",
+    customSolutionsDesc:
+      "Tailored building material solutions designed to meet specific project requirements with complete technical specification compliance.",
+    learnMore: "Learn More",
+    getCustomQuote: "Get Custom Quote",
+
+    // Services Section
+    ourServices: "Our Services",
+    comprehensiveSupport: "Comprehensive Project Support",
+    servicesDescription:
+      "From material supply to technical consultation, we provide end-to-end support for your construction projects.",
+    materialSupply: "Material Supply",
+    materialSupplyDesc: "Comprehensive material sourcing and supply for all project requirements.",
+    technicalConsultation: "Technical Consultation",
+    technicalConsultationDesc: "Expert technical advisory services from our experienced engineering team.",
+    projectSupport: "Project Support",
+    projectSupportDesc: "End-to-end project assistance from planning to completion.",
+    qualityAssurance: "Quality Assurance",
+    qualityAssuranceDesc: "Rigorous quality control and certification for all materials and services.",
+
+    // Testimonials
+    clientTestimonials: "Client Testimonials",
+    trustedByLeaders: "Trusted by Industry Leaders",
+
+    // CTA Section
+    readyToStart: "Ready to Start Your Project?",
+    ctaDescription:
+      "Contact our expert team today for professional building materials consultation and custom solutions tailored to your project needs.",
+    getFreeConsultation: "Get Free Consultation",
+    browseProducts: "Browse Products",
+
+    // About Page
+    buildingExcellence: "Building Excellence",
+    since2008: "Since 2008",
+    aboutCompanyDesc1: "Established as a leading supplier of building materials in Hong Kong and China, Kirii Sanshui specializes in innovative ceiling systems, construction accessories, and custom building solutions for commercial and infrastructure projects.",
+    aboutCompanyDesc2: "Our expertise spans cutting-edge ceiling technology, high-quality construction accessories, and tailored solutions that meet the specific requirements of major commercial and infrastructure developments.",
+    aboutCompanyDesc3: "As a trusted partner for architects, construction companies, and government projects, we maintain the highest standards of quality and technical specification compliance.",
+    yearsOfExperience: "Years of Experience",
+    projectsCompleted: "Projects Completed",
+    satisfiedClients: "Satisfied Clients",
+    companyOverview: "Company Overview",
+    leadingSupplier: "Leading supplier of building materials in Hong Kong and China, specializing in innovative ceiling systems and construction accessories",
+
+    // Products Page
+    comprehensiveBuildingSolutions: "Comprehensive Building Solutions",
+    kiriiProducts: "Kirii's Products",
+    productsPageDesc: "Comprehensive ceiling systems and building accessories for commercial and infrastructure projects across Hong Kong and China.",
+    viewProducts: "View Products",
+    ceilingSystemsTitle: "Ceiling Systems",
+    buildingAccessoriesTitle: "Building Accessories",
+    customSolutionsTitle: "Custom Solutions",
+
+    // Projects Page
+    ourProjectPortfolio: "Our Project Portfolio",
+    projectPortfolio: "Project",
+    projectsPageDesc: "Comprehensive ceiling solutions across Hong Kong's infrastructure, healthcare, commercial, and cultural sectors",
+    projectCategories: "Project Categories",
+    mtrProjects: "MTR Projects",
+    commercialProjects: "Commercial Projects",
+    residentialProjects: "Residential Projects",
+    projectInquiries: "Project Inquiries",
+    projectDevelopmentTeam: "Project Development Team",
+    directContact: "Direct Contact",
+
+    // Contact Page
+    contactUs: "Contact Us",
+    getInTouch: "Get In Touch",
+    contactPageDesc: "Get in touch with our team for product inquiries, technical support, or partnership opportunities",
+    weWouldLoveToHear: "We'd Love to",
+    hearFromYou: "Hear from You",
+    contactDescription: "Whether you're ready to start a project, have questions about our products, or want to explore partnership opportunities, our team is here to help with professional ceiling systems and building materials solutions.",
+    companyInformation: "Company Information",
+    kiriiSanshuiBuilding: "Kirii Sanshui Building Materials Fty. Ltd.",
+
+    // Footer
+    quickLinks: "Quick Links",
+    followUs: "Follow Us",
+    newsletter: "Newsletter",
+    newsletterDesc: "Stay updated with our latest products and innovations",
+    subscribe: "Subscribe",
+    enterEmail: "Enter your email",
+    allRightsReserved: "All rights reserved.",
+    
+    // Footer Company Info
+    companyName: "Kirii Sanshui Building Materials Fty. Ltd.",
+    companyAddress: "〒528100 13 YongYe Road Yundonghai Street\nSanshui Foshan GuangDong China",
+    postalCode: "〒528100",
+    addressLine: "13 YongYe Road Yundonghai Street, Sanshui Foshan GuangDong China",
+    telephone: "TEL: (86)757-8782-6438",
+    fax: "FAX: (86)757-8782-6330",
+    email: "Email: info@kirii.cn",
+    
+    // Homepage additional content
+    productSpecifications: "Product Specifications",
+    technicalDocumentation: "Technical Documentation",
+    technicalDocumentationDesc: "Comprehensive technical specifications and product catalogs for all our building materials and accessories.",
+    
+    // About page content
+    qualityGuarantee: "Quality Guarantee",
+    modernCeilingSystems: "Modern Ceiling Systems",
+    professionalInstallation: "Professional installation and design",
+    companyHeadquarters: "Company Headquarters",
+    professionalServiceCenter: "Professional service center",
+    ourExpertise: "Our Expertise",
+    specializedBuildingSolutions: "Specialized Building Solutions",
+    ourExpertiseDesc: "Our comprehensive expertise covers innovative ceiling systems, construction accessories, and custom building solutions for commercial and infrastructure projects.",
+    innovativeCeilingSystems: "Innovative Ceiling Systems",
+    innovativeCeilingDesc: "Specializing in cutting-edge ceiling technology with comprehensive solutions for modern buildings.",
+    chTypeLinearCeiling: "CH-type Linear Ceiling Series",
+    cp022ClipinCeiling: "CP022 Clip-in Ceiling systems",
+    variousSuspendedCeiling: "Various suspended ceiling solutions",
+    constructionAccessories: "Construction Accessories",
+    constructionAccessoriesDesc: "High-quality construction accessories and specialized components for professional installations.",
+    highQualityAccessHatches: "High-quality access hatches",
+    professionalMountingBrackets: "Professional mounting brackets",
+    specializedFasteningSystem: "Specialized fastening systems",
+    customBuildingAccessories: "Custom building accessories",
+    customBuildingSolutions: "Custom Building Solutions",
+    customBuildingSolutionsDesc: "Tailored solutions designed to meet specific project requirements and technical specifications.",
+    tailoredProjectSolutions: "Tailored project solutions",
+    technicalSpecCompliance: "Technical specification compliance",
+    commercialProjectSpecialization: "Commercial project specialization",
+    infrastructureProjectExpertise: "Infrastructure project expertise",
+    partnerWithUs: "Partner With Us",
+    readyToStartProject: "Ready to Start Your Next Project?",
+    readyToStartProjectDesc: "Whether you're planning a major commercial development or infrastructure project, our team is ready to provide the expertise and materials you need for success.",
+    contactOurTeam: "Contact Our Team",
+    viewOurProducts: "View Our Products",
+    
+    // Projects page content
+    ourProjectPortfolio: "Our Project Portfolio",
+    projectPortfolio: "Project",
+    projectsPageDesc: "Comprehensive ceiling solutions across Hong Kong's infrastructure, healthcare, commercial, and cultural sectors",
+    projectCategories: "Project Categories",
+    
+    // Contact page content
+    contactPageDesc: "Get in touch with our team for product inquiries, technical support, or partnership opportunities",
+    weWouldLoveToHear: "We'd Love to",
+    hearFromYou: "Hear from You",
+    contactDescription: "Whether you're ready to start a project, have questions about our products, or want to explore partnership opportunities, our team is here to help with professional ceiling systems and building materials solutions.",
+    getInTouch: "Get In Touch",
+    kiriiSanshuiBuilding: "Kirii Sanshui Building Materials Fty. Ltd.",
+    sendMessage: "Send Message",
+    yourName: "Your Name",
+    yourEmail: "Your Email",
+    subject: "Subject",
+    message: "Message",
+    namePlaceholder: "Enter your full name",
+    emailPlaceholder: "Enter your email address",
+    subjectPlaceholder: "Enter the subject of your inquiry",
+    messagePlaceholder: "Enter your message here...",
+    
+    // Products page content  
+    productsPageDesc: "Comprehensive ceiling systems and building accessories for commercial and infrastructure projects across Hong Kong and China.",
+    viewProducts: "View Products",
+    ceilingSystems: "Ceiling Systems",
+    comprehensiveCeilingSystemsDesc: "Comprehensive range of ceiling systems designed for modern commercial and infrastructure applications.",
+    specializedCeilingSystems: "Specialized Ceiling Systems",
+    cp022ClipinCeilingTitle: "CP022 & CP030 Clip-in Ceiling Systems",
+    cp022ClipinCeilingDesc: "Efficient clip-in ceiling systems offering quick installation, easy maintenance, and professional finish for various commercial applications.",
+    technicalDocumentationTitle: "Technical Documentation",
+    technicalDocumentationFullDesc: "Comprehensive technical documentation and specifications for all ceiling systems.",
+    diverseApplications: "Diverse Applications",
+    diverseApplicationsDesc: "Our ceiling systems and building accessories serve diverse commercial and infrastructure projects across Hong Kong and China.",
+    retailSpaces: "Retail Spaces: Attractive and functional ceiling systems",
+    educationalInstitutions: "Educational Institutions: Durable and safe ceiling systems",
+    officeBuildings: "Office Buildings: Professional and efficient ceiling solutions",
+    healthcareFacilities: "Healthcare Facilities: Hygienic and compliant ceiling systems",
+    
+    // Additional products page content
+    productCategoriesOverview: "Product Categories Overview",
+    kiriiSpecializesDesc: "Kirii San Shui Building Materials specializes in comprehensive ceiling systems and building accessories for commercial and infrastructure projects.",
+    yearsExperience: "Years Experience",
+    projectsCompleted: "Projects Completed",
+    productLines: "Product Lines",
+    buildingAccessories: "Building Accessories",
+    technicalSpecifications: "Technical Specifications",
+    acousticCeilingSpecs: "Acoustic Ceiling Specifications",
+    acousticCeilingDesc: "Detailed acoustic performance data and installation specifications",
+    downloadPdf: "Download PDF",
+    structuralLoadCalc: "Structural Load Calculations",
+    structuralLoadDesc: "Load-bearing capacity and structural integrity specifications",
+    installationGuidelines: "Installation Guidelines",
+    installationGuidelinesDesc: "Step-by-step installation procedures and safety requirements",
+    fireSafetyRatings: "Fire Safety Ratings",
+    fireSafetyDesc: "Fire resistance ratings and safety compliance documentation",
+    materialSpecifications: "Material Specifications",
+    materialSpecDesc: "Detailed material properties and quality standards",
+    maintenanceProcedures: "Maintenance Procedures",
+    maintenanceDesc: "Long-term maintenance guidelines and service requirements",
+    technicalFeatures: "Technical Features",
+    materialProperties: "Material Properties",
+    aluminumAlloys: "Aluminum Alloys: Grade specifications and treatment processes",
+    steelComponents: "Steel Components: Galvanization and coating standards",
+    fireResistance: "Fire Resistance: Tested fire ratings and safety compliance",
+    corrosionResistance: "Corrosion Resistance: Environmental durability testing",
+    performanceStandards: "Performance Standards",
+    structuralIntegrity: "Structural Integrity: Load-bearing capacity testing",
+    weatherResistance: "Weather Resistance: Environmental exposure testing",
+    acousticPerformance: "Acoustic Performance: Sound transmission class ratings",
+    thermalProperties: "Thermal Properties: Insulation and expansion characteristics",
+    infrastructureProjects: "Infrastructure Projects",
+    transportationHubs: "Transportation Hubs: MTR stations and airports",
+    publicBuildings: "Public Buildings: Government and civic facilities",
+    culturalCenters: "Cultural Centers: Museums and performance venues",
+    mixedUseDevelopments: "Mixed-Use Developments: Residential and commercial complexes",
+    productAdvantages: "Product Advantages",
+    qualityAssurance: "Quality Assurance",
+    premiumMaterials: "Premium Materials: High-grade aluminum and steel construction",
+    rigorousTesting: "Rigorous Testing: Comprehensive quality control processes",
+    internationalStandards: "International Standards: Compliance with global building codes",
+    professionalInstallation: "Professional Installation: Expert installation support",
+    designFlexibility: "Design Flexibility",
+    customizationOptions: "Customization Options: Tailored solutions for specific projects",
+    colorVariations: "Color Variations: Wide range of finish options",
+    sizeAdaptability: "Size Adaptability: Custom dimensions available",
+    integrationCapability: "Integration Capability: Compatible with building systems",
+    performanceBenefits: "Performance Benefits",
+    durability: "Durability: Long-lasting performance in demanding environments",
+    fireSafety: "Fire Safety: Fire-rated options available",
+    acousticControl: "Acoustic Control: Sound management capabilities",
+    easyMaintenance: "Easy Maintenance: Accessible design for ongoing maintenance",
+    productInquiries: "Product Inquiries",
+    productInquiriesDesc: "For detailed product specifications, customization options, or technical support, contact our product department.",
+    contactProductDept: "Contact Product Department",
+    requestTechnicalSpecs: "Request Technical Specs",
+    technicalSpecsAvailable: "Technical Specifications Available Upon Request",
+    customSolutions: "Custom Solutions",
+    professionalInstallationSupport: "Professional Installation Support",
+    
+    // Product details content
+    all: "All",
+    linearSystems: "Linear Systems",
+    clipinSystems: "Clip-in Systems",
+    wideLinearSystems: "Wide Linear Systems",
+    hookonSystems: "Hook-on Systems",
+    layinSystems: "Lay-in Systems",
+    specialized: "Specialized",
+    modernLinearDesign: "Modern Linear Design Solutions",
+    modernLinearDesignDesc: "Contemporary aesthetic ceiling solutions with sleek linear design, perfect for modern commercial and office spaces.",
+    keyFeatures: "Key Features:",
+    sleekLinearDesign: "Sleek Linear Design: Contemporary aesthetic for modern spaces",
+    easyInstallation: "Easy Installation: Streamlined mounting system",
+    versatileApplications: "Versatile Applications: Suitable for offices, retail, and public spaces",
+    applications: "Applications:",
+    commercialBuildings: "Commercial Buildings",
+    commercialCenters: "Commercial Centers",
+    publicAreas: "Public Areas",
+    viewDetails: "View Details",
+    easyInstallClipinSolutions: "Easy-Install Clip-in Solutions",
+    efficientClipinDesc: "Efficient clip-in ceiling systems offering quick installation, easy maintenance, and professional finish for various commercial applications.",
+    quickInstallation: "Quick Installation: Efficient clip-in mechanism",
+    professionalFinish: "Professional Finish: Clean, seamless appearance",
+    healthcareFacilitiesApp: "Healthcare Facilities",
+    educationalInstitutionsApp: "Educational Institutions",
+    retailEnvironments: "Retail Environments",
+    wideLinearDesignLargeSpaces: "Wide Linear Design for Large Spaces",
+    wideLinearDesignDesc: "Enhanced coverage ceiling solutions with wide linear panels, designed for large commercial spaces requiring bold architectural statements.",
+    wideLinearPanels: "Wide Linear Panels: Enhanced coverage for large areas",
+    architecturalAppeal: "Architectural Appeal: Bold design statement",
+    largeCommercialSpaces: "Large Commercial Spaces",
+    conventionCenters: "Convention Centers",
+    airportTerminals: "Airport Terminals",
+    shoppingMalls: "Shopping Malls",
+    flexibleHookonInstallation: "Flexible Hook-on Installation System",
+    flexibleHookonDesc: "Flexible ceiling system with hook-on installation, providing easy access for maintenance and design flexibility for commercial applications.",
+    hookonSystem: "Hook-on System: Flexible installation and removal",
+    maintenanceAccess: "Maintenance Access: Easy panel replacement",
+    industrialFacilities: "Industrial Facilities",
+    warehouses: "Warehouses",
+    manufacturingPlants: "Manufacturing Plants",
+    serviceCenters: "Service Centers",
+    traditionalLayinGrid: "Traditional Lay-in Grid System",
+    traditionalLayinDesc: "Standard grid ceiling system compatible with industry standards, offering easy access and versatile integration with building systems.",
+    standardGridSystem: "Standard Grid System: Compatible with industry standards",
+    easyAccess: "Easy Access: Simple panel removal for maintenance",
+    versatileIntegration: "Versatile Integration: Accommodates lighting and HVAC systems",
+    schools: "Schools",
+    hospitals: "Hospitals",
+    governmentBuildings: "Government Buildings",
+    decorativeGridPattern: "Decorative Grid Pattern Design",
+    uniqueTartanGrid: "Unique tartan grid pattern ceiling system for distinctive architectural applications.",
+    learnMore: "Learn More",
+    linearBaffleDesign: "Linear Baffle Design",
+    linearBaffleDesc: "Linear baffle ceiling system providing excellent acoustic control and modern aesthetics.",
+    wideGridConfiguration: "Wide Grid Configuration",
+    wideGridDesc: "Wide grid ceiling system for applications requiring larger panel configurations.",
+    specializedApplications: "Specialized Applications",
+    corridorCeilingSpecialized: "Specialized for Corridor Applications",
+    corridorCeilingDesc: "Designed specifically for corridor and hallway applications with optimized dimensions and installation methods.",
+    viewSpecifications: "View Specifications",
+    homeCeilingResidential: "Residential Applications",
+    homeCeilingDesc: "Ceiling solutions designed for residential applications with aesthetic appeal and easy maintenance.",
+    
+    // Additional product keys
+    chTypeLinearCeiling: "CH-type Linear Ceiling Series",
+    customizableLengths: "Customizable Lengths: Available in various dimensions",
+    highQualityMaterials: "High-Quality Materials: Durable aluminum construction",
+    fireRatedOptions: "Fire-Rated Options: Safety compliance available",
+    costEffective: "Cost-Effective: Economical installation and maintenance",
+    crTypeWideCeiling: "CR-type Wide Linear Ceiling Series",
+    hpTypeHookOnCeiling: "HP-type Hook-on Ceiling Series",
+    ktTypeLayinCeiling: "KT-type Lay-in Ceiling Series",
+    tgTypeTartanGrid: "TG-type Tartan Grid Ceiling Series",
+    uoBaffleCeiling: "UO-type Baffle Ceiling Series",
+    wgWideGridCeiling: "WG-type Wide Grid Ceiling Series",
+    corridorCeilingSeries: "Corridor Ceiling Series",
+    homeCeilingSeries: "Home Ceiling Series",
+    designFlexibility: "Design Flexibility",
+    structuralIntegrity: "Structural Integrity: Robust construction for demanding applications",
+    
+    // Product Advantages section
+    productAdvantages: "Product Advantages",
+    qualityAssurance: "Quality Assurance",
+    premiumMaterials: "Premium Materials: High-grade aluminum and steel construction",
+    rigorousTesting: "Rigorous Testing: Comprehensive quality control processes",
+    internationalStandards: "International Standards: Compliance with global building codes",
+    professionalInstallation: "Professional Installation: Expert installation support",
+    customizationOptions: "Customization Options: Tailored solutions for specific projects",
+    colorVariations: "Color Variations: Wide range of finish options",
+    sizeAdaptability: "Size Adaptability: Custom dimensions available",
+    integrationCapability: "Integration Capability: Compatible with building systems",
+    performanceBenefits: "Performance Benefits",
+    durability: "Durability: Long-lasting performance in demanding environments",
+    fireSafety: "Fire Safety: Fire-rated options available",
+    acousticControl: "Acoustic Control: Sound management capabilities",
+    easyMaintenance: "Easy Maintenance: Accessible design for ongoing maintenance",
+    
+    // Contact section
+    contactProductDept: "Contact Product Department",
+    requestTechnicalSpecs: "Request Technical Specs",
+    technicalSpecsAvailable: "Technical Specifications Available Upon Request",
+    customSolutions: "Custom Solutions",
+    professionalInstallationSupport: "Professional Installation Support",
+    
+    // Tab names
+    ceilingSystems: "Ceiling Systems",
+    buildingAccessories: "Building Accessories",
+    technicalSpecifications: "Technical Specifications",
+    
+    // Commercial and Infrastructure Projects
+    commercialProjects: "Commercial Projects",
+    officeBuildings: "Office Buildings",
+    officeBuildingsDesc: "Professional and efficient ceiling solutions",
+    retailSpacesDesc: "Aesthetic and practical ceiling systems",
+    healthcareFacilitiesDesc: "Ceiling systems meeting hygiene standards",
+    educationalInstitutionsDesc: "Durable and safe ceiling systems",
+    infrastructureProjects: "Infrastructure Projects",
+    transportationHubsDesc: "MTR stations and airports",
+    publicBuildingsDesc: "Government and civic facilities",
+    culturalCentersDesc: "Museums and performance venues",
+    mixedUseDevelopmentsDesc: "Residential and commercial complexes",
+    
+    // Button text
+    getQuote: "Get Quote",
+    
+    // Projects page content
+    mtrProjects: "MTR Projects",
+    healthcare: "Healthcare",
+    commercial: "Commercial",
+    residential: "Residential",
+    cultural: "Cultural",
+    mtrProjectsTitle: "MTR (Mass Transit Railway) Projects",
+    infrastructureExcellence: "Infrastructure Excellence in Hong Kong's Transit Network",
+    featuredStation: "Featured Station",
+    admiraltyStation: "Admiralty MTR Station (金鐘站)",
+    admiraltyLocation: "Location: Central Hong Kong - Major interchange station",
+    admiraltyApplication: "Application: Advanced ceiling systems for high-traffic transit hub",
+    admiraltyFeatures: "Features: Durable, fire-rated ceiling solutions for public safety",
+    admiraltyScope: "Scope: Comprehensive ceiling installation across multiple platform levels",
+    cheKungTempleStation: "Che Kung Temple MTR Station (車公廟站)",
+    cheKungLocation: "Location: Sha Tin District",
+    cheKungSpecialization: "Specialization: Modern ceiling systems for efficient passenger flow",
+    cheKungDesign: "Design: Clean, contemporary aesthetic for urban transit",
+    hongKongStation: "Hong Kong MTR Station (香港站)",
+    hongKongLocation: "Location: Central Hong Kong - Airport Express terminus",
+    hongKongFeatures: "Features: Premium ceiling solutions for international gateway",
+    hongKongApplication: "Application: High-end finishes for prestigious location",
+    additionalMtrProjects: "Additional MTR Projects",
+    projectCategorySummary: "Project Category Summary",
+    mtrInfrastructure: "MTR Infrastructure",
+    scope: "Scope",
+    network: "Network",
+    features: "Features",
+    coverage: "Coverage",
+    publicHealthcare: "Public Healthcare",
+    projects: "Projects",
+    easternHospital: "Eastern Hospital: Large public facility",
+    yanChaiHospital: "Yan Chai Hospital: Medical center expansion",
+    commercialDevelopments: "Commercial Developments",
+    grandPromenade: "Grand Promenade: Mixed-use mega-development",
+    sciencePark: "Science Park: High-tech research facility",
+    residentialProjects: "Residential Projects",
+    florientRise: "Florient Rise: High-end residential complex",
+    application: "Application",
+    culturalFacilities: "Cultural Facilities",
+    wuzhouCultureArtCentre: "Wuzhou Culture Art Centre: Performance venue",
+    sectorExpertise: "Sector Expertise",
+    transportationInfrastructure: "Transportation Infrastructure",
+    expertise: "Expertise",
+    specialization: "Specialization",
+    standards: "Standards",
+    healthcareFacilities: "Healthcare Facilities",
+    experience: "Experience",
+    commercialMixedUse: "Commercial & Mixed-Use",
+    portfolio: "Portfolio",
+    versatility: "Versatility",
+    culturalPublicBuildings: "Cultural & Public Buildings",
+    capability: "Capability",
+    projectInquiries: "Project Inquiries",
+    projectDevelopmentTeam: "Project Development Team",
+    portfolioDesc: "Portfolio: Complete project documentation available",
+    references: "References: Client testimonials and case studies",
+    consultation: "Consultation: Site visits and technical assessments",
+    directContact: "Direct Contact",
+    technicalSupport: "Technical Support: Engineering consultation",
+    projectPlanning: "Project Planning: Timeline and scope discussion",
+    customSolutionsDesc: "Custom Solutions: Tailored ceiling systems",
+    requestProjectConsultation: "Request Project Consultation",
+    viewOurProducts: "View Our Products",
+    
+    // Healthcare tab content
+    publicFacilitiesHealthcare: "Public Facilities - Healthcare",
+    hospitalProjects: "Hospital Projects",
+    majorHospital: "Major Hospital",
+    easternHospital: "Eastern Hospital",
+    easternHospitalFull: "Eastern Hospital (東區醫院)",
+    type: "Type",
+    majorPublicHospitalFacility: "Major public hospital facility",
+    hygienicCeilingSystems: "Hygienic ceiling systems for medical environment",
+    easyCleanSurfaces: "Easy-clean surfaces, antimicrobial properties",
+    compliance: "Compliance",
+    healthcareFacilityStandards: "Healthcare facility standards and regulations",
+    multipleWards: "Multiple wards, corridors, and treatment areas",
+    yanChaiHospital: "Yan Chai Hospital",
+    yanChaiHospitalFull: "Yan Chai Hospital Block C (仁濟醫院C座)",
+    medicalCenterExpansion: "Medical center expansion",
+    modernMedicalFacility: "Modern medical facility",
+    infectionControlSystems: "Infection control systems",
+    
+    // Commercial tab content
+    commercialDevelopmentsTitle: "Commercial Developments",
+    mixedUseDevelopments: "Mixed-Use Developments",
+    majorDevelopment: "Major Development",
+    grandPromenadeFull: "Grand Promenade (嘉亨灣)",
+    mixedUseMegaDevelopment: "Mixed-use mega-development",
+    retailOfficeResidential: "Retail, office, and residential integration",
+    largeDevelopmentScale: "Large-scale development",
+    comprehensiveCeilingInstallation: "Comprehensive ceiling installation",
+    scienceParkFull: "Science Park (科學園)",
+    highTechResearchFacility: "High-tech research facility",
+    researchAndDevelopment: "Research and development",
+    innovationEnvironment: "Innovation environment",
+    cleanroomSpecifications: "Cleanroom specifications",
+    
+    // Residential tab content
+    residentialDevelopments: "Residential Developments",
+    luxuryResidential: "Luxury Residential",
+    luxuryDevelopment: "Luxury Development",
+    florientRiseFull: "Florient Rise (緻藍天)",
+    highEndResidentialComplex: "High-end residential complex",
+    premiumAestheticSolutions: "Premium aesthetic & acoustic solutions",
+    privateUnitsCommonAreas: "Private units & common areas",
+    residentialQuality: "Residential quality",
+    soundInsulation: "Sound insulation",
+    
+    // Cultural tab content
+    culturalVenues: "Cultural Venues",
+    performanceVenues: "Performance Venues",
+    artsCenter: "Arts Center",
+    wuzhouCultureArtCentreFull: "Wuzhou Culture Art Centre (梧州文化藝術中心)",
+    performanceVenue: "Performance venue",
+    acousticOptimizedSystems: "Acoustic-optimized ceiling systems",
+    performanceHallsCulturalSpaces: "Performance halls & cultural spaces",
+    culturalFacilityRequirements: "Cultural facility requirements, accessibility",
+    acousticPerformance: "Acoustic performance, architectural appeal",
+
+    // Additional project page content
+    megaDevelopment: "Mega Development",
+    largeDevelopment: "Large-scale mixed-use development",
+    location: "Location",
+    commercialResidentialCeiling: "Commercial and residential ceiling systems",
+    diverseCeilingSolutions: "Diverse ceiling solutions for multiple building types",
+    shoppingMallResidentialOffice: "Shopping mall, residential towers, office spaces",
+    technologyResearchFacility: "Technology and research facility",
+    highTechFacilityCeiling: "High-tech facility ceiling solutions",
+    cleanRoomCompatible: "Clean room compatible, precision installation",
+    researchLabsOfficeCommon: "Research laboratories, office spaces, common areas",
+    highEndResidentialDevelopment: "High-End Residential Development",
+    luxuryResidentialDevelopment: "Luxury residential development",
+    premiumCeilingSolutions: "Premium ceiling solutions for residential units",
+    aestheticAcousticComfort: "Aesthetic appeal, acoustic comfort",
+    apartmentUnitsCommonLobby: "Apartment units, common areas, lobby spaces",
+    modernElegantCeiling: "Modern, elegant ceiling systems for upscale living",
+    culturalCenters: "Cultural Centers",
+    culturalArtsFacility: "Cultural and arts facility",
+    acousticCeilingPerformance: "Acoustic ceiling systems for performance spaces",
+    soundManagementAesthetic: "Sound management, aesthetic design",
+    performanceHallsExhibition: "Performance halls, exhibition spaces, public areas",
+    hospitalExpansionProject: "Hospital expansion project",
+    medicalGradeCeiling: "Medical-grade ceiling solutions",
+    infectionControlCompliance: "Infection control compliance, easy maintenance",
+    patientAreasMedical: "Patient areas, medical facilities, corridors",
+    forProjectSpecific: "For project-specific information or similar applications",
+    culturalFacility: "Cultural Facility",
+    design: "Design",
+    hengFaChuen: "Heng Fa Chuen MTR Station",
+    jordan: "Jordan MTR Station", 
+    kwaiFong: "Kwai Fong MTR Station",
+    kwaiHing: "Kwai Hing MTR Station",
+    lamTin: "Lam Tin MTR Station",
+    shaTinWai: "Sha Tin Wai MTR Station",
+    sheungWan: "Sheung Wan MTR Station",
+    scienceParkName: "Science Park",
+    stations: "Stations",
+    hongKongMassTransitRailway: "Hong Kong's Mass Transit Railway",
+    fireRatedDurableLowMaintenance: "Fire-rated, durable, low-maintenance",
+    centralKowloonNewTerritories: "Central, Kowloon, New Territories",
+    majorHospitals: "Major Hospitals",
+    hygienicAntimicrobialSystems: "Hygienic, antimicrobial systems",
+    majorDevelopments: "Major Developments",
+    grandPromenadeDesc: "Grand Promenade: Mixed-use mega development",
+    scienceParkDesc: "Science Park: High-tech research facility",
+    retailOfficeResearchAreas: "Retail, office, research areas",
+    luxuryDevelopment: "Luxury Development",
+    florientRiseDesc: "Florient Rise: High-end residential complex",
+    premiumAestheticAcousticSolutions: "Premium aesthetic & acoustic solutions",
+    privateUnitsCommonAreas: "Private units & common areas",
+    artsCenter: "Arts Center",
+    wuzhouCultureArtCentreDesc: "Wuzhou Culture Art Centre: Performance venue",
+    acousticOptimizedCeilingSystems: "Acoustic-optimized ceiling systems",
+    performanceHallsCulturalSpaces: "Performance halls & cultural spaces",
+    companyNameFull: "Kirii Construction Materials Co., Ltd.",
+    mtrStationsAcrossHongKong: "12+ MTR stations across Hong Kong",
+    highTrafficSafetyCritical: "High-traffic, safety-critical environments",
+    fireSafetyDurabilityAccessibility: "Fire safety, durability, accessibility compliance",
+    majorHospitalProjects: "Major hospital projects",
+    infectionControlEasyMaintenance: "Infection control, easy maintenance",
+    medicalFacilityRegulationsHygiene: "Medical facility regulations, hygiene requirements",
+    largeScaleDevelopments: "Large-scale developments",
+    retailOfficeResidentialIntegration: "Retail, office, residential integration",
+    buildingCodesAestheticRequirements: "Building codes, aesthetic requirements",
+    performanceVenuesPublicSpaces: "Performance venues, public spaces",
+    acousticPerformanceArchitecturalAppeal: "Acoustic performance, architectural appeal",
+    culturalFacilityRequirementsAccessibility: "Cultural facility requirements, accessibility",
+    // Contact Form
+    fullNameRequired: "Full Name *",
+    enterFullName: "Enter your full name",
+    emailAddressRequired: "Email Address *",
+    enterEmailAddress: "Enter your email address",
+    phoneNumber: "Phone Number",
+    enterPhoneNumber: "Enter your phone number",
+    subject: "Subject",
+    selectSubject: "Select a subject",
+    messageRequired: "Message *",
+    enterMessage: "Enter your message",
+    sendMessage: "Send Message",
+    sending: "Sending...",
+    messageSentSuccessfully: "Message Sent Successfully!",
+    thankYouForContacting: "Thank you for contacting us. We have sent you a confirmation email and will respond within 24 hours.",
+    sendAnotherMessage: "Send Another Message",
+    requestQuote: "Request a Quote",
+    productInformation: "Product Information",
+    customerSupport: "Customer Support",
+    feedback: "Feedback",
+    other: "Other",
+    // Company Info
+    companyInfo: "Company Information",
+    companyAddress: "Address",
+    businessHours: "Business Hours",
+    mondayFriday: "Monday - Friday",
+    saturday: "Saturday",
+    sunday: "Sunday",
+    closed: "Closed",
+    // Map
+    ourLocation: "Our Location",
+    viewOnGoogleMaps: "View on Google Maps",
+    ourFactory: "Our Factory",
+    visitOurFactory: "Visit our manufacturing facility to see our ceiling systems and building materials production.",
+    openInGoogleMaps: "Open in Google Maps",
+    // Company Address & Contact
+    postalCode: "Postal Code",
+    address: "Address",
+    tel: "TEL",
+    fax: "FAX",
+    email: "Email",
+    companyFullAddress: "13 YongYe Road Yundonghai Street, Sanshui Foshan GuangDong China",
+    phoneNumber1: "(86)757-8782-6438",
+    phoneNumber2: "(86)757-8782-3315",
+        faxNumber: "(86)757-8782-6330",
+    emailAddress: "info@kirii.cn",
+    // Footer
+    companyName: "Kirii Construction Materials Co., Ltd.",
+    telephone: "(86)757-8782-6438",
+    quickLinks: "Quick Links",
+    newsletter: "Newsletter",
+    newsletterDesc: "Subscribe to our newsletter for updates",
+    enterEmail: "Enter your email",
+    subscribe: "Subscribe",
+    allRightsReserved: "All rights reserved.",
+    },
+
+  "zh-HK": {
+    // Navigation
+    home: "主頁",
+    about: "關於我們",
+    products: "產品",
+    projects: "項目",
+    contact: "聯絡我們",
+    getQuote: "獲取報價",
+
+    // Homepage Hero
+    heroTitle: "優質建築材料及\n天花系統",
+    heroSubtitle: "自2003年起提供專業建築材料",
+    heroDescription: "香港及中國地區領先的高品質建築材料及創新天花解決方案供應商，專為商業及基建項目服務。",
+    viewProjects: "查看項目",
+
+    // Stats
+    projectsCompleted: "已完成項目",
+    yearsExperience: "年經驗",
+    qualityGuarantee: "品質保證",
+    majorMarkets: "主要市場",
+
+    // About Section
+    aboutKirii: "關於三水桐井",
+    professionalSolutions: "專業建築解決方案",
+    aboutDescription: "三水桐井建築材料有限公司成立於2003年，一直為香港及中國地區提供優質建築材料及天花系統。",
+    modernFacilities: "現代化設施及專業服務",
+    modernFacilitiesDesc:
+      "我們的先進設施及專業團隊確保為您的項目提供最高品質的建築材料及天花系統。從香港及廣州的總部出發，我們為區內客戶提供全面的技術支援及定制解決方案。",
+    professionalConsultation: "專業諮詢服務",
+    qualityAssuranceGuarantee: "品質保證承諾",
+    technicalCompliance: "技術規格合規",
+
+    // Products Section
+    ourProducts: "我們的產品",
+    comprehensiveSolutions: "全面建築解決方案",
+    productsDescription: "從天花系統到建築配件，我們為您的建築需求提供完整解決方案。",
+    ceilingSystems: "天花系統",
+    ceilingSystemsDesc: "先進天花解決方案，包括CH型線性天花系列、CP022卡扣式系統及全面的懸掛天花選項。",
+    buildingAccessories: "建築配件",
+    buildingAccessoriesDesc: "專業級配件，包括檢修口、安裝支架、緊固件及專業建築組件。",
+    customSolutions: "定制解決方案",
+    customSolutionsDesc: "為滿足特定項目要求而設計的定制建築材料解決方案，完全符合技術規格要求。",
+    learnMore: "了解更多",
+    getCustomQuote: "獲取定制報價",
+
+    // Services Section
+    ourServices: "我們的服務",
+    comprehensiveSupport: "全面項目支援",
+    servicesDescription: "從材料供應到技術諮詢，我們為您的建築項目提供端到端支援。",
+    materialSupply: "材料供應",
+    materialSupplyDesc: "為所有項目需求提供全面的材料採購及供應。",
+    technicalConsultation: "技術諮詢",
+    technicalConsultationDesc: "由我們經驗豐富的工程團隊提供專業技術諮詢服務。",
+    projectSupport: "項目支援",
+    projectSupportDesc: "從規劃到完工的端到端項目協助。",
+    qualityAssurance: "品質保證",
+    qualityAssuranceDesc: "對所有材料及服務進行嚴格的品質控制及認證。",
+
+    // Testimonials
+    clientTestimonials: "客戶推薦",
+    trustedByLeaders: "業界領袖信賴之選",
+
+    // CTA Section
+    readyToStart: "準備開始您的項目？",
+    ctaDescription: "立即聯絡我們的專家團隊，獲取專業建築材料諮詢及為您項目需求量身定制的解決方案。",
+    getFreeConsultation: "獲取免費諮詢",
+    browseProducts: "瀏覽產品",
+
+    // About Page
+    buildingExcellence: "建築卓越",
+    since2008: "自2008年起",
+    aboutCompanyDesc1: "作為香港及中國地區領先的建築材料供應商，三水桐井專業提供創新天花系統、建築配件及商業基建項目的定制建築解決方案。",
+    aboutCompanyDesc2: "我們的專業範圍涵蓋尖端天花技術、高品質建築配件及滿足大型商業基建發展特定要求的定制解決方案。",
+    aboutCompanyDesc3: "作為建築師、建築公司及政府項目的可信賴合作夥伴，我們堅持最高品質標準及技術規格合規性。",
+    yearsOfExperience: "年經驗",
+    projectsCompleted: "已完成項目",
+    satisfiedClients: "滿意客戶",
+    companyOverview: "公司概覽",
+    leadingSupplier: "香港及中國地區領先的建築材料供應商，專業提供創新天花系統及建築配件",
+
+    // Products Page
+    comprehensiveBuildingSolutions: "全面建築解決方案",
+    kiriiProducts: "三水桐井產品",
+    productsPageDesc: "為香港及中國地區商業基建項目提供全面天花系統及建築配件。",
+    viewProducts: "查看產品",
+    ceilingSystemsTitle: "天花系統",
+    buildingAccessoriesTitle: "建築配件",
+    customSolutionsTitle: "定制解決方案",
+
+    // Projects Page
+    ourProjectPortfolio: "我們的項目組合",
+    projectPortfolio: "項目",
+    projectsPageDesc: "為香港基建、醫療、商業及文化領域提供全面天花解決方案",
+    projectCategories: "項目類別",
+    mtrProjects: "港鐵項目",
+    commercialProjects: "商業項目",
+    residentialProjects: "住宅項目",
+    projectInquiries: "項目查詢",
+    projectDevelopmentTeam: "項目開發團隊",
+    directContact: "直接聯絡",
+
+    // Contact Page
+    contactUs: "聯絡我們",
+    getInTouch: "聯絡我們",
+    contactPageDesc: "聯絡我們的團隊獲取產品查詢、技術支援或合作機會",
+    weWouldLoveToHear: "我們很樂意",
+    hearFromYou: "聽取您的意見",
+    contactDescription: "無論您準備開始項目、對我們的產品有疑問，或希望探索合作機會，我們的團隊都樂意為您提供專業天花系統及建築材料解決方案協助。",
+    companyInformation: "公司資料",
+    kiriiSanshuiBuilding: "三水桐井建築材料廠有限公司",
+
+    // Footer
+    quickLinks: "快速連結",
+    followUs: "關注我們",
+    newsletter: "電子通訊",
+    newsletterDesc: "獲取我們最新產品及創新資訊",
+    subscribe: "訂閱",
+    enterEmail: "輸入您的電郵",
+    allRightsReserved: "版權所有。",
+    
+    // Footer Company Info
+    companyName: "佛山市三水桐井建築材料有限公司",
+    companyAddress: "郵區編號: 528100\n地址: 中國廣東佛山市三水區雲東海街道永業路13號",
+    postalCode: "郵區編號: 528100",
+    addressLine: "中國廣東佛山市三水區雲東海街道永業路13號",
+    telephone: "電話: (86) 757-8782 6438, (86) 757-8782 3315",
+    fax: "傳真: (86) 757-8782 6330",
+    email: "電郵: info@kirii.cn",
+    
+    // Homepage additional content
+    productSpecifications: "產品規格",
+    technicalDocumentation: "技術文檔",
+    technicalDocumentationDesc: "為我們所有建築材料及配件提供全面的技術規格及產品目錄。",
+    
+    // About page content
+    qualityGuarantee: "品質保證",
+    modernCeilingSystems: "現代天花系統",
+    professionalInstallation: "專業安裝及設計",
+    companyHeadquarters: "公司總部",
+    professionalServiceCenter: "專業服務中心",
+    ourExpertise: "我們的專業",
+    specializedBuildingSolutions: "專業建築解決方案",
+    ourExpertiseDesc: "我們的全面專業知識涵蓋創新天花系統、建築配件及商業和基建項目的定制建築解決方案。",
+    innovativeCeilingSystems: "創新天花系統",
+    innovativeCeilingDesc: "專精於尖端天花技術，為現代建築提供全面解決方案。",
+    chTypeLinearCeiling: "CH型線性天花系列",
+    cp022ClipinCeiling: "CP022 卡入式天花系統",
+    variousSuspendedCeiling: "各種懸掛天花解決方案",
+    constructionAccessories: "建築配件",
+    constructionAccessoriesDesc: "專業安裝用的優質建築配件及專用組件。",
+    highQualityAccessHatches: "優質檢修口",
+    professionalMountingBrackets: "專業安裝支架",
+    specializedFasteningSystem: "專用緊固系統",
+    customBuildingAccessories: "定制建築配件",
+    customBuildingSolutions: "定制建築解決方案",
+    customBuildingSolutionsDesc: "為滿足特定項目要求及技術規格而設計的定制解決方案。",
+    tailoredProjectSolutions: "定制項目解決方案",
+    technicalSpecCompliance: "技術規格合規",
+    commercialProjectSpecialization: "商業項目專業化",
+    infrastructureProjectExpertise: "基建項目專業知識",
+    partnerWithUs: "與我們合作",
+    readyToStartProject: "準備開始您的下一個項目？",
+    readyToStartProjectDesc: "無論您正在規劃大型商業開發或基建項目，我們的團隊都準備好為您提供成功所需的專業知識和材料。",
+    contactOurTeam: "聯絡我們的團隊",
+    viewOurProducts: "查看我們的產品",
+    
+    // Projects page content
+    ourProjectPortfolio: "我們的項目組合",
+    projectPortfolio: "項目",
+    projectsPageDesc: "橫跨香港基建、醫療、商業及文化界別的全面天花解決方案",
+    projectCategories: "項目類別",
+    
+    // Contact page content
+    contactPageDesc: "聯絡我們的團隊以獲取產品查詢、技術支援或合作機會",
+    weWouldLoveToHear: "我們很樂意",
+    hearFromYou: "聽取您的意見",
+    contactDescription: "無論您準備開始項目、對我們的產品有疑問，還是想探索合作機會，我們的團隊都在此為您提供專業天花系統和建築材料解決方案。",
+    getInTouch: "聯絡我們",
+    kiriiSanshuiBuilding: "佛山市三水桐井建築材料有限公司",
+    sendMessage: "發送訊息",
+    yourName: "您的姓名",
+    yourEmail: "您的電郵",
+    subject: "主題",
+    message: "訊息",
+    namePlaceholder: "請輸入您的全名",
+    emailPlaceholder: "請輸入您的電郵地址",
+    subjectPlaceholder: "請輸入查詢主題",
+    messagePlaceholder: "請在此輸入您的訊息...",
+    
+    // Products page content  
+    productsPageDesc: "為香港和中國的商業及基建項目提供全面的天花系統和建築配件。",
+    viewProducts: "查看產品",
+    ceilingSystems: "天花系統",
+    comprehensiveCeilingSystemsDesc: "為現代商業及基建應用而設計的全面天花系統系列。",
+    specializedCeilingSystems: "專業天花系統",
+    cp022ClipinCeilingTitle: "CP022 及 CP030 卡入式天花系統",
+    cp022ClipinCeilingDesc: "高效卡入式天花系統，提供快速安裝、易於維護及專業飾面，適用於各種商業應用。",
+    technicalDocumentationTitle: "技術文檔",
+    technicalDocumentationFullDesc: "所有天花系統的全面技術文檔及規格。",
+    diverseApplications: "多元化應用",
+    diverseApplicationsDesc: "我們的天花系統及建築配件為香港及中國的多元化商業及基建項目提供服務。",
+    retailSpaces: "零售空間：美觀實用的天花系統",
+    educationalInstitutions: "教育機構：耐用安全的天花系統",
+    officeBuildings: "辦公大樓：專業高效的天花解決方案",
+    healthcareFacilities: "醫療設施：符合衛生標準的天花系統",
+    
+    // Additional products page content
+    productCategoriesOverview: "產品類別概覽",
+    kiriiSpecializesDesc: "三水桐井建築材料專業提供全面的天花系統及建築配件，服務商業及基建項目。",
+    yearsExperience: "年經驗",
+    projectsCompleted: "已完成項目",
+    productLines: "產品系列",
+    buildingAccessories: "建築配件",
+    technicalSpecifications: "技術規格",
+    acousticCeilingSpecs: "聲學天花規格",
+    acousticCeilingDesc: "詳細的聲學性能數據及安裝規格",
+    downloadPdf: "下載PDF",
+    structuralLoadCalc: "結構承重計算",
+    structuralLoadDesc: "承重能力及結構完整性規格",
+    installationGuidelines: "安裝指引",
+    installationGuidelinesDesc: "逐步安裝程序及安全要求",
+    fireSafetyRatings: "防火安全等級",
+    fireSafetyDesc: "防火等級及安全合規文檔",
+    materialSpecifications: "材料規格",
+    materialSpecDesc: "詳細的材料特性及品質標準",
+    maintenanceProcedures: "維護程序",
+    maintenanceDesc: "長期維護指引及服務要求",
+    technicalFeatures: "技術特點",
+    materialProperties: "材料特性",
+    aluminumAlloys: "鋁合金：等級規格及處理工藝",
+    steelComponents: "鋼材組件：鍍鋅及塗層標準",
+    fireResistance: "防火性能：經測試的防火等級及安全合規",
+    corrosionResistance: "耐腐蝕性：環境耐久性測試",
+    performanceStandards: "性能標準",
+    structuralIntegrity: "結構完整性：承重能力測試",
+    weatherResistance: "耐候性：環境暴露測試",
+    acousticPerformance: "聲學性能：聲音傳輸等級評定",
+    thermalProperties: "熱性能：絕緣及膨脹特性",
+    infrastructureProjects: "基建項目",
+    transportationHubs: "交通樞紐：港鐵站及機場",
+    publicBuildings: "公共建築：政府及市政設施",
+    culturalCenters: "文化中心：博物館及表演場所",
+    mixedUseDevelopments: "綜合用途發展：住宅及商業綜合體",
+    productAdvantages: "產品優勢",
+    qualityAssurance: "品質保證",
+    premiumMaterials: "優質材料：高級鋁材及鋼材結構",
+    rigorousTesting: "嚴格測試：全面品質控制流程",
+    internationalStandards: "國際標準：符合全球建築規範",
+    professionalInstallation: "專業安裝：專家安裝支援",
+    designFlexibility: "設計靈活性",
+    customizationOptions: "定制選項：針對特定項目的定制解決方案",
+    colorVariations: "顏色變化：廣泛的飾面選擇",
+    sizeAdaptability: "尺寸適應性：可提供定制尺寸",
+    integrationCapability: "整合能力：與建築系統兼容",
+    performanceBenefits: "性能優勢",
+    durability: "耐用性：在嚴苛環境中的持久性能",
+    fireSafety: "防火安全：提供防火等級選項",
+    acousticControl: "聲學控制：聲音管理能力",
+    easyMaintenance: "易於維護：便於持續維護的設計",
+    productInquiries: "產品查詢",
+    productInquiriesDesc: "如需詳細產品規格、定制選項或技術支援，請聯絡我們的產品部門。",
+    contactProductDept: "聯絡產品部門",
+    requestTechnicalSpecs: "申請技術規格",
+    technicalSpecsAvailable: "可按要求提供技術規格",
+    customSolutions: "定制解決方案",
+    professionalInstallationSupport: "專業安裝支援",
+    
+    // Product details content
+    all: "全部",
+    linearSystems: "線性系統",
+    clipinSystems: "卡入式系統",
+    wideLinearSystems: "寬線性系統",
+    hookonSystems: "掛鉤式系統",
+    layinSystems: "嵌入式系統",
+    specialized: "專業化",
+    modernLinearDesign: "現代線性設計解決方案",
+    modernLinearDesignDesc: "具有流線型線性設計的現代美學天花解決方案，完美適用於現代商業及辦公空間。",
+    keyFeatures: "主要特點：",
+    sleekLinearDesign: "流線型線性設計：現代空間的當代美學",
+    easyInstallation: "易於安裝：簡化的安裝系統",
+    versatileApplications: "多樣化應用：適用於辦公室、零售及公共空間",
+    applications: "應用：",
+    commercialBuildings: "商業建築",
+    commercialCenters: "商業中心",
+    publicAreas: "公共區域",
+    viewDetails: "查看詳情",
+    easyInstallClipinSolutions: "易安裝卡入式解決方案",
+    efficientClipinDesc: "高效卡入式天花系統，提供快速安裝、易於維護及專業飾面，適用於各種商業應用。",
+    quickInstallation: "快速安裝：高效卡入機制",
+    professionalFinish: "專業飾面：清潔、無縫外觀",
+    healthcareFacilitiesApp: "醫療設施",
+    educationalInstitutionsApp: "教育機構",
+    retailEnvironments: "零售環境",
+    wideLinearDesignLargeSpaces: "大空間寬線性設計",
+    wideLinearDesignDesc: "採用寬線性板材的增強覆蓋天花解決方案，專為需要大膽建築聲明的大型商業空間而設計。",
+    wideLinearPanels: "寬線性板材：大面積的增強覆蓋",
+    architecturalAppeal: "建築美感：大膽的設計聲明",
+    largeCommercialSpaces: "大型商業空間",
+    conventionCenters: "會議中心",
+    airportTerminals: "機場航廈",
+    shoppingMalls: "購物中心",
+    flexibleHookonInstallation: "靈活掛鉤式安裝系統",
+    flexibleHookonDesc: "採用掛鉤式安裝的靈活天花系統，為商業應用提供易於維護及設計靈活性。",
+    hookonSystem: "掛鉤系統：靈活安裝及拆卸",
+    maintenanceAccess: "維護通道：易於更換板材",
+    industrialFacilities: "工業設施",
+    warehouses: "倉庫",
+    manufacturingPlants: "製造廠",
+    serviceCenters: "服務中心",
+    traditionalLayinGrid: "傳統嵌入式格柵系統",
+    traditionalLayinDesc: "符合行業標準的標準格柵天花系統，提供易於進入及與建築系統的多樣化整合。",
+    standardGridSystem: "標準格柵系統：符合行業標準",
+    easyAccess: "易於進入：簡單的板材拆卸維護",
+    versatileIntegration: "多樣化整合：容納照明及暖通系統",
+    schools: "學校",
+    hospitals: "醫院",
+    governmentBuildings: "政府建築",
+    decorativeGridPattern: "裝飾格柵圖案設計",
+    uniqueTartanGrid: "獨特的格子格柵圖案天花系統，適用於獨特的建築應用。",
+    learnMore: "了解更多",
+    linearBaffleDesign: "線性擋板設計",
+    linearBaffleDesc: "線性擋板天花系統，提供卓越的聲學控制及現代美學。",
+    wideGridConfiguration: "寬格柵配置",
+    wideGridDesc: "寬格柵天花系統，適用於需要較大板材配置的應用。",
+    specializedApplications: "專業化應用",
+    corridorCeilingSpecialized: "走廊應用專業化",
+    corridorCeilingDesc: "專為走廊及通道應用而設計，具有優化的尺寸及安裝方法。",
+    viewSpecifications: "查看規格",
+    homeCeilingResidential: "住宅應用",
+    homeCeilingDesc: "為住宅應用設計的天花解決方案，具有美觀外表及易於維護的特點。",
+    
+    // Additional product keys
+    chTypeLinearCeiling: "CH型線性天花系列",
+    customizableLengths: "可定制長度：提供多種尺寸",
+    highQualityMaterials: "優質材料：耐用鋁材結構",
+    fireRatedOptions: "防火等級選項：符合安全規範",
+    costEffective: "經濟實惠：安裝及維護成本低",
+    crTypeWideCeiling: "CR型寬線性天花系列",
+    hpTypeHookOnCeiling: "HP型掛鉤式天花系列",
+    ktTypeLayinCeiling: "KT型嵌入式天花系列",
+    tgTypeTartanGrid: "TG型格子格柵天花系列",
+    uoBaffleCeiling: "UO型擋板天花系列",
+    wgWideGridCeiling: "WG型寬格柵天花系列",
+    corridorCeilingSeries: "走廊天花系列",
+    homeCeilingSeries: "家居天花系列",
+    designFlexibility: "設計靈活性",
+    structuralIntegrity: "結構完整性：堅固結構適用於嚴苛應用",
+    
+    // Product Advantages section
+    productAdvantages: "產品優勢",
+    qualityAssurance: "品質保證",
+    premiumMaterials: "優質材料：高級鋁材及鋼材結構",
+    rigorousTesting: "嚴格測試：全面品質控制流程",
+    internationalStandards: "國際標準：符合全球建築規範",
+    professionalInstallation: "專業安裝：專家安裝支援",
+    customizationOptions: "定制選項：為特定項目量身定制解決方案",
+    colorVariations: "顏色變化：廣泛的飾面選項",
+    sizeAdaptability: "尺寸適應性：可定制尺寸",
+    integrationCapability: "整合能力：與建築系統相容",
+    performanceBenefits: "性能優勢",
+    durability: "耐用性：在嚴苛環境中的持久性能",
+    fireSafety: "防火安全：提供防火等級選項",
+    acousticControl: "聲學控制：聲音管理能力",
+    easyMaintenance: "易於維護：便於持續維護的設計",
+    
+    // Contact section
+    contactProductDept: "聯絡產品部門",
+    requestTechnicalSpecs: "申請技術規格",
+    technicalSpecsAvailable: "技術規格可應要求提供",
+    customSolutions: "定制解決方案",
+    professionalInstallationSupport: "專業安裝支援",
+    
+    // Tab names
+    ceilingSystems: "天花系統",
+    buildingAccessories: "建築配件",
+    technicalSpecifications: "技術規格",
+    
+    // Commercial and Infrastructure Projects
+    commercialProjects: "商業項目",
+    officeBuildings: "辦公大樓",
+    officeBuildingsDesc: "專業高效的天花解決方案",
+    retailSpacesDesc: "美觀實用的天花系統",
+    healthcareFacilitiesDesc: "符合衛生標準的天花系統",
+    educationalInstitutionsDesc: "耐用安全的天花系統",
+    infrastructureProjects: "基建項目",
+    transportationHubsDesc: "港鐵站及機場",
+    publicBuildingsDesc: "政府及公共設施",
+    culturalCentersDesc: "博物館及表演場所",
+    mixedUseDevelopmentsDesc: "住宅及商業綜合體",
+    
+    // Button text
+    getQuote: "獲取報價",
+    
+    // Projects page content
+    mtrProjects: "港鐵項目",
+    healthcare: "醫療保健",
+    commercial: "商業",
+    residential: "住宅",
+    cultural: "文化",
+    mtrProjectsTitle: "港鐵 MTR項目",
+    infrastructureExcellence: "香港交通網絡的基建卓越",
+    featuredStation: "精選車站",
+    admiraltyStation: "金鐘港鐵站 (金鐘站)",
+    admiraltyLocation: "位置：香港中環 - 主要轉乘站",
+    admiraltyApplication: "應用：高流量交通樞紐的先進天花系統",
+    admiraltyFeatures: "特點：耐用、防火等級天花解決方案，確保公共安全",
+    admiraltyScope: "範圍：跨多個月台層的全面天花安裝",
+    cheKungTempleStation: "車公廟港鐵站 (車公廟站)",
+    cheKungLocation: "位置：沙田區",
+    cheKungSpecialization: "專業：現代天花系統，提高乘客流動效率",
+    cheKungDesign: "設計：都市交通的清潔、現代美學",
+    hongKongStation: "香港港鐵站 (香港站)",
+    hongKongLocation: "位置：香港中環 - 機場快線終點站",
+    hongKongFeatures: "特點：國際門戶的優質天花解決方案",
+    hongKongApplication: "應用：尊貴位置的高端飾面",
+    additionalMtrProjects: "其他港鐵項目",
+    projectCategorySummary: "項目類別摘要",
+    mtrInfrastructure: "港鐵基建",
+    scope: "範圍",
+    network: "網絡",
+    features: "特點",
+    coverage: "覆蓋範圍",
+    publicHealthcare: "公共醫療",
+    projects: "項目",
+    easternHospital: "東區醫院：大型公共設施",
+    yanChaiHospital: "仁濟醫院：醫療中心擴建",
+    commercialDevelopments: "商業發展",
+    grandPromenade: "嘉亨灣：混合用途大型發展",
+    sciencePark: "科學園：高科技研究設施",
+    residentialProjects: "住宅項目",
+    florientRise: "緻藍天：高端住宅綜合體",
+    application: "應用",
+    culturalFacilities: "文化設施",
+    wuzhouCultureArtCentre: "梧州文化藝術中心：表演場地",
+    sectorExpertise: "行業專長",
+    transportationInfrastructure: "交通基建",
+    expertise: "專業知識",
+    specialization: "專業化",
+    standards: "標準",
+    healthcareFacilities: "醫療設施",
+    experience: "經驗",
+    commercialMixedUse: "商業及混合用途",
+    portfolio: "作品集",
+    versatility: "多樣性",
+    culturalPublicBuildings: "文化及公共建築",
+    capability: "能力",
+    projectInquiries: "項目查詢",
+    projectDevelopmentTeam: "項目開發團隊",
+    portfolioDesc: "作品集：提供完整項目文檔",
+    references: "推薦：客戶證言及案例研究",
+    consultation: "諮詢：現場參觀及技術評估",
+    directContact: "直接聯絡",
+    technicalSupport: "技術支援：工程諮詢",
+    projectPlanning: "項目規劃：時間表及範圍討論",
+    customSolutionsDesc: "定制解決方案：量身定制天花系統",
+    requestProjectConsultation: "申請項目諮詢",
+    viewOurProducts: "查看我們的產品",
+    
+    // Healthcare tab content
+    publicFacilitiesHealthcare: "公共設施 - 醫療保健",
+    hospitalProjects: "醫院項目",
+    majorHospital: "主要醫院",
+    easternHospital: "東區醫院",
+    easternHospitalFull: "東區醫院 (東區醫院)",
+    type: "類型",
+    majorPublicHospitalFacility: "大型公立醫院設施",
+    hygienicCeilingSystems: "醫療環境衛生天花系統",
+    easyCleanSurfaces: "易清潔表面，抗菌特性",
+    compliance: "合規性",
+    healthcareFacilityStandards: "醫療設施標準及法規",
+    multipleWards: "多個病房、走廊及治療區域",
+    yanChaiHospital: "仁濟醫院",
+    yanChaiHospitalFull: "仁濟醫院C座 (仁濟醫院C座)",
+    medicalCenterExpansion: "醫療中心擴建",
+    modernMedicalFacility: "現代醫療設施",
+    infectionControlSystems: "感染控制系統",
+    
+    // Commercial tab content
+    commercialDevelopmentsTitle: "商業發展",
+    mixedUseDevelopments: "混合用途發展",
+    majorDevelopment: "主要發展項目",
+    grandPromenadeFull: "嘉亨灣 (嘉亨灣)",
+    mixedUseMegaDevelopment: "混合用途大型發展",
+    retailOfficeResidential: "零售、辦公及住宅綜合",
+    largeDevelopmentScale: "大型發展規模",
+    comprehensiveCeilingInstallation: "全面天花安裝",
+    scienceParkFull: "科學園 (科學園)",
+    highTechResearchFacility: "高科技研究設施",
+    researchAndDevelopment: "研究及發展",
+    innovationEnvironment: "創新環境",
+    cleanroomSpecifications: "潔淨室規格",
+    
+    // Residential tab content
+    residentialDevelopments: "住宅發展",
+    luxuryResidential: "豪華住宅",
+    luxuryDevelopment: "豪華發展項目",
+    florientRiseFull: "緻藍天 (緻藍天)",
+    highEndResidentialComplex: "高端住宅綜合體",
+    premiumAestheticSolutions: "優質美學及聲學解決方案",
+    privateUnitsCommonAreas: "私人單位及公共區域",
+    residentialQuality: "住宅品質",
+    soundInsulation: "隔音",
+    
+    // Cultural tab content
+    culturalVenues: "文化場地",
+    performanceVenues: "表演場地",
+    artsCenter: "藝術中心",
+    wuzhouCultureArtCentreFull: "梧州文化藝術中心 (梧州文化藝術中心)",
+    performanceVenue: "表演場地",
+    acousticOptimizedSystems: "聲學優化天花系統",
+    performanceHallsCulturalSpaces: "表演廳及文化空間",
+    culturalFacilityRequirements: "文化設施要求，無障礙設施",
+    acousticPerformance: "聲學性能，建築美感",
+
+    // Additional project page content
+    megaDevelopment: "大型發展項目",
+    largeDevelopment: "大型混合用途發展",
+    location: "位置",
+    commercialResidentialCeiling: "商業及住宅天花系統",
+    diverseCeilingSolutions: "多元化天花解決方案適用於多種建築類型",
+    shoppingMallResidentialOffice: "購物中心、住宅大樓、辦公空間",
+    technologyResearchFacility: "科技及研究設施",
+    highTechFacilityCeiling: "高科技設施天花解決方案",
+    cleanRoomCompatible: "潔淨室兼容，精密安裝",
+    researchLabsOfficeCommon: "研究實驗室、辦公空間、公共區域",
+    highEndResidentialDevelopment: "高端住宅發展",
+    luxuryResidentialDevelopment: "豪華住宅發展",
+    premiumCeilingSolutions: "優質住宅單位天花解決方案",
+    aestheticAcousticComfort: "美學吸引力，聲學舒適",
+    apartmentUnitsCommonLobby: "公寓單位、公共區域、大堂空間",
+    modernElegantCeiling: "現代優雅天花系統適用於高檔生活",
+    culturalCenters: "文化中心",
+    culturalArtsFacility: "文化及藝術設施",
+    acousticCeilingPerformance: "表演空間聲學天花系統",
+    soundManagementAesthetic: "聲音管理，美學設計",
+    performanceHallsExhibition: "表演廳、展覽空間、公共區域",
+    hospitalExpansionProject: "醫院擴建項目",
+    medicalGradeCeiling: "醫療級天花解決方案",
+    infectionControlCompliance: "感染控制合規，易於維護",
+    patientAreasMedical: "病人區域、醫療設施、走廊",
+    forProjectSpecific: "針對項目特定資訊或類似應用",
+    culturalFacility: "文化設施",
+    design: "設計",
+    hengFaChuen: "杏花邨站",
+    jordan: "佐敦站", 
+    kwaiFong: "葵芳站",
+    kwaiHing: "葵興站",
+    lamTin: "藍田站",
+    shaTinWai: "沙田圍站",
+    sheungWan: "上環站",
+    scienceParkName: "科學園",
+    stations: "站",
+    hongKongMassTransitRailway: "香港地鐵系統",
+    fireRatedDurableLowMaintenance: "防火、耐用、低維護",
+    centralKowloonNewTerritories: "中環、九龍、新界",
+    majorHospitals: "主要醫院",
+    hygienicAntimicrobialSystems: "衛生、抗菌系統",
+    majorDevelopments: "主要發展項目",
+    grandPromenadeDesc: "嘉亨灣：混合用途大型發展",
+    scienceParkDesc: "科學園：高科技研究設施",
+    retailOfficeResearchAreas: "零售、辦公、研究區域",
+    luxuryDevelopment: "豪華發展項目",
+    florientRiseDesc: "緻藍天：高端住宅綜合體",
+    premiumAestheticAcousticSolutions: "優質美學及聲學解決方案",
+    privateUnitsCommonAreas: "私人單位及公共區域",
+    artsCenter: "藝術中心",
+    wuzhouCultureArtCentreDesc: "梧州文化藝術中心：表演場地",
+    acousticOptimizedCeilingSystems: "聲學優化天花系統",
+    performanceHallsCulturalSpaces: "表演廳及文化空間",
+    companyNameFull: "佛山市三水桐井建築材料有限公司",
+    mtrStationsAcrossHongKong: "香港12+個港鐵站",
+    highTrafficSafetyCritical: "高流量、安全關鍵環境",
+    fireSafetyDurabilityAccessibility: "消防安全、耐用性、無障礙合規",
+    majorHospitalProjects: "主要醫院項目",
+    infectionControlEasyMaintenance: "感染控制、易於維護",
+    medicalFacilityRegulationsHygiene: "醫療設施法規、衛生要求",
+    largeScaleDevelopments: "大型發展項目",
+    retailOfficeResidentialIntegration: "零售、辦公、住宅綜合",
+    buildingCodesAestheticRequirements: "建築規範、美學要求",
+    performanceVenuesPublicSpaces: "表演場地、公共空間",
+    acousticPerformanceArchitecturalAppeal: "聲學性能、建築美感",
+    culturalFacilityRequirementsAccessibility: "文化設施要求、無障礙設施",
+    // Contact Form
+    fullNameRequired: "姓名 *",
+    enterFullName: "請輸入您的姓名",
+    emailAddressRequired: "電子郵件地址 *",
+    enterEmailAddress: "請輸入您的電子郵件地址",
+    phoneNumber: "電話號碼",
+    enterPhoneNumber: "請輸入您的電話號碼",
+    subject: "主題",
+    selectSubject: "請選擇主題",
+    messageRequired: "訊息 *",
+    enterMessage: "請輸入您的訊息",
+    sendMessage: "發送訊息",
+    sending: "發送中...",
+    messageSentSuccessfully: "訊息發送成功！",
+    thankYouForContacting: "感謝您聯繫我們。我們已向您發送確認電子郵件，將在24小時內回覆。",
+    sendAnotherMessage: "發送另一則訊息",
+    requestQuote: "索取報價",
+    productInformation: "產品資訊",
+    customerSupport: "客戶支援",
+    feedback: "意見反饋",
+    other: "其他",
+    // Company Info
+    companyInfo: "公司資料",
+    companyAddress: "地址",
+    businessHours: "營業時間",
+    mondayFriday: "星期一 - 星期五",
+    saturday: "星期六",
+    sunday: "星期日",
+    closed: "休息",
+    // Map
+    ourLocation: "我們的位置",
+    viewOnGoogleMaps: "在 Google 地圖上查看",
+    ourFactory: "我們的工廠",
+    visitOurFactory: "參觀我們的製造設施，了解我們的天花系統和建築材料生產。",
+    openInGoogleMaps: "在 Google 地圖中開啟",
+    // Company Address & Contact
+    postalCode: "郵區編號",
+    address: "地址",
+    tel: "電話",
+    fax: "傳真",
+    email: "電子郵件",
+    companyFullAddress: "中國廣東佛山市三水區雲東海街道永業路13號",
+    phoneNumber1: "(86) 757-8782 6438",
+    phoneNumber2: "(86) 757-8782 3315",
+    faxNumber: "(86) 757-8782 6330",
+    emailAddress: "info@kirii.cn",
+    // Footer
+    companyName: "佛山市三水桐井建築材料有限公司",
+    telephone: "(86) 757-8782 6438",
+    quickLinks: "快速連結",
+    newsletter: "電子報",
+    newsletterDesc: "訂閱我們的電子報以獲取最新資訊",
+    enterEmail: "輸入您的電子郵件",
+    subscribe: "訂閱",
+    allRightsReserved: "版權所有。",
+  },
+
+  "zh-CN": {
+    // Navigation
+    home: "首页",
+    about: "关于我们",
+    products: "产品",
+    projects: "项目",
+    contact: "联系我们",
+    getQuote: "获取报价",
+
+    // Homepage Hero
+    heroTitle: "优质建筑材料及\n天花系统",
+    heroSubtitle: "自2003年起提供专业建筑材料",
+    heroDescription: "香港及中国地区领先的高品质建筑材料及创新天花解决方案供应商，专为商业及基建项目服务。",
+    viewProjects: "查看项目",
+
+    // Stats
+    projectsCompleted: "已完成项目",
+    yearsExperience: "年经验",
+    qualityGuarantee: "质量保证",
+    majorMarkets: "主要市场",
+
+    // About Section
+    aboutKirii: "关于三水桐井",
+    professionalSolutions: "专业建筑解决方案",
+    aboutDescription: "三水桐井建筑材料有限公司成立于2003年，一直为香港及中国地区提供优质建筑材料及天花系统。",
+    modernFacilities: "现代化设施及专业服务",
+    modernFacilitiesDesc:
+      "我们的先进设施及专业团队确保为您的项目提供最高品质的建筑材料及天花系统。从香港及广州的总部出发，我们为区内客户提供全面的技术支持及定制解决方案。",
+    professionalConsultation: "专业咨询服务",
+    qualityAssuranceGuarantee: "质量保证承诺",
+    technicalCompliance: "技术规格合规",
+
+    // Products Section
+    ourProducts: "我们的产品",
+    comprehensiveSolutions: "全面建筑解决方案",
+    productsDescription: "从天花系统到建筑配件，我们为您的建筑需求提供完整解决方案。",
+    ceilingSystems: "天花系统",
+    ceilingSystemsDesc: "先进天花解决方案，包括CH型线性天花系列、CP022卡扣式系统及全面的悬挂天花选项。",
+    buildingAccessories: "建筑配件",
+    buildingAccessoriesDesc: "专业级配件，包括检修口、安装支架、紧固件及专业建筑组件。",
+    customSolutions: "定制解决方案",
+    customSolutionsDesc: "为满足特定项目要求而设计的定制建筑材料解决方案，完全符合技术规格要求。",
+    learnMore: "了解更多",
+    getCustomQuote: "获取定制报价",
+
+    // Services Section
+    ourServices: "我们的服务",
+    comprehensiveSupport: "全面项目支持",
+    servicesDescription: "从材料供应到技术咨询，我们为您的建筑项目提供端到端支持。",
+    materialSupply: "材料供应",
+    materialSupplyDesc: "为所有项目需求提供全面的材料采购及供应。",
+    technicalConsultation: "技术咨询",
+    technicalConsultationDesc: "由我们经验丰富的工程团队提供专业技术咨询服务。",
+    projectSupport: "项目支持",
+    projectSupportDesc: "从规划到完工的端到端项目协助。",
+    qualityAssurance: "质量保证",
+    qualityAssuranceDesc: "对所有材料及服务进行严格的质量控制及认证。",
+
+    // Testimonials
+    clientTestimonials: "客户推荐",
+    trustedByLeaders: "业界领袖信赖之选",
+
+    // CTA Section
+    readyToStart: "准备开始您的项目？",
+    ctaDescription: "立即联系我们的专家团队，获取专业建筑材料咨询及为您项目需求量身定制的解决方案。",
+    getFreeConsultation: "获取免费咨询",
+    browseProducts: "浏览产品",
+
+    // About Page
+    buildingExcellence: "建筑卓越",
+    since2008: "自2008年起",
+    aboutCompanyDesc1: "作为香港及中国地区领先的建筑材料供应商，三水桐井专业提供创新天花系统、建筑配件及商业基建项目的定制建筑解决方案。",
+    aboutCompanyDesc2: "我们的专业范围涵盖尖端天花技术、高品质建筑配件及满足大型商业基建发展特定要求的定制解决方案。",
+    aboutCompanyDesc3: "作为建筑师、建筑公司及政府项目的可信赖合作伙伴，我们坚持最高品质标准及技术规格合规性。",
+    yearsOfExperience: "年经验",
+    projectsCompleted: "已完成项目",
+    satisfiedClients: "满意客户",
+    companyOverview: "公司概览",
+    leadingSupplier: "香港及中国地区领先的建筑材料供应商，专业提供创新天花系统及建筑配件",
+
+    // Products Page
+    comprehensiveBuildingSolutions: "全面建筑解决方案",
+    kiriiProducts: "三水桐井产品",
+    productsPageDesc: "为香港及中国地区商业基建项目提供全面天花系统及建筑配件。",
+    viewProducts: "查看产品",
+    ceilingSystemsTitle: "天花系统",
+    buildingAccessoriesTitle: "建筑配件",
+    customSolutionsTitle: "定制解决方案",
+
+    // Projects Page
+    ourProjectPortfolio: "我们的项目组合",
+    projectPortfolio: "项目",
+    projectsPageDesc: "为香港基建、医疗、商业及文化领域提供全面天花解决方案",
+    projectCategories: "项目类别",
+    mtrProjects: "港铁项目",
+    commercialProjects: "商业项目",
+    residentialProjects: "住宅项目",
+    projectInquiries: "项目咨询",
+    projectDevelopmentTeam: "项目开发团队",
+    directContact: "直接联系",
+
+    // Contact Page
+    contactUs: "联系我们",
+    getInTouch: "联系我们",
+    contactPageDesc: "联系我们的团队获取产品咨询、技术支持或合作机会",
+    weWouldLoveToHear: "我们很乐意",
+    hearFromYou: "听取您的意见",
+    contactDescription: "无论您准备开始项目、对我们的产品有疑问，或希望探索合作机会，我们的团队都乐意为您提供专业天花系统及建筑材料解决方案协助。",
+    companyInformation: "公司资料",
+    kiriiSanshuiBuilding: "三水桐井建筑材料厂有限公司",
+
+    // Footer
+    quickLinks: "快速链接",
+    followUs: "关注我们",
+    newsletter: "电子通讯",
+    newsletterDesc: "获取我们最新产品及创新资讯",
+    subscribe: "订阅",
+    enterEmail: "输入您的邮箱",
+    allRightsReserved: "版权所有。",
+    
+    // Footer Company Info
+    companyName: "佛山市三水桐井建筑材料有限公司",
+    companyAddress: "邮区编号: 528100\n地址: 中国广东佛山市三水区云东海街道永业路13号",
+    postalCode: "邮区编号: 528100",
+    addressLine: "中国广东佛山市三水区云东海街道永业路13号",
+    telephone: "电话: (86) 757-8782 6438, (86) 757-8782 3315",
+    fax: "传真: (86) 757-8782 6330",
+    email: "电邮: info@kirii.cn",
+    
+    // Homepage additional content
+    productSpecifications: "产品规格",
+    technicalDocumentation: "技术文档",
+    technicalDocumentationDesc: "为我们所有建筑材料及配件提供全面的技术规格及产品目录。",
+    
+    // About page content
+    qualityGuarantee: "品质保证",
+    modernCeilingSystems: "现代天花系统",
+    professionalInstallation: "专业安装及设计",
+    companyHeadquarters: "公司总部",
+    professionalServiceCenter: "专业服务中心",
+    ourExpertise: "我们的专业",
+    specializedBuildingSolutions: "专业建筑解决方案",
+    ourExpertiseDesc: "我们的全面专业知识涵盖创新天花系统、建筑配件及商业和基建项目的定制建筑解决方案。",
+    innovativeCeilingSystems: "创新天花系统",
+    innovativeCeilingDesc: "专精于尖端天花技术，为现代建筑提供全面解决方案。",
+    chTypeLinearCeiling: "CH型线性天花系列",
+    cp022ClipinCeiling: "CP022 卡入式天花系统",
+    variousSuspendedCeiling: "各种悬挂天花解决方案",
+    constructionAccessories: "建筑配件",
+    constructionAccessoriesDesc: "专业安装用的优质建筑配件及专用组件。",
+    highQualityAccessHatches: "优质检修口",
+    professionalMountingBrackets: "专业安装支架",
+    specializedFasteningSystem: "专用紧固系统",
+    customBuildingAccessories: "定制建筑配件",
+    customBuildingSolutions: "定制建筑解决方案",
+    customBuildingSolutionsDesc: "为满足特定项目要求及技术规格而设计的定制解决方案。",
+    tailoredProjectSolutions: "定制项目解决方案",
+    technicalSpecCompliance: "技术规格合规",
+    commercialProjectSpecialization: "商业项目专业化",
+    infrastructureProjectExpertise: "基建项目专业知识",
+    partnerWithUs: "与我们合作",
+    readyToStartProject: "准备开始您的下一个项目？",
+    readyToStartProjectDesc: "无论您正在规划大型商业开发或基建项目，我们的团队都准备好为您提供成功所需的专业知识和材料。",
+    contactOurTeam: "联系我们的团队",
+    viewOurProducts: "查看我们的产品",
+    
+    // Projects page content
+    ourProjectPortfolio: "我们的项目组合",
+    projectPortfolio: "项目",
+    projectsPageDesc: "横跨香港基建、医疗、商业及文化界别的全面天花解决方案",
+    projectCategories: "项目类别",
+    
+    // Contact page content
+    contactPageDesc: "联系我们的团队以获取产品查询、技术支持或合作机会",
+    weWouldLoveToHear: "我们很乐意",
+    hearFromYou: "听取您的意见",
+    contactDescription: "无论您准备开始项目、对我们的产品有疑问，还是想探索合作机会，我们的团队都在此为您提供专业天花系统和建筑材料解决方案。",
+    getInTouch: "联系我们",
+    kiriiSanshuiBuilding: "佛山市三水桐井建筑材料有限公司",
+    sendMessage: "发送消息",
+    yourName: "您的姓名",
+    yourEmail: "您的邮箱",
+    subject: "主题",
+    message: "消息",
+    namePlaceholder: "请输入您的全名",
+    emailPlaceholder: "请输入您的邮箱地址",
+    subjectPlaceholder: "请输入查询主题",
+    messagePlaceholder: "请在此输入您的消息...",
+    
+    // Products page content  
+    productsPageDesc: "为香港和中国的商业及基建项目提供全面的天花系统和建筑配件。",
+    viewProducts: "查看产品",
+    ceilingSystems: "天花系统",
+    comprehensiveCeilingSystemsDesc: "为现代商业及基建应用而设计的全面天花系统系列。",
+    specializedCeilingSystems: "专业天花系统",
+    cp022ClipinCeilingTitle: "CP022 及 CP030 卡入式天花系统",
+    cp022ClipinCeilingDesc: "高效卡入式天花系统，提供快速安装、易于维护及专业饰面，适用于各种商业应用。",
+    technicalDocumentationTitle: "技术文档",
+    technicalDocumentationFullDesc: "所有天花系统的全面技术文档及规格。",
+    diverseApplications: "多元化应用",
+    diverseApplicationsDesc: "我们的天花系统及建筑配件为香港及中国的多元化商业及基建项目提供服务。",
+    retailSpaces: "零售空间：美观实用的天花系统",
+    educationalInstitutions: "教育机构：耐用安全的天花系统",
+    officeBuildings: "办公大楼：专业高效的天花解决方案",
+    healthcareFacilities: "医疗设施：符合卫生标准的天花系统",
+    
+    // Additional products page content
+    productCategoriesOverview: "产品类别概览",
+    kiriiSpecializesDesc: "三水桐井建筑材料专业提供全面的天花系统及建筑配件，服务商业及基建项目。",
+    yearsExperience: "年经验",
+    projectsCompleted: "已完成项目",
+    productLines: "产品系列",
+    buildingAccessories: "建筑配件",
+    technicalSpecifications: "技术规格",
+    acousticCeilingSpecs: "声学天花规格",
+    acousticCeilingDesc: "详细的声学性能数据及安装规格",
+    downloadPdf: "下载PDF",
+    structuralLoadCalc: "结构承重计算",
+    structuralLoadDesc: "承重能力及结构完整性规格",
+    installationGuidelines: "安装指引",
+    installationGuidelinesDesc: "逐步安装程序及安全要求",
+    fireSafetyRatings: "防火安全等级",
+    fireSafetyDesc: "防火等级及安全合规文档",
+    materialSpecifications: "材料规格",
+    materialSpecDesc: "详细的材料特性及品质标准",
+    maintenanceProcedures: "维护程序",
+    maintenanceDesc: "长期维护指引及服务要求",
+    technicalFeatures: "技术特点",
+    materialProperties: "材料特性",
+    aluminumAlloys: "铝合金：等级规格及处理工艺",
+    steelComponents: "钢材组件：镀锌及涂层标准",
+    fireResistance: "防火性能：经测试的防火等级及安全合规",
+    corrosionResistance: "耐腐蚀性：环境耐久性测试",
+    performanceStandards: "性能标准",
+    structuralIntegrity: "结构完整性：承重能力测试",
+    weatherResistance: "耐候性：环境暴露测试",
+    acousticPerformance: "声学性能：声音传输等级评定",
+    thermalProperties: "热性能：绝缘及膨胀特性",
+    infrastructureProjects: "基建项目",
+    transportationHubs: "交通枢纽：地铁站及机场",
+    publicBuildings: "公共建筑：政府及市政设施",
+    culturalCenters: "文化中心：博物馆及表演场所",
+    mixedUseDevelopments: "综合用途发展：住宅及商业综合体",
+    productAdvantages: "产品优势",
+    qualityAssurance: "品质保证",
+    premiumMaterials: "优质材料：高级铝材及钢材结构",
+    rigorousTesting: "严格测试：全面品质控制流程",
+    internationalStandards: "国际标准：符合全球建筑规范",
+    professionalInstallation: "专业安装：专家安装支援",
+    designFlexibility: "设计灵活性",
+    customizationOptions: "定制选项：针对特定项目的定制解决方案",
+    colorVariations: "颜色变化：广泛的饰面选择",
+    sizeAdaptability: "尺寸适应性：可提供定制尺寸",
+    integrationCapability: "整合能力：与建筑系统兼容",
+    performanceBenefits: "性能优势",
+    durability: "耐用性：在严苛环境中的持久性能",
+    fireSafety: "防火安全：提供防火等级选项",
+    acousticControl: "声学控制：声音管理能力",
+    easyMaintenance: "易于维护：便于持续维护的设计",
+    productInquiries: "产品查询",
+    productInquiriesDesc: "如需详细产品规格、定制选项或技术支持，请联系我们的产品部门。",
+    contactProductDept: "联系产品部门",
+    requestTechnicalSpecs: "申请技术规格",
+    technicalSpecsAvailable: "可按要求提供技术规格",
+    customSolutions: "定制解决方案",
+    professionalInstallationSupport: "专业安装支援",
+    
+    // Product details content
+    all: "全部",
+    linearSystems: "线性系统",
+    clipinSystems: "卡入式系统",
+    wideLinearSystems: "宽线性系统",
+    hookonSystems: "挂钩式系统",
+    layinSystems: "嵌入式系统",
+    specialized: "专业化",
+    modernLinearDesign: "现代线性设计解决方案",
+    modernLinearDesignDesc: "具有流线型线性设计的现代美学天花解决方案，完美适用于现代商业及办公空间。",
+    keyFeatures: "主要特点：",
+    sleekLinearDesign: "流线型线性设计：现代空间的当代美学",
+    easyInstallation: "易于安装：简化的安装系统",
+    versatileApplications: "多样化应用：适用于办公室、零售及公共空间",
+    applications: "应用：",
+    commercialBuildings: "商业建筑",
+    commercialCenters: "商业中心",
+    publicAreas: "公共区域",
+    viewDetails: "查看详情",
+    easyInstallClipinSolutions: "易安装卡入式解决方案",
+    efficientClipinDesc: "高效卡入式天花系统，提供快速安装、易于维护及专业饰面，适用于各种商业应用。",
+    quickInstallation: "快速安装：高效卡入机制",
+    professionalFinish: "专业饰面：清洁、无缝外观",
+    healthcareFacilitiesApp: "医疗设施",
+    educationalInstitutionsApp: "教育机构",
+    retailEnvironments: "零售环境",
+    wideLinearDesignLargeSpaces: "大空间宽线性设计",
+    wideLinearDesignDesc: "采用宽线性板材的增强覆盖天花解决方案，专为需要大胆建筑声明的大型商业空间而设计。",
+    wideLinearPanels: "宽线性板材：大面积的增强覆盖",
+    architecturalAppeal: "建筑美感：大胆的设计声明",
+    largeCommercialSpaces: "大型商业空间",
+    conventionCenters: "会议中心",
+    airportTerminals: "机场航站楼",
+    shoppingMalls: "购物中心",
+    flexibleHookonInstallation: "灵活挂钩式安装系统",
+    flexibleHookonDesc: "采用挂钩式安装的灵活天花系统，为商业应用提供易于维护及设计灵活性。",
+    hookonSystem: "挂钩系统：灵活安装及拆卸",
+    maintenanceAccess: "维护通道：易于更换板材",
+    industrialFacilities: "工业设施",
+    warehouses: "仓库",
+    manufacturingPlants: "制造厂",
+    serviceCenters: "服务中心",
+    traditionalLayinGrid: "传统嵌入式格栅系统",
+    traditionalLayinDesc: "符合行业标准的标准格栅天花系统，提供易于进入及与建筑系统的多样化整合。",
+    standardGridSystem: "标准格栅系统：符合行业标准",
+    easyAccess: "易于进入：简单的板材拆卸维护",
+    versatileIntegration: "多样化整合：容纳照明及暖通系统",
+    schools: "学校",
+    hospitals: "医院",
+    governmentBuildings: "政府建筑",
+    decorativeGridPattern: "装饰格栅图案设计",
+    uniqueTartanGrid: "独特的格子格栅图案天花系统，适用于独特的建筑应用。",
+    learnMore: "了解更多",
+    linearBaffleDesign: "线性挡板设计",
+    linearBaffleDesc: "线性挡板天花系统，提供卓越的声学控制及现代美学。",
+    wideGridConfiguration: "宽格栅配置",
+    wideGridDesc: "宽格栅天花系统，适用于需要较大板材配置的应用。",
+    specializedApplications: "专业化应用",
+    corridorCeilingSpecialized: "走廊应用专业化",
+    corridorCeilingDesc: "专为走廊及通道应用而设计，具有优化的尺寸及安装方法。",
+    viewSpecifications: "查看规格",
+    homeCeilingResidential: "住宅应用",
+    homeCeilingDesc: "为住宅应用设计的天花解决方案，具有美观外表及易于维护的特点。",
+    
+    // Additional product keys
+    chTypeLinearCeiling: "CH型线性天花系列",
+    customizableLengths: "可定制长度：提供多种尺寸",
+    highQualityMaterials: "优质材料：耐用铝材结构",
+    fireRatedOptions: "防火等级选项：符合安全规范",
+    costEffective: "经济实惠：安装及维护成本低",
+    crTypeWideCeiling: "CR型宽线性天花系列",
+    hpTypeHookOnCeiling: "HP型挂钩式天花系列",
+    ktTypeLayinCeiling: "KT型嵌入式天花系列",
+    tgTypeTartanGrid: "TG型格子格栅天花系列",
+    uoBaffleCeiling: "UO型挡板天花系列",
+    wgWideGridCeiling: "WG型宽格栅天花系列",
+    corridorCeilingSeries: "走廊天花系列",
+    homeCeilingSeries: "家居天花系列",
+    designFlexibility: "设计灵活性",
+    structuralIntegrity: "结构完整性：坚固结构适用于严苛应用",
+    
+    // Product Advantages section
+    productAdvantages: "产品优势",
+    qualityAssurance: "质量保证",
+    premiumMaterials: "优质材料：高级铝材及钢材结构",
+    rigorousTesting: "严格测试：全面质量控制流程",
+    internationalStandards: "国际标准：符合全球建筑规范",
+    professionalInstallation: "专业安装：专家安装支援",
+    customizationOptions: "定制选项：为特定项目量身定制解决方案",
+    colorVariations: "颜色变化：广泛的饰面选项",
+    sizeAdaptability: "尺寸适应性：可定制尺寸",
+    integrationCapability: "整合能力：与建筑系统兼容",
+    performanceBenefits: "性能优势",
+    durability: "耐用性：在严苛环境中的持久性能",
+    fireSafety: "防火安全：提供防火等级选项",
+    acousticControl: "声学控制：声音管理能力",
+    easyMaintenance: "易于维护：便于持续维护的设计",
+    
+    // Contact section
+    contactProductDept: "联系产品部门",
+    requestTechnicalSpecs: "申请技术规格",
+    technicalSpecsAvailable: "技术规格可应要求提供",
+    customSolutions: "定制解决方案",
+    professionalInstallationSupport: "专业安装支援",
+    
+    // Tab names
+    ceilingSystems: "天花系统",
+    buildingAccessories: "建筑配件",
+    technicalSpecifications: "技术规格",
+    
+    // Commercial and Infrastructure Projects
+    commercialProjects: "商业项目",
+    officeBuildings: "办公大楼",
+    officeBuildingsDesc: "专业高效的天花解决方案",
+    retailSpacesDesc: "美观实用的天花系统",
+    healthcareFacilitiesDesc: "符合卫生标准的天花系统",
+    educationalInstitutionsDesc: "耐用安全的天花系统",
+    infrastructureProjects: "基建项目",
+    transportationHubsDesc: "地铁站及机场",
+    publicBuildingsDesc: "政府及公共设施",
+    culturalCentersDesc: "博物馆及表演场所",
+    mixedUseDevelopmentsDesc: "住宅及商业综合体",
+    
+    // Button text
+    getQuote: "获取报价",
+    
+    // Projects page content
+    mtrProjects: "港铁项目",
+    healthcare: "医疗保健",
+    commercial: "商业",
+    residential: "住宅",
+    cultural: "文化",
+    mtrProjectsTitle: "港铁 MTR项目",
+    infrastructureExcellence: "香港交通网络的基建卓越",
+    featuredStation: "精选车站",
+    admiraltyStation: "金钟港铁站 (金钟站)",
+    admiraltyLocation: "位置：香港中环 - 主要转乘站",
+    admiraltyApplication: "应用：高流量交通枢纽的先进天花系统",
+    admiraltyFeatures: "特点：耐用、防火等级天花解决方案，确保公共安全",
+    admiraltyScope: "范围：跨多个站台层的全面天花安装",
+    cheKungTempleStation: "车公庙港铁站 (车公庙站)",
+    cheKungLocation: "位置：沙田区",
+    cheKungSpecialization: "专业：现代天花系统，提高乘客流动效率",
+    cheKungDesign: "设计：都市交通的清洁、现代美学",
+    hongKongStation: "香港港铁站 (香港站)",
+    hongKongLocation: "位置：香港中环 - 机场快线终点站",
+    hongKongFeatures: "特点：国际门户的优质天花解决方案",
+    hongKongApplication: "应用：尊贵位置的高端饰面",
+    additionalMtrProjects: "其他港铁项目",
+    projectCategorySummary: "项目类别摘要",
+    mtrInfrastructure: "港铁基建",
+    scope: "范围",
+    network: "网络",
+    features: "特点",
+    coverage: "覆盖范围",
+    publicHealthcare: "公共医疗",
+    projects: "项目",
+    easternHospital: "东区医院：大型公共设施",
+    yanChaiHospital: "仁济医院：医疗中心扩建",
+    commercialDevelopments: "商业发展",
+    grandPromenade: "嘉亨湾：混合用途大型发展",
+    sciencePark: "科学园：高科技研究设施",
+    residentialProjects: "住宅项目",
+    florientRise: "致蓝天：高端住宅综合体",
+    application: "应用",
+    culturalFacilities: "文化设施",
+    wuzhouCultureArtCentre: "梧州文化艺术中心：表演场地",
+    sectorExpertise: "行业专长",
+    transportationInfrastructure: "交通基建",
+    expertise: "专业知识",
+    specialization: "专业化",
+    standards: "标准",
+    healthcareFacilities: "医疗设施",
+    experience: "经验",
+    commercialMixedUse: "商业及混合用途",
+    portfolio: "作品集",
+    versatility: "多样性",
+    culturalPublicBuildings: "文化及公共建筑",
+    capability: "能力",
+    projectInquiries: "项目查询",
+    projectDevelopmentTeam: "项目开发团队",
+    portfolioDesc: "作品集：提供完整项目文档",
+    references: "推荐：客户证言及案例研究",
+    consultation: "咨询：现场参观及技术评估",
+    directContact: "直接联系",
+    technicalSupport: "技术支援：工程咨询",
+    projectPlanning: "项目规划：时间表及范围讨论",
+    customSolutionsDesc: "定制解决方案：量身定制天花系统",
+    requestProjectConsultation: "申请项目咨询",
+    viewOurProducts: "查看我们的产品",
+    
+    // Healthcare tab content
+    publicFacilitiesHealthcare: "公共设施 - 医疗保健",
+    hospitalProjects: "医院项目",
+    majorHospital: "主要医院",
+    easternHospital: "东区医院",
+    easternHospitalFull: "东区医院 (东区医院)",
+    type: "类型",
+    majorPublicHospitalFacility: "大型公立医院设施",
+    hygienicCeilingSystems: "医疗环境卫生天花系统",
+    easyCleanSurfaces: "易清洁表面，抗菌特性",
+    compliance: "合规性",
+    healthcareFacilityStandards: "医疗设施标准及法规",
+    multipleWards: "多个病房、走廊及治疗区域",
+    yanChaiHospital: "仁济医院",
+    yanChaiHospitalFull: "仁济医院C座 (仁济医院C座)",
+    medicalCenterExpansion: "医疗中心扩建",
+    modernMedicalFacility: "现代医疗设施",
+    infectionControlSystems: "感染控制系统",
+    
+    // Commercial tab content
+    commercialDevelopmentsTitle: "商业发展",
+    mixedUseDevelopments: "混合用途发展",
+    majorDevelopment: "主要发展项目",
+    grandPromenadeFull: "嘉亨湾 (嘉亨湾)",
+    mixedUseMegaDevelopment: "混合用途大型发展",
+    retailOfficeResidential: "零售、办公及住宅综合",
+    largeDevelopmentScale: "大型发展规模",
+    comprehensiveCeilingInstallation: "全面天花安装",
+    scienceParkFull: "科学园 (科学园)",
+    highTechResearchFacility: "高科技研究设施",
+    researchAndDevelopment: "研究及发展",
+    innovationEnvironment: "创新环境",
+    cleanroomSpecifications: "洁净室规格",
+    
+    // Residential tab content
+    residentialDevelopments: "住宅发展",
+    luxuryResidential: "豪华住宅",
+    luxuryDevelopment: "豪华发展项目",
+    florientRiseFull: "致蓝天 (致蓝天)",
+    highEndResidentialComplex: "高端住宅综合体",
+    premiumAestheticSolutions: "优质美学及声学解决方案",
+    privateUnitsCommonAreas: "私人单位及公共区域",
+    residentialQuality: "住宅品质",
+    soundInsulation: "隔音",
+    
+    // Cultural tab content
+    culturalVenues: "文化场地",
+    performanceVenues: "表演场地",
+    artsCenter: "艺术中心",
+    wuzhouCultureArtCentreFull: "梧州文化艺术中心 (梧州文化艺术中心)",
+    performanceVenue: "表演场地",
+    acousticOptimizedSystems: "声学优化天花系统",
+    performanceHallsCulturalSpaces: "表演厅及文化空间",
+    culturalFacilityRequirements: "文化设施要求，无障碍设施",
+    acousticPerformance: "声学性能，建筑美感",
+
+    // Additional project page content
+    megaDevelopment: "大型发展项目",
+    largeDevelopment: "大型混合用途发展",
+    location: "位置",
+    commercialResidentialCeiling: "商业及住宅天花系统",
+    diverseCeilingSolutions: "多元化天花解决方案适用于多种建筑类型",
+    shoppingMallResidentialOffice: "购物中心、住宅大楼、办公空间",
+    technologyResearchFacility: "科技及研究设施",
+    highTechFacilityCeiling: "高科技设施天花解决方案",
+    cleanRoomCompatible: "洁净室兼容，精密安装",
+    researchLabsOfficeCommon: "研究实验室、办公空间、公共区域",
+    highEndResidentialDevelopment: "高端住宅发展",
+    luxuryResidentialDevelopment: "豪华住宅发展",
+    premiumCeilingSolutions: "优质住宅单位天花解决方案",
+    aestheticAcousticComfort: "美学吸引力，声学舒适",
+    apartmentUnitsCommonLobby: "公寓单位、公共区域、大堂空间",
+    modernElegantCeiling: "现代优雅天花系统适用于高档生活",
+    culturalCenters: "文化中心",
+    culturalArtsFacility: "文化及艺术设施",
+    acousticCeilingPerformance: "表演空间声学天花系统",
+    soundManagementAesthetic: "声音管理，美学设计",
+    performanceHallsExhibition: "表演厅、展览空间、公共区域",
+    hospitalExpansionProject: "医院扩建项目",
+    medicalGradeCeiling: "医疗级天花解决方案",
+    infectionControlCompliance: "感染控制合规，易于维护",
+    patientAreasMedical: "病人区域、医疗设施、走廊",
+    forProjectSpecific: "针对项目特定信息或类似应用",
+    culturalFacility: "文化设施",
+    design: "设计",
+    hengFaChuen: "杏花邨站",
+    jordan: "佐敦站", 
+    kwaiFong: "葵芳站",
+    kwaiHing: "葵兴站",
+    lamTin: "蓝田站",
+    shaTinWai: "沙田围站",
+    sheungWan: "上环站",
+    scienceParkName: "科学园",
+    stations: "站",
+    hongKongMassTransitRailway: "香港地铁系统",
+    fireRatedDurableLowMaintenance: "防火、耐用、低维护",
+    centralKowloonNewTerritories: "中环、九龙、新界",
+    majorHospitals: "主要医院",
+    hygienicAntimicrobialSystems: "卫生、抗菌系统",
+    majorDevelopments: "主要发展项目",
+    grandPromenadeDesc: "嘉亨湾：混合用途大型发展",
+    scienceParkDesc: "科学园：高科技研究设施",
+    retailOfficeResearchAreas: "零售、办公、研究区域",
+    luxuryDevelopment: "豪华发展项目",
+    florientRiseDesc: "致蓝天：高端住宅综合体",
+    premiumAestheticAcousticSolutions: "优质美学及声学解决方案",
+    privateUnitsCommonAreas: "私人单位及公共区域",
+    artsCenter: "艺术中心",
+    wuzhouCultureArtCentreDesc: "梧州文化艺术中心：表演场地",
+    acousticOptimizedCeilingSystems: "声学优化天花系统",
+    performanceHallsCulturalSpaces: "表演厅及文化空间",
+    companyNameFull: "佛山市三水桐井建筑材料有限公司",
+    mtrStationsAcrossHongKong: "香港12+个港铁站",
+    highTrafficSafetyCritical: "高流量、安全关键环境",
+    fireSafetyDurabilityAccessibility: "消防安全、耐用性、无障碍合规",
+    majorHospitalProjects: "主要医院项目",
+    infectionControlEasyMaintenance: "感染控制、易于维护",
+    medicalFacilityRegulationsHygiene: "医疗设施法规、卫生要求",
+    largeScaleDevelopments: "大型发展项目",
+    retailOfficeResidentialIntegration: "零售、办公、住宅综合",
+    buildingCodesAestheticRequirements: "建筑规范、美学要求",
+    performanceVenuesPublicSpaces: "表演场地、公共空间",
+    acousticPerformanceArchitecturalAppeal: "声学性能、建筑美感",
+    culturalFacilityRequirementsAccessibility: "文化设施要求、无障碍设施",
+    // Contact Form
+    fullNameRequired: "姓名 *",
+    enterFullName: "请输入您的姓名",
+    emailAddressRequired: "电子邮件地址 *",
+    enterEmailAddress: "请输入您的电子邮件地址",
+    phoneNumber: "电话号码",
+    enterPhoneNumber: "请输入您的电话号码",
+    subject: "主题",
+    selectSubject: "请选择主题",
+    messageRequired: "消息 *",
+    enterMessage: "请输入您的消息",
+    sendMessage: "发送消息",
+    sending: "发送中...",
+    messageSentSuccessfully: "消息发送成功！",
+    thankYouForContacting: "感谢您联系我们。我们已向您发送确认电子邮件，将在24小时内回复。",
+    sendAnotherMessage: "发送另一条消息",
+    requestQuote: "索取报价",
+    productInformation: "产品信息",
+    customerSupport: "客户支持",
+    feedback: "意见反馈",
+    other: "其他",
+    // Company Info
+    companyInfo: "公司资料",
+    companyAddress: "地址",
+    businessHours: "营业时间",
+    mondayFriday: "星期一 - 星期五",
+    saturday: "星期六",
+    sunday: "星期日",
+    closed: "休息",
+    // Map
+    ourLocation: "我们的位置",
+    viewOnGoogleMaps: "在 Google 地图上查看",
+    ourFactory: "我们的工厂",
+    visitOurFactory: "参观我们的制造设施，了解我们的天花系统和建筑材料生产。",
+    openInGoogleMaps: "在 Google 地图中打开",
+    // Company Address & Contact
+    postalCode: "邮区编号",
+    address: "地址",
+    tel: "电话",
+    fax: "传真",
+    email: "电子邮件",
+    companyFullAddress: "中国广东佛山市三水区云东海街道永业路13号",
+    phoneNumber1: "(86) 757-8782 6438",
+    phoneNumber2: "(86) 757-8782 3315",
+    faxNumber: "(86) 757-8782 6330",
+    emailAddress: "info@kirii.cn",
+    // Footer
+    companyName: "佛山市三水桐井建筑材料有限公司",
+    telephone: "(86) 757-8782 6438",
+    quickLinks: "快速链接",
+    newsletter: "电子报",
+    newsletterDesc: "订阅我们的电子报以获取最新资讯",
+    enterEmail: "输入您的电子邮件",
+    subscribe: "订阅",
+    allRightsReserved: "版权所有。",
+  },
+}
+
+export function getTranslation(language: Language): TranslationStrings {
+  return translations[language] || translations.en
+}
+
+// Language persistence functions
+export function saveLanguage(language: Language) {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("preferred-language", language)
+    } catch (error) {
+      console.error("Failed to save language preference:", error)
+    }
+  }
+}
+
+export function loadLanguage(): Language {
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem("preferred-language") as Language
+      if (saved && translations[saved]) {
+        return saved
+      }
+      // Browser language detection fallback
+      const browserLang = navigator.language
+      if (browserLang.startsWith("zh")) {
+        if (browserLang.includes("HK") || browserLang.includes("TW")) {
+          return "zh-HK"
+        } else {
+          return "zh-CN"
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load language preference:", error)
+    }
+  }
+  return "en"
+}
