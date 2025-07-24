@@ -26,7 +26,7 @@ export default function ContactPage() {
           title={t.contactUs}
           highlightedText={t.getInTouch}
           description={t.contactPageDesc}
-          backgroundImage="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_5552.jpg-e9OZPdzTjrlEnzvlPjwrJuPBcC68eo.jpeg"
+          backgroundImage="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg"
           badge={t.getInTouch}
         />
 
