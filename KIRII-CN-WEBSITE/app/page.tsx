@@ -232,15 +232,15 @@ export default function HomePage() {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    CH-type Linear Ceiling Series
+                    {t.chTypeLinearCeiling}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    CP022 Clip-in Ceiling Systems
+                    {t.cp022ClipInSystems}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Suspended Ceiling Solutions
+                    {t.suspendedCeilingSolutions}
                   </li>
                 </ul>
                 <Button
@@ -270,7 +270,7 @@ export default function HomePage() {
                   <Wrench className="w-8 h-8 text-orange-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  {t.buildingAccessories}
+                  {t.accessHatchesBuilding}
                 </h3>
                 <p className="text-gray-600 mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
                   {t.buildingAccessoriesDesc}
@@ -278,15 +278,15 @@ export default function HomePage() {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    High-quality Access Hatches
+                    {t.highQualityAccessHatches}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Professional Mounting Brackets
+                    {t.professionalMountingBrackets}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Specialized Fastening Systems
+                    {t.specializedFasteningSystems}
                   </li>
                 </ul>
                 <Button
@@ -316,7 +316,7 @@ export default function HomePage() {
                   <Settings className="w-8 h-8 text-green-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-                  {t.customSolutions}
+                  {t.customBuildingSolutions}
                 </h3>
                 <p className="text-gray-600 mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
                   {t.customSolutionsDesc}
@@ -324,15 +324,15 @@ export default function HomePage() {
                 <ul className="space-y-2 mb-6">
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Bespoke Material Solutions
+                    {t.bespokeMaterialSolutions}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Project-specific Customization
+                    {t.projectSpecificCustomization}
                   </li>
                   <li className="flex items-center text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
                     <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Technical Specification Compliance
+                    {t.technicalSpecificationCompliance}
                   </li>
                 </ul>
                 <Button
@@ -381,10 +381,10 @@ export default function HomePage() {
               </div>
               <CardContent className="p-4">
                 <h4 className="font-bold text-gray-900 mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
-                  CP022 Clip-in Series
+                  {t.cp022ClipInSeries}
                 </h4>
                 <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Complete accessories for clip-in ceiling systems
+                  {t.completeAccessoriesClipIn}
                 </p>
               </CardContent>
             </Card>
@@ -400,10 +400,10 @@ export default function HomePage() {
               </div>
               <CardContent className="p-4">
                 <h4 className="font-bold text-gray-900 mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Linear Ceiling Systems
+                  {t.linearCeilingSystems}
                 </h4>
                 <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
-                  HP-type, CH/CP-type, and KT-type accessories
+                  {t.hpChCpKtAccessories}
                 </p>
               </CardContent>
             </Card>
@@ -419,10 +419,10 @@ export default function HomePage() {
               </div>
               <CardContent className="p-4">
                 <h4 className="font-bold text-gray-900 mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Baffle Ceiling Systems
+                  {t.baffleCeilingSystems}
                 </h4>
                 <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
-                  UQ-type baffle and angle trimming components
+                  {t.uqTypeBaffleAngleTrimming}
                 </p>
               </CardContent>
             </Card>
@@ -438,10 +438,10 @@ export default function HomePage() {
               </div>
               <CardContent className="p-4">
                 <h4 className="font-bold text-gray-900 mb-2" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Accessories & Trimming
+                  {t.accessoriesTrimming}
                 </h4>
                 <p className="text-sm text-gray-600" style={{ fontFamily: "Arial, sans-serif" }}>
-                  Complete range of building accessories and trimming
+                  {t.completeRangeBuildingAccessories}
                 </p>
               </CardContent>
             </Card>
