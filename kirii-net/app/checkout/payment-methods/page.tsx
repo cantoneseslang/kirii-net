@@ -1,21 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
-import { PayMeQRCode } from '@/components/payment/PayMeQRCode';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, CreditCard, QrCode } from 'lucide-react';
-import Link from 'next/link';
+import { PaymentMethodSelector } from '@/components/payment/PaymentMethodSelector';
+import { PayMeQRCode } from '@/components/payment/PayMeQRCode';
 
-export default function PaymentMethodsPage() {
+function PaymentMethodsContent() {
   const searchParams = useSearchParams();
   const [selectedMethod, setSelectedMethod] = useState<'stripe' | 'payme'>('stripe');
   const [showPayMeQR, setShowPayMeQR] = useState(false);
   const [paymentData, setPaymentData] = useState<any>(null);
-  
-  // URLパラメータから金額を取得
+
+  // URLパラメータから金額、配送、割引情報を取得
   const total = parseInt(searchParams.get('total') || '0');
   const deliveryFee = parseInt(searchParams.get('fee') || '0');
   const deliveryOption = searchParams.get('delivery') || 'delivery';
@@ -24,19 +24,19 @@ export default function PaymentMethodsPage() {
 
   const paymentMethods = [
     {
-      id: 'stripe' as const,
-      name: '信用卡',
-      description: 'Visa, Mastercard, American Express',
-      icon: 'credit-card' as const,
-      enabled: true
+      id: 'stripe',
+      name: '信用卡付款',
+      description: '使用Visa、Mastercard、American Express等信用卡',
+      icon: '💳',
+      popular: true,
     },
     {
-      id: 'payme' as const,
+      id: 'payme',
       name: 'PayMe',
-      description: '香港最受歡迎的電子支付方式',
-      icon: 'qr-code' as const,
-      enabled: true
-    }
+      description: '使用PayMe應用程式掃描QR碼付款',
+      icon: '📱',
+      popular: false,
+    },
   ];
 
   const handleMethodSelect = (method: 'stripe' | 'payme') => {
@@ -54,7 +54,7 @@ export default function PaymentMethodsPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: total, // カートの実際の金額を使用
+          amount: total,
           currency: 'HKD',
           reference: `order_${Date.now()}`,
           description: `KIRII商品配送 - ${deliveryOption === 'delivery' ? '配送到府' : '自取'}`,
@@ -73,7 +73,6 @@ export default function PaymentMethodsPage() {
   };
 
   const handleStripePayment = () => {
-    // Stripe決済ページにリダイレクト（金額情報を含む）
     const params = new URLSearchParams({
       total: total.toString(),
       delivery: deliveryOption,
@@ -88,15 +87,23 @@ export default function PaymentMethodsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
             <div className="mb-6">
-              <Link href="/checkout/payment-methods" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+              <Button
+                variant="outline"
+                onClick={() => setShowPayMeQR(false)}
+                className="inline-flex items-center"
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 返回付款方式選擇
-              </Link>
+              </Button>
             </div>
+
             <PayMeQRCode
-              paymentUrl={paymentData.qrCodeUrl}
-              amount={paymentData.amount}
-              onRefresh={createPayMePayment}
+              paymentData={paymentData}
+              amount={total}
+              onPaymentComplete={() => {
+                // 決済完了後の処理
+                window.location.href = '/';
+              }}
             />
           </div>
         </div>
@@ -147,45 +154,23 @@ export default function PaymentMethodsPage() {
                 methods={paymentMethods}
               />
 
-              <div className="payment-preview">
-                {selectedMethod === 'payme' && (
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex items-center mb-2">
-                      <QrCode className="h-5 w-5 text-blue-600 mr-2" />
-                      <h4 className="font-medium text-blue-900">PayMe 付款</h4>
-                    </div>
-                    <p className="text-sm text-blue-700">
-                      使用 PayMe 掃描 QR 碼即可完成付款，即時到賬，無需等待
-                    </p>
-                  </div>
-                )}
-
-                {selectedMethod === 'stripe' && (
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="flex items-center mb-2">
-                      <CreditCard className="h-5 w-5 text-green-600 mr-2" />
-                      <h4 className="font-medium text-green-900">信用卡付款</h4>
-                    </div>
-                    <p className="text-sm text-green-700">
-                      支援 Visa、Mastercard、American Express 等主要信用卡
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  onClick={selectedMethod === 'payme' ? createPayMePayment : handleStripePayment}
-                  className="flex-1"
-                  size="lg"
-                >
-                  {selectedMethod === 'payme' ? '使用 PayMe 付款' : '使用信用卡付款'}
+              {selectedMethod === 'stripe' && (
+                <Button onClick={handleStripePayment} className="w-full" size="lg">
+                  使用信用卡付款
                 </Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentMethodsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentMethodsContent />
+    </Suspense>
   );
 } 
