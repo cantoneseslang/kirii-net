@@ -4,8 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { Check, MapPin, User, Building, Phone, Info, ShoppingCart, ArrowRight, ArrowLeft } from "lucide-react"
+import { Check, MapPin, User, Building, Phone, Info, ArrowRight, ArrowLeft, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,7 +15,8 @@ import { Separator } from "@/components/ui/separator"
 import { GoogleMap } from "@/components/google-map"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
+import { saveCustomer, getCustomerByEmail, type Customer } from "@/lib/supabase"
 
 export default function CustomerRegistrationPage() {
   const router = useRouter()
@@ -25,8 +25,10 @@ export default function CustomerRegistrationPage() {
   const [formStep, setFormStep] = useState(0)
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locationType, setLocationType] = useState("address")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // 公司資料
+  // 基本資料
+  const [email, setEmail] = useState("")
   const [companyName, setCompanyName] = useState("")
   const [companyId, setCompanyId] = useState("")
   const [contactName, setContactName] = useState("")
@@ -55,59 +57,76 @@ export default function CustomerRegistrationPage() {
     setSelectedLocation({ lat, lng })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
-    // 顯示成功訊息
-    toast({
-      title: "登記成功",
-      description: "您的顧客資料已成功登記。",
-    })
+    try {
+      // 既存の顧客情報をチェック
+      const existingCustomer = await getCustomerByEmail(email)
+      if (existingCustomer) {
+                 toast({
+           title: "已登記",
+           description: "此電郵地址已登記。",
+           variant: "destructive",
+         })
+        setIsSubmitting(false)
+        return
+      }
 
-    // 模擬提交後重定向到首頁
-    setTimeout(() => {
-      router.push("/")
-    }, 2000)
+      // 顧客データを準備
+      const customerData: Customer = {
+        email,
+        company_name: companyName,
+        company_id: companyId || undefined,
+        contact_name: contactName,
+        contact_phone: contactPhone,
+        company_address: companyAddress,
+        delivery_address: deliveryAddress || undefined,
+        delivery_address_detail: deliveryAddressDetail || undefined,
+        location_description: locationDescription || undefined,
+        recipient_name: recipientName || undefined,
+        recipient_phone: recipientPhone || undefined,
+        delivery_notes: deliveryNotes || undefined,
+        location_lat: selectedLocation?.lat,
+        location_lng: selectedLocation?.lng,
+        location_type: locationType as 'address' | 'map',
+      }
+
+      // データベースに保存
+      const result = await saveCustomer(customerData)
+      
+      if (result.success) {
+                 toast({
+           title: "登記成功",
+           description: "您的顧客資料已成功登記。",
+         })
+
+        // ローカルストレージにログイン状態を保存
+        localStorage.setItem('kirii-customer', JSON.stringify(result.data))
+        
+        // ホームページにリダイレクト
+        setTimeout(() => {
+          router.push("/")
+        }, 2000)
+             } else {
+         throw new Error('保存失敗')
+       }
+     } catch (error) {
+       console.error('登記錯誤:', error)
+       toast({
+         title: "登記失敗",
+         description: "顧客資料登記失敗，請重試。",
+         variant: "destructive",
+       })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center">
-              <Image src="/images/kirii-new-logo.png" alt="KIRII" width={120} height={48} className="h-10 w-auto" />
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium">
-              首頁
-            </Link>
-            <Link href="/products" className="text-sm font-medium">
-              產品目錄
-            </Link>
-            <Link href="/custom" className="text-sm font-medium">
-              定制產品
-            </Link>
-            <Link href="/about" className="text-sm font-medium">
-              關於我們
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/cart">
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                  0
-                </span>
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button>登入</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header />
       <main className="flex-1 bg-gray-50">
         <div className="container py-12">
           <div className="mx-auto max-w-4xl">
@@ -178,8 +197,27 @@ export default function CustomerRegistrationPage() {
                     <div className="space-y-4">
                       <h3 className="text-lg font-medium flex items-center">
                         <Building className="mr-2 h-5 w-5 text-primary" />
-                        公司資料
+                        基本資料
                       </h3>
+                      <div className="space-y-4">
+                                                 <div className="space-y-2">
+                           <Label htmlFor="email" className="text-sm font-medium">
+                             電郵地址
+                           </Label>
+                           <div className="relative">
+                             <Input
+                               id="email"
+                               type="email"
+                               placeholder="example@company.com"
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                               className="pl-10"
+                               required
+                             />
+                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                           </div>
+                         </div>
+                      </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="company-name" className="text-sm font-medium">
@@ -452,6 +490,10 @@ export default function CustomerRegistrationPage() {
                       </h3>
                       <div className="bg-gray-50 p-6 rounded-lg">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                     <div>
+                             <p className="text-sm text-gray-500">電郵地址</p>
+                             <p className="font-medium">{email || "未填寫"}</p>
+                           </div>
                           <div>
                             <p className="text-sm text-gray-500">公司名稱</p>
                             <p className="font-medium">{companyName || "未填寫"}</p>
@@ -533,8 +575,8 @@ export default function CustomerRegistrationPage() {
                       <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                       返回
                     </Button>
-                    <Button type="submit" className="bg-green-600 hover:bg-green-700">
-                      提交登記
+                    <Button type="submit" className="bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
+                      {isSubmitting ? "登記中..." : "提交登記"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -543,7 +585,6 @@ export default function CustomerRegistrationPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   )
 }

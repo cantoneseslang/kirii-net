@@ -1,79 +1,13 @@
-import Link from "next/link"
-import Image from "next/image"
-import { ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Footer } from "@/components/footer"
+'use client';
 
-export default function ProductsPage() {
-  const cartItems = [] // Replace with actual cart items if available
-
-  return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center pl-4">
-              <Image src="/images/kirii-new-logo.png" alt="KIRII" width={120} height={48} className="h-10 w-auto" />
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium">
-              首頁
-            </Link>
-            <Link href="/products" className="text-sm font-medium">
-              產品目錄
-            </Link>
-            <Link href="/custom" className="text-sm font-medium">
-              定制產品
-            </Link>
-            <Link href="/about" className="text-sm font-medium">
-              關於我們
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/cart">
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                  {cartItems.length}
-                </span>
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button>登入</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">產品目錄</h1>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">我們提供各種高品質建築材料。</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-8">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  description={product.description}
-                  price={product.price}
-                  category={product.category}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  )
-}
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Header } from '@/components/header';
+import { addToCart, getCartItemCount } from '@/lib/cart';
+import { toast } from 'sonner';
+import { Minus, Plus } from 'lucide-react';
 
 function ProductCard({
   id,
@@ -81,13 +15,22 @@ function ProductCard({
   description,
   price,
   category,
+  weight,
+  onAddToCart,
 }: {
   id: string
   title: string
   description: string
   price: number
   category: string
+  weight: number
+  onAddToCart: (quantity: number) => void
 }) {
+  const [quantity, setQuantity] = useState(1);
+
+  const incrementQuantity = () => setQuantity((q) => q + 1);
+  const decrementQuantity = () => setQuantity((q) => Math.max(1, q - 1));
+
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-0">
@@ -100,15 +43,44 @@ function ProductCard({
       <CardFooter className="p-4 flex flex-col gap-2">
         <div className="flex items-center justify-between w-full">
           <span className="text-lg font-bold">HK${price.toLocaleString()}</span>
-          <span className="text-sm text-muted-foreground">{category}</span>
+          <div className="text-right">
+            <span className="text-sm text-muted-foreground block">{category}</span>
+            <span className="text-xs text-gray-500">重量: {weight}kg</span>
+          </div>
         </div>
+        
+        {/* 数量選択 */}
+        <div className="flex items-center gap-2 w-full">
+          <span className="text-sm font-medium">數量:</span>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" onClick={decrementQuantity}>
+              <Minus className="h-4 w-4" />
+            </Button>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 1;
+                setQuantity(Math.max(1, value));
+              }}
+              className="w-16 text-center border rounded-md px-2 py-1 text-sm"
+            />
+            <Button variant="outline" size="icon" onClick={incrementQuantity}>
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
         <div className="flex gap-2 w-full">
           <Link href={`/products/${id}`} className="flex-1">
             <Button variant="outline" className="w-full">
               詳情
             </Button>
           </Link>
-          <Button className="flex-1">加入購物車</Button>
+          <Button className="flex-1" onClick={() => onAddToCart(quantity)}>
+            加入購物車
+          </Button>
         </div>
       </CardFooter>
     </Card>
@@ -123,6 +95,7 @@ const products = [
     description: "高品質鋁複合板 3mm厚",
     price: 980,
     category: "鋁塑板",
+    weight: 3.2,
   },
   {
     id: "acp-002",
@@ -130,6 +103,7 @@ const products = [
     description: "高品質鋁複合板 4mm厚",
     price: 1050,
     category: "鋁塑板",
+    weight: 4.1,
   },
   {
     id: "steel-001",
@@ -137,6 +111,7 @@ const products = [
     description: "建築用H型鋼 SS400 6m",
     price: 1900,
     category: "鐵建築鋼材",
+    weight: 45.2,
   },
   {
     id: "steel-002",
@@ -144,6 +119,7 @@ const products = [
     description: "建築用方管 STKR400 6m",
     price: 680,
     category: "鐵建築鋼材",
+    weight: 12.8,
   },
   {
     id: "gyp-001",
@@ -151,6 +127,7 @@ const products = [
     description: "一般用石膏板 910×1820mm",
     price: 95,
     category: "石膏板",
+    weight: 8.5,
   },
   {
     id: "gyp-002",
@@ -158,6 +135,7 @@ const products = [
     description: "耐火石膏板 910×1820mm",
     price: 140,
     category: "防火石膏板",
+    weight: 11.2,
   },
   {
     id: "ceiling-001",
@@ -165,6 +143,7 @@ const products = [
     description: "輕量鋁天花板 白色",
     price: 75,
     category: "鋁輕天花材料",
+    weight: 0.8,
   },
   {
     id: "rockwool-001",
@@ -172,5 +151,53 @@ const products = [
     description: "防火隔熱用岩棉 910×1820mm",
     price: 180,
     category: "Rockwool防火棉",
+    weight: 2.1,
   },
 ]
+
+export default function ProductsPage() {
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  // カートアイテム数を更新
+  const updateCartCount = () => {
+    setCartItemCount(getCartItemCount());
+  };
+
+  // 商品をカートに追加
+  const handleAddToCart = (product: typeof products[0], quantity: number) => {
+    addToCart(product, quantity);
+    updateCartCount();
+    toast.success(`${product.title} × ${quantity} 已加入購物車`);
+  };
+
+  // 初期化時にカート数を取得
+  useEffect(() => {
+    updateCartCount();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">產品目錄</h1>
+          <p className="text-muted-foreground">我們提供各種高品質建築材料。</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              title={product.title}
+              description={product.description}
+              price={product.price}
+              category={product.category}
+              weight={product.weight}
+              onAddToCart={(quantity) => handleAddToCart(product, quantity)}
+            />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
+}

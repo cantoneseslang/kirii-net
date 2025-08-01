@@ -4,7 +4,7 @@ import type React from "react"
 
 import { createContext, useContext, useEffect, useState } from "react"
 import type { Session, User } from "@supabase/supabase-js"
-import { supabase } from "@/lib/supabase"
+import { supabase, getCustomerByEmail, type Customer } from "@/lib/supabase"
 
 // 檢查 Supabase 是否可用（非模擬客戶端）
 const isSupabaseAvailable = typeof supabase.auth?.getSession === "function"
@@ -12,6 +12,7 @@ const isSupabaseAvailable = typeof supabase.auth?.getSession === "function"
 type AuthContextType = {
   user: User | null
   session: Session | null
+  customer: Customer | null
   isLoading: boolean
   isSupabaseAvailable: boolean
   signIn: (
@@ -29,6 +30,8 @@ type AuthContextType = {
     data: { user: User | null; session: Session | null }
   }>
   signOut: () => Promise<void>
+  loadCustomer: (email: string) => Promise<void>
+  setCustomer: (customer: Customer | null) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -36,6 +39,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [customer, setCustomer] = useState<Customer | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -123,14 +127,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const loadCustomer = async (email: string) => {
+    if (!isSupabaseAvailable) {
+      console.warn("Supabase 不可用，顧客情報をロードできません。")
+      return
+    }
+    try {
+      const customer = await getCustomerByEmail(email)
+      setCustomer(customer)
+    } catch (error) {
+      console.error("顧客情報のロード中にエラーが発生しました:", error)
+    }
+  }
+
+  const setCustomerData = (customerData: Customer | null) => {
+    setCustomer(customerData)
+  }
+
   const value = {
     user,
     session,
+    customer,
     isLoading,
     isSupabaseAvailable,
     signIn,
     signUp,
     signOut,
+    loadCustomer,
+    setCustomer: setCustomerData,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
