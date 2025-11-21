@@ -4,53 +4,17 @@ import { useState, useEffect, useCallback } from "react"
 import { useOrders } from "../context/order-context"
 import { toast } from "react-hot-toast"
 import { MEMBERS } from "../data/members"
-
-const DAILY_MENUS = {
-  星期一: ["豉汁蒸排骨飯", "沙嗲雞球腸飯", "三寶飯", "蕃茄蛋牛肉飯", "時菜肉片炒河", "豆腐粟米飯", "什菇時菜飯"],
-  星期二: ["梅菜蒸肉餅飯", "豉椒牛腩飯", "豆腐火腩飯", "椒鹽豬扒拼麥樂雞飯", "星洲炒米", "豆腐粟米飯", "什菇時菜飯"],
-  星期三: ["鹹魚蒸肉餅飯", "冬瓜炆火腩飯", "咖喱雞球飯", "粟米斑腩飯", "乾炒黑椒牛河", "豆腐粟米飯", "什菇時菜飯"],
-  星期四: ["鹹蛋蒸肉餅飯", "滷水雞脾飯", "蕃茄牛扒腸仔飯", "豉椒排骨飯", "肉絲炒麵", "豆腐粟米飯", "什菇時菜飯"],
-  星期五: ["冬菜蒸鯇魚飯", "魚香茄子飯", "叉燒餐肉鹹蛋飯", "蝦仁火腿炒蛋飯", "肉醬意粉", "豆腐粟米飯", "什菇時菜飯"],
-  星期六: ["雜菇蒸雞球飯", "蕃茄豬扒飯", "涼瓜牛肉飯", "雪菜肉絲炒米", "豆腐粟米飯", "什菇時菜飯"], 
-  星期日: ["雜菇蒸雞球飯", "蕃茄豬扒飯", "涼瓜牛肉飯", "雪菜肉絲炒米", "豆腐粟米飯", "什菇時菜飯"] 
-}
-
-export const DRINKS = {
-  hot: [
-    { name: "熱奶茶", price: 16 },
-    { name: "熱咖啡", price: 16 },
-    { name: "熱鴛鴦", price: 16 },
-    { name: "熱檸茶", price: 16 },
-    { name: "熱菜蜜", price: 16 },
-    { name: "熱可力", price: 16 },
-    { name: "熱華田", price: 16 },
-    { name: "熱檸水", price: 16 },
-    { name: "熱杏仁霜", price: 16 }
-  ],
-  cold: [
-    { name: "凍奶茶", price: 18 },
-    { name: "凍咖啡", price: 18 },
-    { name: "凍鴛鴦", price: 18 },
-    { name: "凍檸茶", price: 18 },
-    { name: "凍菜蜜", price: 18 },
-    { name: "凍可力", price: 18 },
-    { name: "凍華田", price: 18 },
-    { name: "凍檸水", price: 18 },
-    { name: "凍杏仁霜", price: 18 }
-  ],
-  other: [
-    { name: "可樂", price: 12 },
-    { name: "橙汁", price: 12 },
-    { name: "雪碧", price: 12 },
-    { name: "忌廉", price: 12 },
-    { name: "涼茶", price: 15 }
-  ]
-};
+import { getCurrentMenu, DRINKS } from "../data/menu-schedule"
+import OrderConfirmationCard from "./order-confirmation-card"
 
 export default function MenuSelection() {
   const [selectedDish, setSelectedDish] = useState("")
   const [selectedDrink, setSelectedDrink] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [confirmedDish, setConfirmedDish] = useState("")
+  const [confirmedDrink, setConfirmedDrink] = useState("")
+  const [isModified, setIsModified] = useState(false)
   const { currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder } =
     useOrders()
 
@@ -60,7 +24,8 @@ export default function MenuSelection() {
   const fetchMenu = useCallback(() => {
     const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
     setWeekday(today)
-    const menu = DAILY_MENUS[today as keyof typeof DAILY_MENUS] || []
+    const { menus } = getCurrentMenu()
+    const menu = menus[today as keyof typeof menus] || []
     setTodayMenu(menu)
   }, [])
 
@@ -87,12 +52,25 @@ export default function MenuSelection() {
       const existingOrder = todayOrders.find((order) => order.member_id === currentMember)
       if (existingOrder) {
         console.log("既存の注文を読み込み:", existingOrder)
-        setSelectedDish(existingOrder.dish !== "未選擇" ? existingOrder.dish : "")
-        setSelectedDrink(existingOrder.drink !== "未選擇" ? existingOrder.drink : "")
+        const dish = existingOrder.dish !== "未選擇" ? existingOrder.dish : ""
+        const drink = existingOrder.drink !== "未選擇" ? existingOrder.drink : ""
+        setSelectedDish(dish)
+        setSelectedDrink(drink)
+        // 既存の注文がある場合も確認カードを表示
+        if (dish || drink) {
+          setConfirmedDish(existingOrder.dish)
+          setConfirmedDrink(existingOrder.drink)
+          setShowConfirmation(true)
+          setIsModified(false) // 既存注文の表示時は修正ではない
+        }
       }
     } else {
       setSelectedDish("")
       setSelectedDrink("")
+      setShowConfirmation(false)
+      setConfirmedDish("")
+      setConfirmedDrink("")
+      setIsModified(false)
     }
   }, [currentMember, hasOrdered, getWeekdayOrders])
 
@@ -126,25 +104,37 @@ export default function MenuSelection() {
       const todayOrders = getWeekdayOrders(today)
       const existingOrder = todayOrders.find((order) => order.member_id === currentMember)
 
+      const finalDish = selectedDish || "未選擇"
+      const finalDrink = selectedDrink || "未選擇"
+
       if (existingOrder) {
         console.log("注文を修正:", existingOrder.id)
         await modifyOrder(existingOrder.id, {
           member_id: currentMember,
           member_name: member.nameInChinese,
-          dish: selectedDish || "未選擇",
-          drink: selectedDrink || "未選擇",
+          dish: finalDish,
+          drink: finalDrink,
         })
         toast.success("訂單已成功修改")
+        // 修正時は isModified を true に設定
+        setIsModified(true)
       } else {
         console.log("新規注文を追加")
         await addOrder({
           member_id: currentMember,
           member_name: member.nameInChinese,
-          dish: selectedDish || "未選擇",
-          drink: selectedDrink || "未選擇",
+          dish: finalDish,
+          drink: finalDrink,
         })
         toast.success("訂單已成功提交")
+        // 新規注文時は isModified を false に設定
+        setIsModified(false)
       }
+
+      // 注文確認カードを表示
+      setConfirmedDish(finalDish)
+      setConfirmedDrink(finalDrink)
+      setShowConfirmation(true)
 
       // 注文後にデータを再読み込み
       await updateOrderStatus()
@@ -167,6 +157,10 @@ export default function MenuSelection() {
       await cancelOrder(currentMember)
       setSelectedDish("")
       setSelectedDrink("")
+      setShowConfirmation(false)
+      setConfirmedDish("")
+      setConfirmedDrink("")
+      setIsModified(false)
       toast.success("訂單已取消")
     } catch (error) {
       console.error("Error cancelling order:", error)
@@ -182,6 +176,15 @@ export default function MenuSelection() {
 
   return (
     <div className="space-y-6">
+      {/* 注文確認カード */}
+      {showConfirmation && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇") && (
+        <OrderConfirmationCard
+          dish={confirmedDish}
+          drink={confirmedDrink}
+          memberName={MEMBERS.find(m => m.id === currentMember)?.nameInChinese}
+          isModified={isModified}
+        />
+      )}
       <div className="border rounded-md p-4">
         <h3 className="font-bold text-lg mb-4">今日餐單 ({weekday})</h3>
         <div className="space-y-2">
