@@ -15,6 +15,7 @@ export default function MenuSelection() {
   const [confirmedDish, setConfirmedDish] = useState("")
   const [confirmedDrink, setConfirmedDrink] = useState("")
   const [isModified, setIsModified] = useState(false)
+  const [isJustModified, setIsJustModified] = useState(false)
   const { currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder } =
     useOrders()
 
@@ -46,6 +47,12 @@ export default function MenuSelection() {
   }, [fetchMenu, updateOrderStatus])
 
   useEffect(() => {
+    // 修正直後の場合は、useEffectでisModifiedをリセットしない
+    if (isJustModified) {
+      setIsJustModified(false)
+      return
+    }
+
     if (currentMember && hasOrdered(currentMember)) {
       const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
       const todayOrders = getWeekdayOrders(today)
@@ -72,7 +79,7 @@ export default function MenuSelection() {
       setConfirmedDrink("")
       setIsModified(false)
     }
-  }, [currentMember, hasOrdered, getWeekdayOrders])
+  }, [currentMember, hasOrdered, getWeekdayOrders, isJustModified])
 
   const handleSubmit = async () => {
     if (!currentMember) {
@@ -118,6 +125,7 @@ export default function MenuSelection() {
         toast.success("訂單已成功修改")
         // 修正時は isModified を true に設定
         setIsModified(true)
+        setIsJustModified(true) // 修正直後であることをマーク
       } else {
         console.log("新規注文を追加")
         await addOrder({
