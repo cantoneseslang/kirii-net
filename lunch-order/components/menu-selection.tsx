@@ -49,7 +49,12 @@ export default function MenuSelection() {
   useEffect(() => {
     // 修正直後の場合は、useEffectでisModifiedをリセットしない
     if (isJustModifiedRef.current) {
-      isJustModifiedRef.current = false
+      console.log("修正直後のため、useEffectをスキップ（isModifiedを保持）")
+      // リセットは3秒後に行う（確認カードが表示される時間を確保）
+      setTimeout(() => {
+        isJustModifiedRef.current = false
+        console.log("isJustModifiedRefをリセット")
+      }, 3000)
       return
     }
 
@@ -64,11 +69,15 @@ export default function MenuSelection() {
         setSelectedDish(dish)
         setSelectedDrink(drink)
         // 既存の注文がある場合も確認カードを表示
+        // ただし、showConfirmationが既にtrueの場合は、修正直後なので更新しない
         if (dish || drink) {
-          setConfirmedDish(existingOrder.dish)
-          setConfirmedDrink(existingOrder.drink)
-          setShowConfirmation(true)
-          setIsModified(false) // 既存注文の表示時は修正ではない
+          // 修正直後でない場合のみ、確認カードの状態を更新
+          if (!showConfirmation) {
+            setConfirmedDish(existingOrder.dish)
+            setConfirmedDrink(existingOrder.drink)
+            setShowConfirmation(true)
+            setIsModified(false) // 既存注文の表示時は修正ではない
+          }
         }
       }
     } else {
@@ -143,11 +152,13 @@ export default function MenuSelection() {
       setConfirmedDish(finalDish)
       setConfirmedDrink(finalDrink)
       setShowConfirmation(true)
+      console.log("確認カードを表示:", { dish: finalDish, drink: finalDrink, isModified })
 
       // 注文後にデータを再読み込み
       // 修正直後の場合は、useEffectでisModifiedがリセットされないように
       // updateOrderStatusの前にisJustModifiedRefを設定済み
       await updateOrderStatus()
+      console.log("updateOrderStatus完了、isJustModifiedRef:", isJustModifiedRef.current)
     } catch (error) {
       console.error("Error submitting/modifying order:", error)
       toast.error("訂單提交/修改失敗，請稍後再試")
