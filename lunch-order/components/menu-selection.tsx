@@ -259,8 +259,9 @@ export default function MenuSelection() {
   return (
     <>
       {shouldShowConfirmationCard && (
-        <div className="fixed inset-x-4 bottom-6 z-40 flex justify-center sm:justify-end pointer-events-none">
-          <div className="pointer-events-auto w-full max-w-sm drop-shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          <div className="relative w-full max-w-md pointer-events-auto drop-shadow-2xl animate-in fade-in duration-200">
             <OrderConfirmationCard
               dish={confirmedDish}
               drink={confirmedDrink}
@@ -271,7 +272,7 @@ export default function MenuSelection() {
         </div>
       )}
 
-      <div className="space-y-6 pb-32">
+      <div className="space-y-6">
         <div className="border rounded-md p-4">
         <h3 className="font-bold text-lg mb-4">今日餐單 ({weekday})</h3>
         <div className="space-y-2">

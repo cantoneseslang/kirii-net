@@ -62,7 +62,7 @@ export default function OrderConfirmationCard({ dish, drink, memberName, isModif
 
         {/* ドリンクのみの場合のメッセージ */}
         {isDrinksOnly && (
-          <div className="pt-2 text-orange-600 font-medium text-sm">
+          <div className="pt-2 text-orange-600 text-lg font-bold">
             {concernText}
           </div>
         )}
