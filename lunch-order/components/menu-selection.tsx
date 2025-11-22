@@ -253,16 +253,25 @@ export default function MenuSelection() {
   }
 
   // デバッグ: 確認カードの表示条件をすべてログ出力
-  console.log("=== 確認カード表示条件 ===", {
-    showConfirmation,
-    showConfirmationRef: showConfirmationRef.current,
-    confirmedDish,
-    confirmedDrink,
-    isModified,
-    condition1: showConfirmation || showConfirmationRef.current,
-    condition2: confirmedDish !== "未選擇" || confirmedDrink !== "未選擇",
-    shouldShow: (showConfirmation || showConfirmationRef.current) && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇")
-  })
+  console.log(
+    "=== 確認カード表示条件 ===\n" +
+      JSON.stringify(
+        {
+          showConfirmation,
+          showConfirmationRef: showConfirmationRef.current,
+          confirmedDish,
+          confirmedDrink,
+          isModified,
+          condition1: showConfirmation || showConfirmationRef.current,
+          condition2: confirmedDish !== "未選擇" || confirmedDrink !== "未選擇",
+          shouldShow:
+            (showConfirmation || showConfirmationRef.current) &&
+            (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇"),
+        },
+        null,
+        2,
+      ),
+  )
 
   return (
     <div className="space-y-6">
