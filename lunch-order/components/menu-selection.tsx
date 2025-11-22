@@ -252,39 +252,27 @@ export default function MenuSelection() {
     return <div className="border rounded-md p-6 bg-gray-50 text-center text-gray-500">請先選擇訂餐人</div>
   }
 
-  // デバッグ: 確認カードの表示条件をすべてログ出力
-  console.log(
-    "=== 確認カード表示条件 ===\n" +
-      JSON.stringify(
-        {
-          showConfirmation,
-          showConfirmationRef: showConfirmationRef.current,
-          confirmedDish,
-          confirmedDrink,
-          isModified,
-          condition1: showConfirmation || showConfirmationRef.current,
-          condition2: confirmedDish !== "未選擇" || confirmedDrink !== "未選擇",
-          shouldShow:
-            (showConfirmation || showConfirmationRef.current) &&
-            (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇"),
-        },
-        null,
-        2,
-      ),
-  )
+  const shouldShowConfirmationCard =
+    (showConfirmation || showConfirmationRef.current) &&
+    (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇")
 
   return (
-    <div className="space-y-6">
-      {/* 注文確認カード */}
-      {(showConfirmation || showConfirmationRef.current) && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇") && (
-        <OrderConfirmationCard
-          dish={confirmedDish}
-          drink={confirmedDrink}
-          memberName={MEMBERS.find(m => m.id === currentMember)?.nameInChinese}
-          isModified={isModified}
-        />
+    <>
+      {shouldShowConfirmationCard && (
+        <div className="fixed inset-x-4 bottom-6 z-40 flex justify-center sm:justify-end pointer-events-none">
+          <div className="pointer-events-auto w-full max-w-sm drop-shadow-2xl">
+            <OrderConfirmationCard
+              dish={confirmedDish}
+              drink={confirmedDrink}
+              memberName={MEMBERS.find((m) => m.id === currentMember)?.nameInChinese}
+              isModified={isModified}
+            />
+          </div>
+        </div>
       )}
-      <div className="border rounded-md p-4">
+
+      <div className="space-y-6 pb-32">
+        <div className="border rounded-md p-4">
         <h3 className="font-bold text-lg mb-4">今日餐單 ({weekday})</h3>
         <div className="space-y-2">
           <div className="flex items-center">
@@ -314,9 +302,9 @@ export default function MenuSelection() {
             </div>
           ))}
         </div>
-      </div>
+        </div>
 
-      <div className="border rounded-md p-4">
+        <div className="border rounded-md p-4">
         <h3 className="font-bold text-lg mb-4">飲品選擇</h3>
         <div className="space-y-6">
           <div className="flex items-center">
@@ -394,9 +382,9 @@ export default function MenuSelection() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      <div className="space-y-2">
+        <div className="space-y-2">
         <button
           onClick={handleSubmit}
           disabled={(!selectedDish && !selectedDrink) || isSubmitting}
@@ -416,7 +404,8 @@ export default function MenuSelection() {
             {isSubmitting ? "處理中..." : "取消落單"}
           </button>
         )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
