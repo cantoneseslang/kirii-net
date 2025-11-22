@@ -52,6 +52,10 @@ export default function MenuSelection() {
     // 修正直後の場合は、useEffectでisModifiedをリセットしない
     if (isJustModifiedRef.current) {
       console.log("修正直後のため、useEffectをスキップ（isModifiedを保持）")
+      // 確認カードを確実に表示する
+      if (!showConfirmation) {
+        setShowConfirmation(true)
+      }
       // 既存のタイムアウトをクリア
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
@@ -68,6 +72,10 @@ export default function MenuSelection() {
     // 確認カードが表示されている場合は、その状態を保持する（注文送信直後など）
     if (showConfirmationRef.current) {
       console.log("確認カードが表示中のため、状態を保持")
+      // showConfirmationの状態も確実にtrueにする
+      if (!showConfirmation) {
+        setShowConfirmation(true)
+      }
       // 選択状態と確認カードの内容を更新する（注文データが更新された場合）
       if (currentMember && hasOrdered(currentMember)) {
         const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
