@@ -66,7 +66,7 @@ export default function MenuSelection() {
     }
 
     // 確認カードが表示されている場合は、その状態を保持する（注文送信直後など）
-    if (showConfirmationRef.current && showConfirmation) {
+    if (showConfirmationRef.current) {
       console.log("確認カードが表示中のため、状態を保持")
       // 選択状態と確認カードの内容を更新する（注文データが更新された場合）
       if (currentMember && hasOrdered(currentMember)) {
@@ -237,18 +237,6 @@ export default function MenuSelection() {
   if (!currentMember) {
     return <div className="border rounded-md p-6 bg-gray-50 text-center text-gray-500">請先選擇訂餐人</div>
   }
-
-  // デバッグ用: 確認カードの表示条件をログ出力
-  useEffect(() => {
-    console.log("確認カード表示状態:", {
-      showConfirmation,
-      confirmedDish,
-      confirmedDrink,
-      isModified,
-      showConfirmationRef: showConfirmationRef.current,
-      isJustModifiedRef: isJustModifiedRef.current,
-    })
-  }, [showConfirmation, confirmedDish, confirmedDrink, isModified])
 
   return (
     <div className="space-y-6">
