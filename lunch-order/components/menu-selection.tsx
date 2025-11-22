@@ -16,6 +16,8 @@ export default function MenuSelection() {
   const [confirmedDrink, setConfirmedDrink] = useState("")
   const [isModified, setIsModified] = useState(false)
   const isJustModifiedRef = useRef(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const showConfirmationRef = useRef(false)
   const { currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder } =
     useOrders()
 
@@ -50,11 +52,39 @@ export default function MenuSelection() {
     // 修正直後の場合は、useEffectでisModifiedをリセットしない
     if (isJustModifiedRef.current) {
       console.log("修正直後のため、useEffectをスキップ（isModifiedを保持）")
+      // 既存のタイムアウトをクリア
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
       // リセットは3秒後に行う（確認カードが表示される時間を確保）
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         isJustModifiedRef.current = false
         console.log("isJustModifiedRefをリセット")
+        timeoutRef.current = null
       }, 3000)
+      return
+    }
+
+    // 確認カードが表示されている場合は、その状態を保持する（注文送信直後など）
+    if (showConfirmationRef.current && showConfirmation) {
+      console.log("確認カードが表示中のため、状態を保持")
+      // 選択状態と確認カードの内容を更新する（注文データが更新された場合）
+      if (currentMember && hasOrdered(currentMember)) {
+        const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
+        const todayOrders = getWeekdayOrders(today)
+        const existingOrder = todayOrders.find((order) => order.member_id === currentMember)
+        if (existingOrder) {
+          const dish = existingOrder.dish !== "未選擇" ? existingOrder.dish : ""
+          const drink = existingOrder.drink !== "未選擇" ? existingOrder.drink : ""
+          setSelectedDish(dish)
+          setSelectedDrink(drink)
+          // 確認カードの内容も更新（注文が修正された場合）
+          if (dish || drink) {
+            setConfirmedDish(existingOrder.dish)
+            setConfirmedDrink(existingOrder.drink)
+          }
+        }
+      }
       return
     }
 
@@ -69,26 +99,36 @@ export default function MenuSelection() {
         setSelectedDish(dish)
         setSelectedDrink(drink)
         // 既存の注文がある場合も確認カードを表示
-        // ただし、showConfirmationが既にtrueの場合は、修正直後なので更新しない
         if (dish || drink) {
-          // 修正直後でない場合のみ、確認カードの状態を更新
-          if (!showConfirmation) {
-            setConfirmedDish(existingOrder.dish)
-            setConfirmedDrink(existingOrder.drink)
-            setShowConfirmation(true)
-            setIsModified(false) // 既存注文の表示時は修正ではない
-          }
+          setConfirmedDish(existingOrder.dish)
+          setConfirmedDrink(existingOrder.drink)
+          setShowConfirmation(true)
+          showConfirmationRef.current = true
+          setIsModified(false) // 既存注文の表示時は修正ではない
         }
       }
     } else {
-      setSelectedDish("")
-      setSelectedDrink("")
-      setShowConfirmation(false)
-      setConfirmedDish("")
-      setConfirmedDrink("")
-      setIsModified(false)
+      // currentMemberがnullまたは注文がない場合のみ、確認カードを非表示にする
+      if (!currentMember) {
+        setSelectedDish("")
+        setSelectedDrink("")
+        setShowConfirmation(false)
+        showConfirmationRef.current = false
+        setConfirmedDish("")
+        setConfirmedDrink("")
+        setIsModified(false)
+      }
     }
   }, [currentMember, hasOrdered, getWeekdayOrders])
+
+  // クリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const handleSubmit = async () => {
     if (!currentMember) {
@@ -123,8 +163,17 @@ export default function MenuSelection() {
       const finalDish = selectedDish || "未選擇"
       const finalDrink = selectedDrink || "未選擇"
 
+      // 注文確認カードを先に表示（loadOrders完了前に表示状態を設定）
+      setConfirmedDish(finalDish)
+      setConfirmedDrink(finalDrink)
+      setShowConfirmation(true)
+      showConfirmationRef.current = true
+
       if (existingOrder) {
         console.log("注文を修正:", existingOrder.id)
+        // 修正直後であることをマーク（modifyOrder内でloadOrdersが呼ばれる前に設定）
+        isJustModifiedRef.current = true
+        setIsModified(true)
         await modifyOrder(existingOrder.id, {
           member_id: currentMember,
           member_name: member.nameInChinese,
@@ -132,11 +181,10 @@ export default function MenuSelection() {
           drink: finalDrink,
         })
         toast.success("訂單已成功修改")
-        // 修正時は isModified を true に設定
-        setIsModified(true)
-        isJustModifiedRef.current = true // 修正直後であることをマーク
       } else {
         console.log("新規注文を追加")
+        isJustModifiedRef.current = false
+        setIsModified(false)
         await addOrder({
           member_id: currentMember,
           member_name: member.nameInChinese,
@@ -144,21 +192,15 @@ export default function MenuSelection() {
           drink: finalDrink,
         })
         toast.success("訂單已成功提交")
-        // 新規注文時は isModified を false に設定
-        setIsModified(false)
       }
 
-      // 注文確認カードを表示
-      setConfirmedDish(finalDish)
-      setConfirmedDrink(finalDrink)
-      setShowConfirmation(true)
-      console.log("確認カードを表示:", { dish: finalDish, drink: finalDrink, isModified })
+      console.log("確認カードを表示:", { dish: finalDish, drink: finalDrink, isModified: isJustModifiedRef.current })
 
       // 注文後にデータを再読み込み
-      // 修正直後の場合は、useEffectでisModifiedがリセットされないように
-      // updateOrderStatusの前にisJustModifiedRefを設定済み
-      await updateOrderStatus()
-      console.log("updateOrderStatus完了、isJustModifiedRef:", isJustModifiedRef.current)
+      // modifyOrder/addOrder内で既にloadOrdersが呼ばれるため、updateOrderStatusは不要
+      // ただし、リアルタイム更新のタイミングを考慮して少し待つ
+      await new Promise(resolve => setTimeout(resolve, 100))
+      console.log("注文処理完了、isJustModifiedRef:", isJustModifiedRef.current)
     } catch (error) {
       console.error("Error submitting/modifying order:", error)
       toast.error("訂單提交/修改失敗，請稍後再試")
@@ -179,6 +221,7 @@ export default function MenuSelection() {
       setSelectedDish("")
       setSelectedDrink("")
       setShowConfirmation(false)
+      showConfirmationRef.current = false
       setConfirmedDish("")
       setConfirmedDrink("")
       setIsModified(false)
@@ -194,6 +237,18 @@ export default function MenuSelection() {
   if (!currentMember) {
     return <div className="border rounded-md p-6 bg-gray-50 text-center text-gray-500">請先選擇訂餐人</div>
   }
+
+  // デバッグ用: 確認カードの表示条件をログ出力
+  useEffect(() => {
+    console.log("確認カード表示状態:", {
+      showConfirmation,
+      confirmedDish,
+      confirmedDrink,
+      isModified,
+      showConfirmationRef: showConfirmationRef.current,
+      isJustModifiedRef: isJustModifiedRef.current,
+    })
+  }, [showConfirmation, confirmedDish, confirmedDrink, isModified])
 
   return (
     <div className="space-y-6">
