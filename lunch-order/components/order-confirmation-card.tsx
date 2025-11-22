@@ -14,12 +14,14 @@ export default function OrderConfirmationCard({ dish, drink, memberName, isModif
   const hasDish = dish && dish !== "未選擇"
   const hasDrink = drink && drink !== "未選擇"
   const isDrinksOnly = !hasDish && hasDrink
+  const isFoodOnly = hasDish && !hasDrink
 
   // 広東語のテキスト
   const titleText = isModified ? "今日你訂左嘅午餐係以下內容" : "今日你訂咗嘅午餐係以下內容"
   const setMealText = "餐飲套餐"
   const drinksOnlyText = "只係飲品"
-  const concernText = "你唔肚餓咩？唔使嗌嘢食阿？"
+  const drinksConcernText = "你唔肚餓咩？唔使嗌嘢食阿？"
+  const foodConcernText = "你食嘢嗰陣唔口渴咩？唔使嗌嘢飲阿？"
   const modifiedMessage = "我幫你改左單啦！"
   
   // 注文がない場合は表示しない
@@ -63,7 +65,12 @@ export default function OrderConfirmationCard({ dish, drink, memberName, isModif
         {/* ドリンクのみの場合のメッセージ */}
         {isDrinksOnly && (
           <div className="pt-2 text-orange-600 text-lg font-bold">
-            {concernText}
+            {drinksConcernText}
+          </div>
+        )}
+        {isFoodOnly && (
+          <div className="pt-2 text-blue-600 text-lg font-bold">
+            {foodConcernText}
           </div>
         )}
       </CardContent>
