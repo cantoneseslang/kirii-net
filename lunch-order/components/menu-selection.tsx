@@ -209,6 +209,12 @@ export default function MenuSelection() {
       // ただし、リアルタイム更新のタイミングを考慮して少し待つ
       await new Promise(resolve => setTimeout(resolve, 100))
       console.log("注文処理完了、isJustModifiedRef:", isJustModifiedRef.current)
+      
+      // loadOrders完了後も確認カードを確実に表示する
+      setShowConfirmation(true)
+      showConfirmationRef.current = true
+      setConfirmedDish(finalDish)
+      setConfirmedDrink(finalDrink)
     } catch (error) {
       console.error("Error submitting/modifying order:", error)
       toast.error("訂單提交/修改失敗，請稍後再試")
@@ -249,7 +255,7 @@ export default function MenuSelection() {
   return (
     <div className="space-y-6">
       {/* 注文確認カード */}
-      {showConfirmation && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇") && (
+      {(showConfirmation || showConfirmationRef.current) && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇") && (
         <OrderConfirmationCard
           dish={confirmedDish}
           drink={confirmedDrink}
