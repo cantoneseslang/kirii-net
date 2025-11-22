@@ -252,6 +252,18 @@ export default function MenuSelection() {
     return <div className="border rounded-md p-6 bg-gray-50 text-center text-gray-500">請先選擇訂餐人</div>
   }
 
+  // デバッグ: 確認カードの表示条件をすべてログ出力
+  console.log("=== 確認カード表示条件 ===", {
+    showConfirmation,
+    showConfirmationRef: showConfirmationRef.current,
+    confirmedDish,
+    confirmedDrink,
+    isModified,
+    condition1: showConfirmation || showConfirmationRef.current,
+    condition2: confirmedDish !== "未選擇" || confirmedDrink !== "未選擇",
+    shouldShow: (showConfirmation || showConfirmationRef.current) && (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇")
+  })
+
   return (
     <div className="space-y-6">
       {/* 注文確認カード */}
