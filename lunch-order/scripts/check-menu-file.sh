@@ -14,6 +14,20 @@ if [ ! -f "$MENU_FILE" ]; then
     exit 1
 fi
 
+# Gitリポジトリのルートを取得
+GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+if [ -z "$GIT_ROOT" ]; then
+    # Gitリポジトリが見つからない場合（Vercelのビルド環境など）
+    # ファイルが存在することを確認（VercelはGitからファイルを取得するため、存在すればGit管理下にある）
+    if [ -f "$MENU_FILE" ]; then
+        echo "✅ $MENU_FILE exists (Git repository context not available, assuming tracked)"
+        exit 0
+    else
+        echo "$ERROR_MESSAGE"
+        exit 1
+    fi
+fi
+
 # Git管理下にあるか確認
 if ! git ls-files --error-unmatch "$MENU_FILE" > /dev/null 2>&1; then
     echo "$ERROR_MESSAGE"
@@ -39,4 +53,8 @@ else
 fi
 
 exit 0
+
+
+
+
 
