@@ -25,11 +25,37 @@ export default function MenuSelection() {
   const [todayMenu, setTodayMenu] = useState<string[]>([])
 
   const fetchMenu = useCallback(() => {
-    const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
-    setWeekday(today)
-    const { menus } = getCurrentMenu()
-    const menu = menus[today as keyof typeof menus] || []
-    setTodayMenu(menu)
+    try {
+      const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
+      setWeekday(today)
+      
+      // ⚠️ 重要: data/menu-schedule.ts の CURRENT_MENU のみを参照
+      // ファイルが見つからない場合、またはメニューが空の場合はエラーが投げられる
+      const { menus } = getCurrentMenu()
+      
+      // 今日のメニューが存在しない場合はエラー
+      const menu = menus[today as keyof typeof menus]
+      if (!menu || menu.length === 0) {
+        const errorMsg = `❌ CRITICAL ERROR: Menu data for ${today} is not found in data/menu-schedule.ts. ` +
+                        "The file data/menu-schedule.ts must exist and contain valid menu data. " +
+                        "Do not use any fallback or default menu data."
+        console.error(errorMsg)
+        toast.error(errorMsg)
+        setTodayMenu([])
+        return
+      }
+      
+      setTodayMenu(menu)
+    } catch (error) {
+      const errorMsg = error instanceof Error 
+        ? error.message 
+        : "❌ CRITICAL ERROR: Failed to load menu data from data/menu-schedule.ts. " +
+          "The file data/menu-schedule.ts must exist and contain valid menu data. " +
+          "Do not use any fallback or default menu data."
+      console.error(errorMsg, error)
+      toast.error(errorMsg)
+      setTodayMenu([])
+    }
   }, [])
 
   const updateOrderStatus = useCallback(async () => {
