@@ -4,5 +4,15 @@
   "devCommand": "pnpm run dev",
   "installCommand": "pnpm install",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/menu-switch-notify",
+      "schedule": "50 3 * * *"
+    },
+    {
+      "path": "/api/cron/menu-switch-notify",
+      "schedule": "0 4 * * *"
+    }
+  ]
 } 
