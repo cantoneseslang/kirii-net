@@ -450,19 +450,16 @@ export default function MenuSelection() {
                     <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
                     <div className="grid grid-cols-1 gap-1.5">
                       {cat.items.map((item, itemIdx) => (
-                        <div key={itemIdx} className="flex items-center justify-between text-gray-400">
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              id={`fp-dish-${catIdx}-${itemIdx}`}
-                              name="fp-dish"
-                              value={item.name}
-                              disabled
-                              className="mr-2 accent-pink-600"
-                            />
-                            <label htmlFor={`fp-dish-${catIdx}-${itemIdx}`}>{item.name}</label>
-                          </div>
-                          <span className="text-sm ml-2 shrink-0">HK${item.price}</span>
+                        <div key={itemIdx} className="flex items-center text-gray-400">
+                          <input
+                            type="radio"
+                            id={`fp-dish-${catIdx}-${itemIdx}`}
+                            name="fp-dish"
+                            value={item.name}
+                            disabled
+                            className="mr-2 accent-pink-600"
+                          />
+                          <label htmlFor={`fp-dish-${catIdx}-${itemIdx}`}>{item.name}</label>
                         </div>
                       ))}
                     </div>
@@ -478,19 +475,16 @@ export default function MenuSelection() {
                     <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
                     <div className="grid grid-cols-2 gap-1.5">
                       {cat.items.map((item, itemIdx) => (
-                        <div key={itemIdx} className="flex items-center justify-between text-gray-400">
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              id={`fp-drink-${catIdx}-${itemIdx}`}
-                              name="fp-drink"
-                              value={item.name}
-                              disabled
-                              className="mr-2 accent-pink-600"
-                            />
-                            <label htmlFor={`fp-drink-${catIdx}-${itemIdx}`} className="text-sm">{item.name}</label>
-                          </div>
-                          <span className="text-xs shrink-0">${item.price}</span>
+                        <div key={itemIdx} className="flex items-center text-gray-400">
+                          <input
+                            type="radio"
+                            id={`fp-drink-${catIdx}-${itemIdx}`}
+                            name="fp-drink"
+                            value={item.name}
+                            disabled
+                            className="mr-2 accent-pink-600"
+                          />
+                          <label htmlFor={`fp-drink-${catIdx}-${itemIdx}`} className="text-sm">{item.name}</label>
                         </div>
                       ))}
                     </div>
