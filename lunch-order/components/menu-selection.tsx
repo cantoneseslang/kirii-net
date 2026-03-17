@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { useOrders } from "../context/order-context"
 import { toast } from "react-hot-toast"
 import { MEMBERS } from "../data/members"
-import { getCurrentMenu, DRINKS } from "../data/menu-schedule"
+import { DRINKS } from "../data/menu-schedule"
+import { FOODPANDA_RESTAURANT } from "../data/foodpanda-menu"
 import OrderConfirmationCard from "./order-confirmation-card"
 
 export default function MenuSelection() {
   const [selectedDish, setSelectedDish] = useState("")
   const [selectedDrink, setSelectedDrink] = useState("")
+  const [fpExpanded, setFpExpanded] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [confirmedDish, setConfirmedDish] = useState("")
@@ -25,37 +27,44 @@ export default function MenuSelection() {
   const [todayMenu, setTodayMenu] = useState<string[]>([])
 
   const fetchMenu = useCallback(() => {
-    try {
-      const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
-      setWeekday(today)
-      
-      // ⚠️ 重要: data/menu-schedule.ts の CURRENT_MENU のみを参照
-      // ファイルが見つからない場合、またはメニューが空の場合はエラーが投げられる
-      const { menus } = getCurrentMenu()
-      
-      // 今日のメニューが存在しない場合はエラー
-      const menu = menus[today as keyof typeof menus]
-      if (!menu || menu.length === 0) {
-        const errorMsg = `❌ CRITICAL ERROR: Menu data for ${today} is not found in data/menu-schedule.ts. ` +
-                        "The file data/menu-schedule.ts must exist and contain valid menu data. " +
-                        "Do not use any fallback or default menu data."
-        console.error(errorMsg)
+    const load = async () => {
+      try {
+        const res = await fetch("/api/menu", { cache: "no-store" })
+        const json = await res.json()
+        if (!res.ok || !json?.success) {
+          throw new Error(
+            json?.error ||
+              "❌ CRITICAL ERROR: Failed to load menu data from data/menu-schedule.ts. " +
+                "The file data/menu-schedule.ts must exist and contain valid menu data. " +
+                "Do not use any fallback or default menu data.",
+          )
+        }
+
+        const nextWeekday = json?.data?.weekday ?? ""
+        const dishes = Array.isArray(json?.data?.dishes) ? json.data.dishes : []
+        if (!nextWeekday || dishes.length === 0) {
+          throw new Error(
+            "❌ CRITICAL ERROR: Menu API returned invalid data. " +
+              "The file data/menu-schedule.ts must contain valid menu data.",
+          )
+        }
+
+        setWeekday(nextWeekday)
+        setTodayMenu(dishes)
+      } catch (error) {
+        const errorMsg =
+          error instanceof Error
+            ? error.message
+            : "❌ CRITICAL ERROR: Failed to load menu data from data/menu-schedule.ts. " +
+              "The file data/menu-schedule.ts must exist and contain valid menu data. " +
+              "Do not use any fallback or default menu data."
+        console.error(errorMsg, error)
         toast.error(errorMsg)
         setTodayMenu([])
-        return
       }
-      
-      setTodayMenu(menu)
-    } catch (error) {
-      const errorMsg = error instanceof Error 
-        ? error.message 
-        : "❌ CRITICAL ERROR: Failed to load menu data from data/menu-schedule.ts. " +
-          "The file data/menu-schedule.ts must exist and contain valid menu data. " +
-          "Do not use any fallback or default menu data."
-      console.error(errorMsg, error)
-      toast.error(errorMsg)
-      setTodayMenu([])
     }
+
+    void load()
   }, [])
 
   const updateOrderStatus = useCallback(async () => {
@@ -408,6 +417,88 @@ export default function MenuSelection() {
             </div>
           </div>
         </div>
+        </div>
+
+        <div className="border rounded-md overflow-hidden opacity-80" style={{ borderColor: '#d70f64' }}>
+          <button
+            onClick={() => setFpExpanded(!fpExpanded)}
+            className="w-full p-4 flex items-center justify-between text-left"
+            style={{ backgroundColor: '#fff0f5' }}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🐼</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg" style={{ color: '#d70f64' }}>foodpanda 外賣</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-400 text-white">Coming Soon</span>
+                </div>
+                <div className="text-sm text-gray-600">
+                  {FOODPANDA_RESTAURANT.name} {FOODPANDA_RESTAURANT.nameEn}
+                </div>
+              </div>
+            </div>
+            <span className="text-xl" style={{ color: '#d70f64' }}>{fpExpanded ? '▲' : '▼'}</span>
+          </button>
+
+          {fpExpanded && (
+            <div className="p-4 space-y-6 border-t" style={{ borderColor: '#d70f64' }}>
+              <div>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>餐點選擇</h3>
+
+                {FOODPANDA_RESTAURANT.menu.map((cat, catIdx) => (
+                  <div key={catIdx} className="mt-4">
+                    <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {cat.items.map((item, itemIdx) => (
+                        <div key={itemIdx} className="flex items-center justify-between text-gray-400">
+                          <div className="flex items-center">
+                            <input
+                              type="radio"
+                              id={`fp-dish-${catIdx}-${itemIdx}`}
+                              name="fp-dish"
+                              value={item.name}
+                              disabled
+                              className="mr-2 accent-pink-600"
+                            />
+                            <label htmlFor={`fp-dish-${catIdx}-${itemIdx}`}>{item.name}</label>
+                          </div>
+                          <span className="text-sm ml-2 shrink-0">HK${item.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>飲品選擇</h3>
+
+                {FOODPANDA_RESTAURANT.drinks.map((cat, catIdx) => (
+                  <div key={catIdx} className="mt-4">
+                    <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {cat.items.map((item, itemIdx) => (
+                        <div key={itemIdx} className="flex items-center justify-between text-gray-400">
+                          <div className="flex items-center">
+                            <input
+                              type="radio"
+                              id={`fp-drink-${catIdx}-${itemIdx}`}
+                              name="fp-drink"
+                              value={item.name}
+                              disabled
+                              className="mr-2 accent-pink-600"
+                            />
+                            <label htmlFor={`fp-drink-${catIdx}-${itemIdx}`} className="text-sm">{item.name}</label>
+                          </div>
+                          <span className="text-xs shrink-0">${item.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
