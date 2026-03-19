@@ -271,203 +271,165 @@ export default function MenuSelection() {
       )}
 
       <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-0 border rounded-md overflow-hidden">
-          <button
-            onClick={() => setActiveTab("tingkok")}
-            className={`py-3 text-center font-bold transition-colors ${
-              activeTab === "tingkok" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            汀角路茶座
-          </button>
-          <button
-            onClick={() => setActiveTab("foodpanda")}
-            className={`py-3 text-center font-bold transition-colors ${
-              activeTab === "foodpanda" ? "text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-            style={activeTab === "foodpanda" ? { backgroundColor: '#d70f64' } : {}}
-          >
-            🐼 foodpanda
-          </button>
+        <div className="border rounded-md p-4">
+          <h3 className="font-bold text-lg mb-4">今日餐單 ({weekday})</h3>
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <input type="radio" id="no-dish" name="dish" value="" checked={selectedDish === ""} onChange={() => setSelectedDish("")} className="mr-2" />
+              <label htmlFor="no-dish">不選擇餐點</label>
+            </div>
+            {todayMenu.map((dish, index) => (
+              <div key={index} className="flex items-center">
+                <input type="radio" id={`dish-${index}`} name="dish" value={dish} checked={selectedDish === dish} onChange={() => setSelectedDish(dish)} className="mr-2" />
+                <label htmlFor={`dish-${index}`}>{dish}</label>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {activeTab === "tingkok" && (
-          <>
-            <div className="border rounded-md p-4">
-              <h3 className="font-bold text-lg mb-4">汀角路茶座 - 今日餐單 ({weekday})</h3>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <input type="radio" id="no-dish" name="dish" value="" checked={selectedDish === ""} onChange={() => setSelectedDish("")} className="mr-2" />
-                  <label htmlFor="no-dish">不選擇餐點</label>
+        <div className="border rounded-md p-4">
+          <h3 className="font-bold text-lg mb-4">飲品選擇</h3>
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <input type="radio" id="no-drink" name="drink" value="" checked={selectedDrink === ""} onChange={() => setSelectedDrink("")} className="mr-2" />
+              <label htmlFor="no-drink">不選擇飲品</label>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium mb-2">熱飲</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {DRINKS.hot.map((drink, index) => (
+                    <div key={index} className="flex items-center">
+                      <input type="radio" id={`drink-hot-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
+                      <label htmlFor={`drink-hot-${index}`}>{drink.name}</label>
+                    </div>
+                  ))}
                 </div>
-                {todayMenu.map((dish, index) => (
-                  <div key={index} className="flex items-center">
-                    <input type="radio" id={`dish-${index}`} name="dish" value={dish} checked={selectedDish === dish} onChange={() => setSelectedDish(dish)} className="mr-2" />
-                    <label htmlFor={`dish-${index}`}>{dish}</label>
-                  </div>
-                ))}
+              </div>
+              <div>
+                <h4 className="font-medium mb-2">凍飲</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {DRINKS.cold.map((drink, index) => (
+                    <div key={index} className="flex items-center">
+                      <input type="radio" id={`drink-cold-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
+                      <label htmlFor={`drink-cold-${index}`}>{drink.name}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2">其他飲品</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {DRINKS.other.map((drink, index) => (
+                    <div key={index} className="flex items-center">
+                      <input type="radio" id={`drink-other-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
+                      <label htmlFor={`drink-other-${index}`}>{drink.name}</label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="border rounded-md p-4">
-              <h3 className="font-bold text-lg mb-4">飲品選擇</h3>
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <input type="radio" id="no-drink" name="drink" value="" checked={selectedDrink === ""} onChange={() => setSelectedDrink("")} className="mr-2" />
-                  <label htmlFor="no-drink">不選擇飲品</label>
+        <div className="border rounded-md overflow-hidden opacity-80" style={{ borderColor: '#d70f64' }}>
+          <button
+            onClick={() => setFpExpanded(!fpExpanded)}
+            className="w-full p-4 flex items-center justify-between text-left"
+            style={{ backgroundColor: '#fff0f5' }}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🐼</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg" style={{ color: '#d70f64' }}>foodpanda 外賣</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-400 text-white">Coming Soon</span>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium mb-2">熱飲</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {DRINKS.hot.map((drink, index) => (
-                        <div key={index} className="flex items-center">
-                          <input type="radio" id={`drink-hot-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
-                          <label htmlFor={`drink-hot-${index}`}>{drink.name}</label>
+                <div className="text-sm text-gray-600">
+                  {FOODPANDA_RESTAURANT.name} {FOODPANDA_RESTAURANT.nameEn}
+                </div>
+              </div>
+            </div>
+            <span className="text-xl" style={{ color: '#d70f64' }}>{fpExpanded ? '▲' : '▼'}</span>
+          </button>
+
+          {fpExpanded && (
+            <div className="p-4 space-y-6 border-t" style={{ borderColor: '#d70f64' }}>
+              <div>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>餐點選擇</h3>
+                {FOODPANDA_RESTAURANT.menu.map((cat, catIdx) => (
+                  <div key={catIdx} className="mt-4">
+                    <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {cat.items.map((item, itemIdx) => (
+                        <div key={itemIdx} className="flex items-center text-gray-400">
+                          <input type="radio" id={`fp-dish-${catIdx}-${itemIdx}`} name="fp-dish" value={item.name} disabled className="mr-2 accent-pink-600" />
+                          <label htmlFor={`fp-dish-${catIdx}-${itemIdx}`}>{item.name}</label>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium mb-2">凍飲</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {DRINKS.cold.map((drink, index) => (
-                        <div key={index} className="flex items-center">
-                          <input type="radio" id={`drink-cold-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
-                          <label htmlFor={`drink-cold-${index}`}>{drink.name}</label>
+                ))}
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>選項（麵の種類）</h3>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {FOODPANDA_RESTAURANT.noodleOptions.map((opt, idx) => (
+                    <div key={idx} className="flex items-center text-gray-400">
+                      <input type="radio" id={`fp-noodle-${idx}`} name="fp-noodle" disabled className="mr-2 accent-pink-600" />
+                      <label htmlFor={`fp-noodle-${idx}`} className="text-sm">{opt.name}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>追加</h3>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {FOODPANDA_RESTAURANT.addOns.map((opt, idx) => (
+                    <div key={idx} className="flex items-center text-gray-400">
+                      <input type="checkbox" id={`fp-addon-${idx}`} disabled className="mr-2 accent-pink-600" />
+                      <label htmlFor={`fp-addon-${idx}`} className="text-sm">{opt.name}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>飲品選擇</h3>
+                {FOODPANDA_RESTAURANT.drinks.map((cat, catIdx) => (
+                  <div key={catIdx} className="mt-4">
+                    <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {cat.items.map((item, itemIdx) => (
+                        <div key={itemIdx} className="flex items-center text-gray-400">
+                          <input type="radio" id={`fp-drink-${catIdx}-${itemIdx}`} name="fp-drink" value={item.name} disabled className="mr-2 accent-pink-600" />
+                          <label htmlFor={`fp-drink-${catIdx}-${itemIdx}`} className="text-sm">{item.name}</label>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium mb-2">其他飲品</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {DRINKS.other.map((drink, index) => (
-                        <div key={index} className="flex items-center">
-                          <input type="radio" id={`drink-other-${index}`} name="drink" value={drink.name} checked={selectedDrink === drink.name} onChange={() => setSelectedDrink(drink.name)} className="mr-2" />
-                          <label htmlFor={`drink-other-${index}`}>{drink.name}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={handleSubmit}
-                disabled={(!selectedDish && !selectedDrink) || isSubmitting}
-                className={`w-full py-3 rounded-md text-white font-bold ${hasOrdered(currentMember) ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"} disabled:opacity-50`}
-              >
-                {isSubmitting ? "處理中..." : hasOrdered(currentMember) ? "修改落單" : "確認落單"}
-              </button>
-              {hasOrdered(currentMember) && (
-                <button onClick={handleCancel} disabled={isSubmitting} className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold disabled:opacity-50">
-                  {isSubmitting ? "處理中..." : "取消落單"}
-                </button>
-              )}
-            </div>
-          </>
-        )}
-
-        {activeTab === "foodpanda" && (
-          <>
-            <div className="border rounded-md p-4" style={{ borderColor: '#d70f64' }}>
-              <h3 className="font-bold text-lg mb-4" style={{ color: '#d70f64' }}>
-                🐼 {FOODPANDA_RESTAURANT.name} - 餐點選擇
-              </h3>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <input type="radio" id="fp-no-dish" name="fp-dish" value="" checked={selectedFpDish === ""} onChange={() => setSelectedFpDish("")} className="mr-2 accent-pink-600" />
-                  <label htmlFor="fp-no-dish">不選擇餐點</label>
-                </div>
-              </div>
-              {FOODPANDA_RESTAURANT.menu.map((cat, catIdx) => (
-                <div key={catIdx} className="mt-4">
-                  <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
-                  <div className="grid grid-cols-1 gap-1.5">
-                    {cat.items.map((item, itemIdx) => (
-                      <div key={itemIdx} className="flex items-center">
-                        <input type="radio" id={`fp-dish-${catIdx}-${itemIdx}`} name="fp-dish" value={item.name} checked={selectedFpDish === item.name} onChange={() => setSelectedFpDish(item.name)} className="mr-2 accent-pink-600" />
-                        <label htmlFor={`fp-dish-${catIdx}-${itemIdx}`}>{item.name}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="border rounded-md p-4" style={{ borderColor: '#d70f64' }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>選項（麵の種類）</h3>
-              <div className="grid grid-cols-3 gap-1.5">
-                {FOODPANDA_RESTAURANT.noodleOptions.map((opt, idx) => (
-                  <div key={idx} className="flex items-center">
-                    <input type="radio" id={`fp-noodle-${idx}`} name="fp-noodle" value={opt.name} checked={selectedFpNoodle === opt.name} onChange={() => setSelectedFpNoodle(opt.name)} className="mr-2 accent-pink-600" />
-                    <label htmlFor={`fp-noodle-${idx}`} className="text-sm">{opt.name}</label>
-                  </div>
                 ))}
               </div>
             </div>
+          )}
+        </div>
 
-            <div className="border rounded-md p-4" style={{ borderColor: '#d70f64' }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>追加</h3>
-              <div className="grid grid-cols-1 gap-1.5">
-                {FOODPANDA_RESTAURANT.addOns.map((opt, idx) => (
-                  <div key={idx} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`fp-addon-${idx}`}
-                      checked={opt.name === "不用加配" ? selectedFpAddOns.includes("不用加配") : selectedFpAddOns.includes(opt.name)}
-                      onChange={() => toggleAddOn(opt.name)}
-                      className="mr-2 accent-pink-600"
-                    />
-                    <label htmlFor={`fp-addon-${idx}`} className="text-sm">{opt.name}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="border rounded-md p-4" style={{ borderColor: '#d70f64' }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>飲品選擇</h3>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <input type="radio" id="fp-no-drink" name="fp-drink" value="" checked={selectedFpDrink === ""} onChange={() => setSelectedFpDrink("")} className="mr-2 accent-pink-600" />
-                  <label htmlFor="fp-no-drink">不選擇飲品</label>
-                </div>
-              </div>
-              {FOODPANDA_RESTAURANT.drinks.map((cat, catIdx) => (
-                <div key={catIdx} className="mt-4">
-                  <h4 className="font-medium mb-2 text-pink-800">{cat.category}</h4>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {cat.items.map((item, itemIdx) => (
-                      <div key={itemIdx} className="flex items-center">
-                        <input type="radio" id={`fp-drink-${catIdx}-${itemIdx}`} name="fp-drink" value={item.name} checked={selectedFpDrink === item.name} onChange={() => setSelectedFpDrink(item.name)} className="mr-2 accent-pink-600" />
-                        <label htmlFor={`fp-drink-${catIdx}-${itemIdx}`} className="text-sm">{item.name}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={handleFpSubmit}
-                disabled={!selectedFpDish && !selectedFpDrink}
-                className="w-full py-3 rounded-md text-white font-bold disabled:opacity-50"
-                style={{ backgroundColor: hasFpOrdered(currentMember) ? '#b91c1c' : '#d70f64' }}
-              >
-                {hasFpOrdered(currentMember) ? "修改 foodpanda 落單" : "確認 foodpanda 落單"}
-              </button>
-              {hasFpOrdered(currentMember) && (
-                <button onClick={handleFpCancel} className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold">
-                  取消 foodpanda 落單
-                </button>
-              )}
-            </div>
-          </>
-        )}
+        <div className="space-y-2">
+          <button
+            onClick={handleSubmit}
+            disabled={(!selectedDish && !selectedDrink) || isSubmitting}
+            className={`w-full py-3 rounded-md text-white font-bold ${hasOrdered(currentMember) ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"} disabled:opacity-50`}
+          >
+            {isSubmitting ? "處理中..." : hasOrdered(currentMember) ? "修改落單" : "確認落單"}
+          </button>
+          {hasOrdered(currentMember) && (
+            <button onClick={handleCancel} disabled={isSubmitting} className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold disabled:opacity-50">
+              {isSubmitting ? "處理中..." : "取消落單"}
+            </button>
+          )}
+        </div>
       </div>
     </>
   )
