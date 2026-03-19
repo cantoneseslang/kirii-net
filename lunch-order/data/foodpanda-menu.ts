@@ -36,6 +36,15 @@ export const FOODPANDA_RESTAURANT: FoodpandaRestaurant = {
         { name: "番茄火腿扒雞肉腸野菜烏冬 (配煎蛋)", price: 48 },
       ],
     },
+    {
+      category: "日式早餐",
+      items: [
+        { name: "醬汁炒豚肉", price: 42, description: "配 前菜、豚骨湯、溫泉蛋及白飯" },
+        { name: "醬汁煮牛肉", price: 52, description: "配前菜、豚骨湯、溫泉蛋及白飯 | 奉送飲品" },
+        { name: "燒鯖魚", price: 48, description: "配前菜、豚骨湯、溫泉蛋及白飯 | 奉送飲品" },
+        { name: "關東煮", price: 40, description: "配 前菜、豚骨湯、泡菜及白飯" },
+      ],
+    },
   ],
   drinks: [
     {
