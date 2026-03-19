@@ -468,6 +468,45 @@ export default function MenuSelection() {
               </div>
 
               <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>選項（麵の種類）</h3>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {FOODPANDA_RESTAURANT.noodleOptions.map((opt, idx) => (
+                    <div key={idx} className="flex items-center text-gray-400">
+                      <input
+                        type="radio"
+                        id={`fp-noodle-${idx}`}
+                        name="fp-noodle"
+                        disabled
+                        className="mr-2 accent-pink-600"
+                      />
+                      <label htmlFor={`fp-noodle-${idx}`} className="text-sm">
+                        {opt.name}{opt.extraPrice > 0 && ` (+$${opt.extraPrice})`}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
+                <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>追加</h3>
+                <div className="grid grid-cols-1 gap-1.5">
+                  {FOODPANDA_RESTAURANT.addOns.map((opt, idx) => (
+                    <div key={idx} className="flex items-center text-gray-400">
+                      <input
+                        type="checkbox"
+                        id={`fp-addon-${idx}`}
+                        disabled
+                        className="mr-2 accent-pink-600"
+                      />
+                      <label htmlFor={`fp-addon-${idx}`} className="text-sm">
+                        {opt.name}{opt.extraPrice > 0 && ` (+$${opt.extraPrice})`}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
                 <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>飲品選擇</h3>
 
                 {FOODPANDA_RESTAURANT.drinks.map((cat, catIdx) => (

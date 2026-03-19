@@ -4,6 +4,11 @@ export interface FoodpandaMenuItem {
   description?: string;
 }
 
+export interface FoodpandaOption {
+  name: string;
+  extraPrice: number;
+}
+
 export interface FoodpandaMenuCategory {
   category: string;
   items: FoodpandaMenuItem[];
@@ -17,6 +22,8 @@ export interface FoodpandaRestaurant {
   minOrder: number;
   deliveryFee: number;
   menu: FoodpandaMenuCategory[];
+  noodleOptions: FoodpandaOption[];
+  addOns: FoodpandaOption[];
   drinks: FoodpandaMenuCategory[];
 }
 
@@ -46,23 +53,26 @@ export const FOODPANDA_RESTAURANT: FoodpandaRestaurant = {
       ],
     },
   ],
+  noodleOptions: [
+    { name: "嗌嗌粉", extraPrice: 0 },
+    { name: "拉麵", extraPrice: 0 },
+    { name: "烏冬", extraPrice: 7.5 },
+  ],
+  addOns: [
+    { name: "不用加配", extraPrice: 0 },
+    { name: "加配 新鮮丹麥多士", extraPrice: 4.5 },
+    { name: "加配 新鮮丹麥多士及火腿扒", extraPrice: 7.5 },
+    { name: "加配 新鮮丹麥多士及雞肉腸", extraPrice: 7.5 },
+    { name: "追加-新鮮丹麥多士及煎蛋", extraPrice: 7.5 },
+    { name: "迷你 叉燒嗌嗌粉", extraPrice: 10.5 },
+    { name: "迷你 叉燒拉麵", extraPrice: 10.5 },
+  ],
   drinks: [
     {
-      category: "茶類",
+      category: "茶・奶茶",
       items: [
-        { name: "鮮檸檬紅茶 (熱)", price: 24 },
-        { name: "鮮檸檬紅茶 (凍)", price: 24 },
-        { name: "奶茶 (熱)", price: 24 },
-        { name: "奶茶 (凍)", price: 24 },
-        { name: "鮮檸檬水 (熱)", price: 24 },
         { name: "鮮檸檬水 (凍)", price: 24 },
-      ],
-    },
-    {
-      category: "咖啡",
-      items: [
-        { name: "即磨咖啡 (熱)", price: 30 },
-        { name: "即磨咖啡 (凍)", price: 30 },
+        { name: "奶茶 (凍)", price: 24 },
       ],
     },
     {
@@ -71,7 +81,6 @@ export const FOODPANDA_RESTAURANT: FoodpandaRestaurant = {
         { name: "可樂", price: 18 },
         { name: "零系可樂", price: 18 },
         { name: "雪碧", price: 18 },
-        { name: "橙汁", price: 18 },
         { name: "日本蘋果汁", price: 18 },
         { name: "日本提子汁", price: 18 },
       ],
