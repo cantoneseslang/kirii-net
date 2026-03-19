@@ -232,22 +232,85 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const exportToCSV = () => {
     try {
       const today = new Date()
-      const formattedDate = `期日:${today.getMonth() + 1}月${today.getDate()}號${today.toLocaleDateString("zh-HK", { weekday: "long" })}`
-
-      const csvRows = []
-      csvRows.push(formattedDate)
-      csvRows.push("姓名,餐點,飲品")
+      const weekdayNames = ["日", "一", "二", "三", "四", "五", "六"]
+      const formattedDate = `期日:${today.getMonth() + 1}月${today.getDate()}號星期${weekdayNames[today.getDay()]}`
 
       const todayOrders = orders[today.toLocaleDateString("zh-HK", { weekday: "long" })] || []
 
-      for (const order of todayOrders) {
-        const values = [order.member_name, order.dish, order.drink].map((value) => `"${value}"`)
-        csvRows.push(values.join(","))
+      const withDish = todayOrders.filter(o => o.dish !== "未選擇")
+      const drinksOnly = todayOrders.filter(o => o.dish === "未選擇")
+
+      const dishGroups: { dish: string; orders: typeof withDish }[] = []
+      const dishOrder: string[] = []
+      for (const o of withDish) {
+        if (!dishOrder.includes(o.dish)) dishOrder.push(o.dish)
       }
+      for (const dish of dishOrder) {
+        dishGroups.push({ dish, orders: withDish.filter(o => o.dish === dish) })
+      }
+
+      const csvRows: string[] = []
+      const r = (cols: string[]) => csvRows.push(cols.map(c => `"${c}"`).join(","))
+
+      r([formattedDate, "", "", "", ""])
+      r(["A", "姓名", "餐點", "數量", "飲品"])
+
+      let aNum = 1
+      for (const group of dishGroups) {
+        const qty = group.orders.length
+        group.orders.forEach((o, i) => {
+          const qtyCell = i === 0 ? String(qty) : ""
+          r([String(aNum), o.member_name, o.dish, qtyCell, o.drink])
+          aNum++
+        })
+      }
+
+      r(["", "", "", "", ""])
+      r(["B", "", "", "", ""])
+
+      let bNum = 1
+      for (const o of drinksOnly) {
+        r([String(bNum), o.member_name, o.dish, "", o.drink])
+        bNum++
+      }
+
+      const totalWithDish = withDish.length
+      const totalDrinksOnly = drinksOnly.length
+      const mealPrice = 35
+      const drinkOnlyPrice = 10
+      const total = totalWithDish * mealPrice + totalDrinksOnly * drinkOnlyPrice
+      r(["", "", "", `Total : ${totalWithDish} x ${mealPrice} + ${totalDrinksOnly > 0 ? `${totalDrinksOnly} x ${drinkOnlyPrice}` : "0"} = ${total}`, ""])
+
+      r(["", "", "", "", ""])
+      r(["統計", "", "", "", ""])
+      r(["餐點:", "", "飲品:", "", ""])
+
+      const dishCounts: Record<string, number> = {}
+      const drinkCounts: Record<string, number> = {}
+      for (const o of todayOrders) {
+        dishCounts[o.dish] = (dishCounts[o.dish] || 0) + 1
+        drinkCounts[o.drink] = (drinkCounts[o.drink] || 0) + 1
+      }
+
+      const dishEntries = Object.entries(dishCounts)
+      const drinkEntries = Object.entries(drinkCounts)
+      const maxLen = Math.max(dishEntries.length, drinkEntries.length)
+
+      for (let i = 0; i < maxLen; i++) {
+        const dEntry = dishEntries[i] ? `${dishEntries[i][0]}: ${dishEntries[i][1]}件` : ""
+        const kEntry = drinkEntries[i] ? `${drinkEntries[i][0]}: ${drinkEntries[i][1]}件` : ""
+        r([dEntry, "", kEntry, "", ""])
+      }
+
+      r(["", "", "", "", ""])
+      r(["註：", "香港桐井有限公司", "", "", ""])
+      r(["", "請留意數量和種類，", "", "", ""])
+      r(["", "請於約 11:30 送來，謝謝！", "", "", ""])
+      r(["", "電話：2264 8166", "", "", ""])
 
       const csvData = csvRows.join("\n")
       const encoder = new TextEncoder()
-      const bom = new Uint8Array([0xef, 0xbb, 0xbf]) // UTF-8 BOM
+      const bom = new Uint8Array([0xef, 0xbb, 0xbf])
       const csvContent = encoder.encode(csvData)
 
       const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8" })
