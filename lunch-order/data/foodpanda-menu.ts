@@ -29,23 +29,11 @@ export const FOODPANDA_RESTAURANT: FoodpandaRestaurant = {
   deliveryFee: 35,
   menu: [
     {
-      category: "拉麵",
+      category: "拉麵早餐",
       items: [
-        { name: "熊本味千拉麵", price: 68 },
-        { name: "職人叉燒拉麵", price: 58 },
-        { name: "豚軟骨拉麵﹝微辛﹞", price: 82 },
-        { name: "麻辣牛舌拉麵", price: 82 },
-        { name: "牛肉番茄湯拉麵", price: 83 },
-        { name: "野菌醬油湯拉麵", price: 67 },
-      ],
-    },
-    {
-      category: "套餐",
-      items: [
-        { name: "職人叉燒拉麵可口可樂套餐", price: 62 },
-        { name: "熊本味千拉麵可口可樂套餐", price: 72 },
-        { name: "麻辣牛舌拉麵可口可樂套餐", price: 86 },
-        { name: "低溫叉燒木耳拉麵套餐", price: 78 },
+        { name: "沙嗲豚肉野菜拉麵 (配煎蛋)", price: 46 },
+        { name: "豚骨叉燒拉麵", price: 43 },
+        { name: "番茄火腿扒雞肉腸野菜烏冬 (配煎蛋)", price: 48 },
       ],
     },
   ],
