@@ -4,7 +4,7 @@ import { useRef } from "react"
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState, useCallback } from "react"
-import type { Order, DailyOrders } from "../types"
+import type { Order, FoodpandaOrder, DailyOrders } from "../types"
 import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
 import * as XLSX from "xlsx"
@@ -23,6 +23,11 @@ interface OrderContextType {
   modifyOrder: (orderId: string, newOrder: Omit<Order, "id" | "timestamp">) => Promise<void>
   cancelOrder: (memberId: string) => Promise<void>
   lastResetTime: Date | null
+  foodpandaOrders: FoodpandaOrder[]
+  addFpOrder: (order: Omit<FoodpandaOrder, "id" | "timestamp">) => void
+  hasFpOrdered: (memberId: string) => boolean
+  cancelFpOrder: (memberId: string) => void
+  resetFpOrders: () => void
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined)
@@ -34,6 +39,38 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const loadingRef = useRef(false)
+  const [foodpandaOrders, setFoodpandaOrders] = useState<FoodpandaOrder[]>([
+    { id: "demo-1", member_id: "1", member_name: "佐近宏樹", dish: "豚骨叉燒拉麵", noodle: "拉麵", addOns: ["加配 新鮮丹麥多士"], drink: "奶茶 (凍)", timestamp: new Date().toISOString() },
+    { id: "demo-2", member_id: "12", member_name: "盧良基", dish: "沙嗲豚肉野菜拉麵 (配煎蛋)", noodle: "嗌嗌粉", addOns: [], drink: "可樂", timestamp: new Date().toISOString() },
+    { id: "demo-3", member_id: "14", member_name: "麥雲開", dish: "醬汁煮牛肉", noodle: "", addOns: ["迷你 叉燒拉麵"], drink: "雪碧", timestamp: new Date().toISOString() },
+    { id: "demo-4", member_id: "5", member_name: "葉庭軒", dish: "豚骨叉燒拉麵", noodle: "烏冬", addOns: [], drink: "日本蘋果汁", timestamp: new Date().toISOString() },
+    { id: "demo-5", member_id: "7", member_name: "林韋樂", dish: "未選擇", noodle: "", addOns: [], drink: "巨峰乳酸蘇打", timestamp: new Date().toISOString() },
+  ])
+
+  const addFpOrder = useCallback((order: Omit<FoodpandaOrder, "id" | "timestamp">) => {
+    setFoodpandaOrders(prev => {
+      const existing = prev.findIndex(o => o.member_id === order.member_id)
+      const newOrder: FoodpandaOrder = { ...order, id: crypto.randomUUID(), timestamp: new Date().toISOString() }
+      if (existing >= 0) {
+        const updated = [...prev]
+        updated[existing] = newOrder
+        return updated
+      }
+      return [...prev, newOrder]
+    })
+  }, [])
+
+  const hasFpOrdered = useCallback((memberId: string) => {
+    return foodpandaOrders.some(o => o.member_id === memberId)
+  }, [foodpandaOrders])
+
+  const cancelFpOrder = useCallback((memberId: string) => {
+    setFoodpandaOrders(prev => prev.filter(o => o.member_id !== memberId))
+  }, [])
+
+  const resetFpOrders = useCallback(() => {
+    setFoodpandaOrders([])
+  }, [])
 
   // 日付範囲を取得する関数（タイムゾーン問題を回避）
   const getDateRange = () => {
@@ -540,6 +577,11 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         modifyOrder,
         cancelOrder,
         lastResetTime,
+        foodpandaOrders,
+        addFpOrder,
+        hasFpOrdered,
+        cancelFpOrder,
+        resetFpOrders,
       }}
     >
       {children}
