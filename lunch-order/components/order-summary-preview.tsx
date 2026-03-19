@@ -1,6 +1,7 @@
 "use client"
 
 import { useOrders } from "../context/order-context"
+import { MEMBERS } from "../data/members"
 import type { Order } from "../types"
 
 interface DishGroup {
@@ -8,18 +9,31 @@ interface DishGroup {
   orders: Order[]
 }
 
-function buildSummaryData(todayOrders: Order[]) {
-  const withDish = todayOrders.filter(o => o.dish !== "未選擇")
-  const drinksOnly = todayOrders.filter(o => o.dish === "未選擇")
+function memberIndex(memberId: string): number {
+  const idx = MEMBERS.findIndex(m => m.id === memberId)
+  return idx === -1 ? 999 : idx
+}
 
-  const dishGroups: DishGroup[] = []
-  const dishOrder: string[] = []
-  for (const o of withDish) {
-    if (!dishOrder.includes(o.dish)) dishOrder.push(o.dish)
+function buildDishGroups(orderList: Order[]): DishGroup[] {
+  const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id) - memberIndex(b.member_id))
+  const groups: DishGroup[] = []
+  const seen: string[] = []
+  for (const o of sorted) {
+    if (!seen.includes(o.dish)) seen.push(o.dish)
   }
-  for (const dish of dishOrder) {
-    dishGroups.push({ dish, orders: withDish.filter(o => o.dish === dish) })
+  for (const dish of seen) {
+    groups.push({ dish, orders: sorted.filter(o => o.dish === dish) })
   }
+  return groups
+}
+
+function buildSummaryData(todayOrders: Order[]) {
+  const getMemberGroup = (memberId: string) => MEMBERS.find(m => m.id === memberId)?.group || "A"
+  const groupA = todayOrders.filter(o => getMemberGroup(o.member_id) === "A")
+  const groupB = todayOrders.filter(o => getMemberGroup(o.member_id) === "B")
+
+  const dishGroupsA = buildDishGroups(groupA)
+  const dishGroupsB = buildDishGroups(groupB)
 
   const dishCounts: Record<string, number> = {}
   const drinkCounts: Record<string, number> = {}
@@ -28,6 +42,8 @@ function buildSummaryData(todayOrders: Order[]) {
     drinkCounts[o.drink] = (drinkCounts[o.drink] || 0) + 1
   }
 
+  const withDish = todayOrders.filter(o => o.dish !== "未選擇")
+  const drinksOnly = todayOrders.filter(o => o.dish === "未選擇")
   const mealPrice = 35
   const drinkOnlyPrice = 10
   const total = withDish.length * mealPrice + drinksOnly.length * drinkOnlyPrice
@@ -35,7 +51,7 @@ function buildSummaryData(todayOrders: Order[]) {
     ? `Total : ${withDish.length} x ${mealPrice} + ${drinksOnly.length} x ${drinkOnlyPrice} = ${total}`
     : `Total : ${withDish.length} x ${mealPrice} = ${total}`
 
-  return { withDish, drinksOnly, dishGroups, dishCounts, drinkCounts, totalFormula }
+  return { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula }
 }
 
 export default function OrderSummaryPreview({ onBack }: { onBack: () => void }) {
@@ -47,7 +63,7 @@ export default function OrderSummaryPreview({ onBack }: { onBack: () => void }) 
   const weekday = today.toLocaleDateString("zh-HK", { weekday: "long" })
   const todayOrders = orders[weekday] || []
 
-  const { drinksOnly, dishGroups, dishCounts, drinkCounts, totalFormula } = buildSummaryData(todayOrders)
+  const { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula } = buildSummaryData(todayOrders)
 
   const dishEntries = Object.entries(dishCounts)
   const drinkEntries = Object.entries(drinkCounts)
@@ -85,30 +101,37 @@ export default function OrderSummaryPreview({ onBack }: { onBack: () => void }) 
       <div className="border rounded-md p-6 bg-white text-sm" id="print-area">
         <div className="font-bold text-base mb-4">{formattedDate}</div>
 
-        <table className="w-full border-collapse mb-2">
+        <table className="w-full border-collapse border mb-2" style={{tableLayout: 'fixed'}}>
+          <colgroup>
+            <col style={{width: '5%'}} />
+            <col style={{width: '15%'}} />
+            <col style={{width: '28%'}} />
+            <col style={{width: '8%'}} />
+            <col style={{width: '44%'}} />
+          </colgroup>
           <thead>
-            <tr className="border-b">
-              <th className="text-left py-1 w-8">A</th>
-              <th className="text-left py-1 w-28">姓名</th>
-              <th className="text-left py-1">餐點</th>
-              <th className="text-center py-1 w-16">數量</th>
-              <th className="text-left py-1 w-24">飲品</th>
+            <tr>
+              <th className="text-left py-1 px-2 border">A</th>
+              <th className="text-left py-1 px-2 border">姓名</th>
+              <th className="text-left py-1 px-2 border">餐點</th>
+              <th className="text-center py-1 px-2 border">數量</th>
+              <th className="text-left py-1 px-2 border">飲品</th>
             </tr>
           </thead>
           <tbody>
-            {dishGroups.map((group) => {
+            {dishGroupsA.map((group) => {
               const qty = group.orders.length
               return group.orders.map((o, i) => {
                 aNum++
                 return (
-                  <tr key={o.id} className="border-b border-gray-100">
-                    <td className="py-1">{aNum}</td>
-                    <td className="py-1">{o.member_name}</td>
-                    <td className="py-1">{o.dish}</td>
+                  <tr key={o.id}>
+                    <td className="py-1 px-2 border">{aNum}</td>
+                    <td className="py-1 px-2 border">{o.member_name}</td>
+                    <td className="py-1 px-2 border">{o.dish}</td>
                     {i === 0 ? (
-                      <td className="py-1 text-center" rowSpan={qty}>{qty}</td>
+                      <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>{qty}</td>
                     ) : null}
-                    <td className="py-1">{o.drink}</td>
+                    <td className="py-1 px-2 border align-middle">{o.drink}</td>
                   </tr>
                 )
               })
@@ -117,26 +140,44 @@ export default function OrderSummaryPreview({ onBack }: { onBack: () => void }) 
         </table>
 
         <div className="mt-4 mb-2">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse border" style={{tableLayout: 'fixed'}}>
+            <colgroup>
+              <col style={{width: '5%'}} />
+              <col style={{width: '15%'}} />
+              <col style={{width: '28%'}} />
+              <col style={{width: '8%'}} />
+              <col style={{width: '44%'}} />
+            </colgroup>
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-1 w-8">B</th>
-                <th className="text-left py-1 w-28"></th>
-                <th className="text-left py-1"></th>
-                <th className="text-center py-1 w-16"></th>
-                <th className="text-left py-1 w-24"></th>
+              <tr>
+                <th className="text-left py-1 px-2 border">B</th>
+                <th className="border"></th>
+                <th className="border"></th>
+                <th className="border"></th>
+                <th className="border"></th>
               </tr>
             </thead>
             <tbody>
-              {drinksOnly.map((o, idx) => (
-                <tr key={o.id} className="border-b border-gray-100">
-                  <td className="py-1">{idx + 1}</td>
-                  <td className="py-1">{o.member_name}</td>
-                  <td className="py-1">{o.dish}</td>
-                  <td className="py-1"></td>
-                  <td className="py-1">{o.drink}</td>
-                </tr>
-              ))}
+              {(() => {
+                let bNum = 0
+                return dishGroupsB.map((group) => {
+                  const qty = group.orders.length
+                  return group.orders.map((o, i) => {
+                    bNum++
+                    return (
+                      <tr key={o.id}>
+                        <td className="py-1 px-2 border">{bNum}</td>
+                        <td className="py-1 px-2 border">{o.member_name}</td>
+                        <td className="py-1 px-2 border">{o.dish}</td>
+                        {i === 0 ? (
+                          <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>{qty}</td>
+                        ) : null}
+                        <td className="py-1 px-2 border align-middle">{o.drink}</td>
+                      </tr>
+                    )
+                  })
+                })
+              })()}
             </tbody>
           </table>
         </div>
@@ -145,8 +186,8 @@ export default function OrderSummaryPreview({ onBack }: { onBack: () => void }) 
 
         <div className="mt-6">
           <div className="font-bold text-base mb-2 ml-8">統計</div>
-          <div className="grid grid-cols-2 gap-x-4 ml-8">
-            <div>
+          <div className="flex" style={{paddingLeft: '5%'}}>
+            <div style={{width: '48%'}}>
               <div className="font-medium mb-1">餐點:</div>
               {dishEntries.map(([name, count]) => (
                 <div key={name}>{name}: {count}件</div>

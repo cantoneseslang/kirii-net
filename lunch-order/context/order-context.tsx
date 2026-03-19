@@ -8,6 +8,7 @@ import type { Order, DailyOrders } from "../types"
 import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
 import * as XLSX from "xlsx"
+import { MEMBERS } from "../data/members"
 
 interface OrderContextType {
   orders: DailyOrders
@@ -238,17 +239,29 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       const todayOrders = orders[today.toLocaleDateString("zh-HK", { weekday: "long" })] || []
 
-      const withDish = todayOrders.filter(o => o.dish !== "未選擇")
-      const drinksOnly = todayOrders.filter(o => o.dish === "未選擇")
+      const getMemberGroup = (memberId: string) => MEMBERS.find(m => m.id === memberId)?.group || "A"
+      const groupA = todayOrders.filter(o => getMemberGroup(o.member_id) === "A")
+      const groupB = todayOrders.filter(o => getMemberGroup(o.member_id) === "B")
 
-      const dishGroups: { dish: string; orders: typeof withDish }[] = []
-      const dishOrder: string[] = []
-      for (const o of withDish) {
-        if (!dishOrder.includes(o.dish)) dishOrder.push(o.dish)
+      const memberIndex = (memberId: string) => {
+        const idx = MEMBERS.findIndex(m => m.id === memberId)
+        return idx === -1 ? 999 : idx
       }
-      for (const dish of dishOrder) {
-        dishGroups.push({ dish, orders: withDish.filter(o => o.dish === dish) })
+      const buildDishGroups = (orderList: typeof todayOrders) => {
+        const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id) - memberIndex(b.member_id))
+        const groups: { dish: string; orders: typeof todayOrders }[] = []
+        const seen: string[] = []
+        for (const o of sorted) {
+          if (!seen.includes(o.dish)) seen.push(o.dish)
+        }
+        for (const dish of seen) {
+          groups.push({ dish, orders: sorted.filter(o => o.dish === dish) })
+        }
+        return groups
       }
+
+      const dishGroupsA = buildDishGroups(groupA)
+      const dishGroupsB = buildDishGroups(groupB)
 
       const rows: (string | number)[][] = []
       const merges: { s: { r: number; c: number }; e: { r: number; c: number } }[] = []
@@ -260,7 +273,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       rowIdx++
 
       let aNum = 1
-      for (const group of dishGroups) {
+      for (const group of dishGroupsA) {
         const qty = group.orders.length
         const groupStartRow = rowIdx
         group.orders.forEach((o, i) => {
@@ -279,20 +292,27 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       rowIdx++
 
       let bNum = 1
-      for (const o of drinksOnly) {
-        rows.push([bNum, o.member_name, o.dish, "", o.drink])
-        bNum++
-        rowIdx++
+      for (const group of dishGroupsB) {
+        const qty = group.orders.length
+        const groupStartRow = rowIdx
+        group.orders.forEach((o, i) => {
+          rows.push([bNum, o.member_name, o.dish, i === 0 ? qty : "", o.drink])
+          bNum++
+          rowIdx++
+        })
+        if (qty > 1) {
+          merges.push({ s: { r: groupStartRow, c: 3 }, e: { r: groupStartRow + qty - 1, c: 3 } })
+        }
       }
 
-      const totalWithDish = withDish.length
-      const totalDrinksOnly = drinksOnly.length
+      const withDish = todayOrders.filter(o => o.dish !== "未選擇")
+      const drinksOnly = todayOrders.filter(o => o.dish === "未選擇")
       const mealPrice = 35
       const drinkOnlyPrice = 10
-      const total = totalWithDish * mealPrice + totalDrinksOnly * drinkOnlyPrice
-      const totalFormula = totalDrinksOnly > 0
-        ? `Total : ${totalWithDish} x ${mealPrice} + ${totalDrinksOnly} x ${drinkOnlyPrice} = ${total}`
-        : `Total : ${totalWithDish} x ${mealPrice} = ${total}`
+      const total = withDish.length * mealPrice + drinksOnly.length * drinkOnlyPrice
+      const totalFormula = drinksOnly.length > 0
+        ? `Total : ${withDish.length} x ${mealPrice} + ${drinksOnly.length} x ${drinkOnlyPrice} = ${total}`
+        : `Total : ${withDish.length} x ${mealPrice} = ${total}`
       rows.push(["", "", "", totalFormula])
       rowIdx++
 
