@@ -3,12 +3,14 @@
 import { useState } from "react"
 import { useOrders } from "../context/order-context"
 import { toast } from "react-hot-toast"
+import OrderSummaryPreview from "./order-summary-preview"
 
 export default function AdminPanel() {
   const { orders, getWeekdayOrders, exportToCSV, resetOrders, resetOrderStatus, lastResetTime } = useOrders()
   const [isResetting, setIsResetting] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showConfirmReset, setShowConfirmReset] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
 
   const handleReset = async () => {
     try {
@@ -41,6 +43,10 @@ export default function AdminPanel() {
   const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
   const todayOrders = getWeekdayOrders(today)
 
+  if (showPreview) {
+    return <OrderSummaryPreview onBack={() => setShowPreview(false)} />
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between mb-4">
@@ -52,8 +58,8 @@ export default function AdminPanel() {
           >
             更新
           </button>
-          <button onClick={exportToCSV} className="px-4 py-2 border rounded-md bg-gray-100 hover:bg-gray-200">
-            導出excel
+          <button onClick={() => setShowPreview(true)} className="px-4 py-2 border rounded-md bg-gray-100 hover:bg-gray-200">
+            導出落單表
           </button>
         </div>
         {showConfirmReset ? (

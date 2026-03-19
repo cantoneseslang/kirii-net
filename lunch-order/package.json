@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "bash scripts/check-menu-file.sh",
+    "prebuild": "bash scripts/check-menu-file.sh && bash scripts/check-menu-critical.sh",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check-menu": "bash scripts/check-menu-file.sh"
+    "check-menu": "bash scripts/check-menu-file.sh && bash scripts/check-menu-critical.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -65,7 +65,9 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "tesseract.js": "^7.0.0",
     "vaul": "^0.9.6",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

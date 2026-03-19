@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import type { Order, DailyOrders } from "../types"
 import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
+import * as XLSX from "xlsx"
 
 interface OrderContextType {
   orders: DailyOrders
@@ -249,29 +250,39 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         dishGroups.push({ dish, orders: withDish.filter(o => o.dish === dish) })
       }
 
-      const csvRows: string[] = []
-      const r = (cols: string[]) => csvRows.push(cols.map(c => `"${c}"`).join(","))
+      const rows: (string | number)[][] = []
+      const merges: { s: { r: number; c: number }; e: { r: number; c: number } }[] = []
+      let rowIdx = 0
 
-      r([formattedDate, "", "", "", ""])
-      r(["A", "姓名", "餐點", "數量", "飲品"])
+      rows.push([formattedDate])
+      rowIdx++
+      rows.push(["A", "姓名", "餐點", "數量", "飲品"])
+      rowIdx++
 
       let aNum = 1
       for (const group of dishGroups) {
         const qty = group.orders.length
+        const groupStartRow = rowIdx
         group.orders.forEach((o, i) => {
-          const qtyCell = i === 0 ? String(qty) : ""
-          r([String(aNum), o.member_name, o.dish, qtyCell, o.drink])
+          rows.push([aNum, o.member_name, o.dish, i === 0 ? qty : "", o.drink])
           aNum++
+          rowIdx++
         })
+        if (qty > 1) {
+          merges.push({ s: { r: groupStartRow, c: 3 }, e: { r: groupStartRow + qty - 1, c: 3 } })
+        }
       }
 
-      r(["", "", "", "", ""])
-      r(["B", "", "", "", ""])
+      rows.push([])
+      rowIdx++
+      rows.push(["B"])
+      rowIdx++
 
       let bNum = 1
       for (const o of drinksOnly) {
-        r([String(bNum), o.member_name, o.dish, "", o.drink])
+        rows.push([bNum, o.member_name, o.dish, "", o.drink])
         bNum++
+        rowIdx++
       }
 
       const totalWithDish = withDish.length
@@ -279,11 +290,19 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       const mealPrice = 35
       const drinkOnlyPrice = 10
       const total = totalWithDish * mealPrice + totalDrinksOnly * drinkOnlyPrice
-      r(["", "", "", `Total : ${totalWithDish} x ${mealPrice} + ${totalDrinksOnly > 0 ? `${totalDrinksOnly} x ${drinkOnlyPrice}` : "0"} = ${total}`, ""])
+      const totalFormula = totalDrinksOnly > 0
+        ? `Total : ${totalWithDish} x ${mealPrice} + ${totalDrinksOnly} x ${drinkOnlyPrice} = ${total}`
+        : `Total : ${totalWithDish} x ${mealPrice} = ${total}`
+      rows.push(["", "", "", totalFormula])
+      rowIdx++
 
-      r(["", "", "", "", ""])
-      r(["統計", "", "", "", ""])
-      r(["餐點:", "", "飲品:", "", ""])
+      rows.push([])
+      rowIdx++
+      const statsRow = rowIdx
+      rows.push(["", "統計"])
+      rowIdx++
+      rows.push(["", "餐點:", "飲品:"])
+      rowIdx++
 
       const dishCounts: Record<string, number> = {}
       const drinkCounts: Record<string, number> = {}
@@ -299,29 +318,40 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       for (let i = 0; i < maxLen; i++) {
         const dEntry = dishEntries[i] ? `${dishEntries[i][0]}: ${dishEntries[i][1]}件` : ""
         const kEntry = drinkEntries[i] ? `${drinkEntries[i][0]}: ${drinkEntries[i][1]}件` : ""
-        r([dEntry, "", kEntry, "", ""])
+        rows.push(["", dEntry, kEntry])
+        rowIdx++
       }
 
-      r(["", "", "", "", ""])
-      r(["註：", "香港桐井有限公司", "", "", ""])
-      r(["", "請留意數量和種類，", "", "", ""])
-      r(["", "請於約 11:30 送來，謝謝！", "", "", ""])
-      r(["", "電話：2264 8166", "", "", ""])
+      rows.push([])
+      rowIdx++
+      rows.push(["", "註：", "香港桐井有限公司"])
+      rowIdx++
+      rows.push(["", "", "請留意數量和種類，"])
+      rowIdx++
+      rows.push(["", "", "請於約 11:30 送來，謝謝！"])
+      rowIdx++
+      rows.push(["", "", "電話：2264 8166"])
 
-      const csvData = csvRows.join("\n")
-      const encoder = new TextEncoder()
-      const bom = new Uint8Array([0xef, 0xbb, 0xbf])
-      const csvContent = encoder.encode(csvData)
+      const ws = XLSX.utils.aoa_to_sheet(rows)
+      ws["!merges"] = merges
+      ws["!cols"] = [{ wch: 6 }, { wch: 14 }, { wch: 20 }, { wch: 8 }, { wch: 14 }]
 
-      const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8" })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.setAttribute("href", url)
-      a.setAttribute("download", `訂單_${today.getMonth() + 1}月${today.getDate()}日.csv`)
-      a.click()
+      const centerStyle = { alignment: { horizontal: "center", vertical: "center" } }
+      const dCol = 3
+      for (let r = 0; r <= rowIdx; r++) {
+        const cellRef = XLSX.utils.encode_cell({ r, c: dCol })
+        if (ws[cellRef]) {
+          if (!ws[cellRef].s) ws[cellRef].s = {}
+          ws[cellRef].s = centerStyle
+        }
+      }
+
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, "訂單")
+      XLSX.writeFile(wb, `訂單_${today.getMonth() + 1}月${today.getDate()}日.xlsx`)
     } catch (err) {
-      console.error("Error exporting CSV:", err)
-      toast.error("CSVのエクスポートに失敗しました")
+      console.error("Error exporting Excel:", err)
+      toast.error("Excelのエクスポートに失敗しました")
     }
   }
 
