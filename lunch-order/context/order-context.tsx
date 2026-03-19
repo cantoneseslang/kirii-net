@@ -39,13 +39,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const loadingRef = useRef(false)
-  const [foodpandaOrders, setFoodpandaOrders] = useState<FoodpandaOrder[]>([
-    { id: "demo-1", member_id: "1", member_name: "佐近宏樹", dish: "豚骨叉燒拉麵", noodle: "拉麵", addOns: ["加配 新鮮丹麥多士"], drink: "奶茶 (凍)", timestamp: new Date().toISOString() },
-    { id: "demo-2", member_id: "12", member_name: "盧良基", dish: "沙嗲豚肉野菜拉麵 (配煎蛋)", noodle: "嗌嗌粉", addOns: [], drink: "可樂", timestamp: new Date().toISOString() },
-    { id: "demo-3", member_id: "14", member_name: "麥雲開", dish: "醬汁煮牛肉", noodle: "", addOns: ["迷你 叉燒拉麵"], drink: "雪碧", timestamp: new Date().toISOString() },
-    { id: "demo-4", member_id: "5", member_name: "葉庭軒", dish: "豚骨叉燒拉麵", noodle: "烏冬", addOns: [], drink: "日本蘋果汁", timestamp: new Date().toISOString() },
-    { id: "demo-5", member_id: "7", member_name: "林韋樂", dish: "未選擇", noodle: "", addOns: [], drink: "巨峰乳酸蘇打", timestamp: new Date().toISOString() },
-  ])
+  const [foodpandaOrders, setFoodpandaOrders] = useState<FoodpandaOrder[]>([])
 
   const addFpOrder = useCallback((order: Omit<FoodpandaOrder, "id" | "timestamp">) => {
     setFoodpandaOrders(prev => {
