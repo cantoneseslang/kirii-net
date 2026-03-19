@@ -8,13 +8,10 @@ import { DRINKS } from "../data/menu-schedule"
 import { FOODPANDA_RESTAURANT } from "../data/foodpanda-menu"
 import OrderConfirmationCard from "./order-confirmation-card"
 
-type RestaurantTab = "tingkok" | "foodpanda"
-
 export default function MenuSelection() {
-  const [activeTab, setActiveTab] = useState<RestaurantTab>("tingkok")
-
   const [selectedDish, setSelectedDish] = useState("")
   const [selectedDrink, setSelectedDrink] = useState("")
+  const [fpExpanded, setFpExpanded] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [confirmedDish, setConfirmedDish] = useState("")
@@ -24,14 +21,8 @@ export default function MenuSelection() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const showConfirmationRef = useRef(false)
 
-  const [selectedFpDish, setSelectedFpDish] = useState("")
-  const [selectedFpNoodle, setSelectedFpNoodle] = useState("")
-  const [selectedFpAddOns, setSelectedFpAddOns] = useState<string[]>(["不用加配"])
-  const [selectedFpDrink, setSelectedFpDrink] = useState("")
-
   const {
     currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder,
-    addFpOrder, hasFpOrdered, cancelFpOrder,
   } = useOrders()
 
   const [weekday, setWeekday] = useState("")
@@ -208,50 +199,11 @@ export default function MenuSelection() {
     }
   }
 
-  const handleFpSubmit = () => {
-    if (!currentMember) { toast.error("請選擇訂餐人"); return }
-    if (!selectedFpDish && !selectedFpDrink) { toast.error("請至少選擇餐點或飲品"); return }
-    const member = MEMBERS.find((m) => m.id === currentMember)
-    if (!member) { toast.error("無効な訂餐人"); return }
-    addFpOrder({
-      member_id: currentMember,
-      member_name: member.nameInChinese,
-      dish: selectedFpDish || "未選擇",
-      noodle: selectedFpNoodle,
-      addOns: selectedFpAddOns.filter(a => a !== "不用加配"),
-      drink: selectedFpDrink || "未選擇",
-    })
-    toast.success("foodpanda 訂單已提交")
-  }
-
-  const handleFpCancel = () => {
-    if (!currentMember) { toast.error("請先選擇訂餐人"); return }
-    cancelFpOrder(currentMember)
-    setSelectedFpDish("")
-    setSelectedFpNoodle("")
-    setSelectedFpAddOns(["不用加配"])
-    setSelectedFpDrink("")
-    toast.success("foodpanda 訂單已取消")
-  }
-
-  const toggleAddOn = (name: string) => {
-    if (name === "不用加配") {
-      setSelectedFpAddOns(["不用加配"])
-    } else {
-      setSelectedFpAddOns(prev => {
-        const without = prev.filter(a => a !== "不用加配")
-        if (without.includes(name)) return without.filter(a => a !== name)
-        return [...without, name]
-      })
-    }
-  }
-
   if (!currentMember) {
     return <div className="border rounded-md p-6 bg-gray-50 text-center text-gray-500">請先選擇訂餐人</div>
   }
 
   const shouldShowConfirmationCard =
-    activeTab === "tingkok" &&
     (showConfirmation || showConfirmationRef.current) &&
     (confirmedDish !== "未選擇" || confirmedDrink !== "未選擇")
 
