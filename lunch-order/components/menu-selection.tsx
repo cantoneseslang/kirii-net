@@ -480,7 +480,7 @@ export default function MenuSelection() {
                         className="mr-2 accent-pink-600"
                       />
                       <label htmlFor={`fp-noodle-${idx}`} className="text-sm">
-                        {opt.name}{opt.extraPrice > 0 && ` (+$${opt.extraPrice})`}
+                        {opt.name}
                       </label>
                     </div>
                   ))}
@@ -499,7 +499,7 @@ export default function MenuSelection() {
                         className="mr-2 accent-pink-600"
                       />
                       <label htmlFor={`fp-addon-${idx}`} className="text-sm">
-                        {opt.name}{opt.extraPrice > 0 && ` (+$${opt.extraPrice})`}
+                        {opt.name}
                       </label>
                     </div>
                   ))}
