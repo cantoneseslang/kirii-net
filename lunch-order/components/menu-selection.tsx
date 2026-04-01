@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useOrders } from "../context/order-context"
 import { toast } from "react-hot-toast"
-import { MEMBERS } from "../data/members"
 import { DRINKS } from "../data/menu-schedule"
 import { FOODPANDA_RESTAURANT } from "../data/foodpanda-menu"
 import OrderConfirmationCard from "./order-confirmation-card"
@@ -22,44 +21,25 @@ export default function MenuSelection() {
   const showConfirmationRef = useRef(false)
 
   const {
-    currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder,
+    currentMember, addOrder, hasOrdered, resetOrderStatus, modifyOrder, getWeekdayOrders, cancelOrder, employees, getManagedMenuForWeekday,
   } = useOrders()
 
   const [weekday, setWeekday] = useState("")
   const [todayMenu, setTodayMenu] = useState<string[]>([])
 
   const fetchMenu = useCallback(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/menu", { cache: "no-store" })
-        const json = await res.json()
-        if (!res.ok || !json?.success) {
-          throw new Error(
-            json?.error ||
-              "❌ CRITICAL ERROR: Failed to load menu data from data/menu-schedule.ts. " +
-                "The file data/menu-schedule.ts must exist and contain valid menu data. " +
-                "Do not use any fallback or default menu data.",
-          )
-        }
-        const nextWeekday = json?.data?.weekday ?? ""
-        const dishes = Array.isArray(json?.data?.dishes) ? json.data.dishes : []
-        if (!nextWeekday || dishes.length === 0) {
-          throw new Error(
-            "❌ CRITICAL ERROR: Menu API returned invalid data. " +
-              "The file data/menu-schedule.ts must contain valid menu data.",
-          )
-        }
-        setWeekday(nextWeekday)
-        setTodayMenu(dishes)
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : "❌ CRITICAL ERROR: Failed to load menu data."
-        console.error(errorMsg, error)
-        toast.error(errorMsg)
-        setTodayMenu([])
-      }
+    try {
+      const nextWeekday = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
+      const dishes = getManagedMenuForWeekday(nextWeekday)
+      setWeekday(nextWeekday)
+      setTodayMenu(dishes)
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : "❌ CRITICAL ERROR: Failed to load managed menu data."
+      console.error(errorMsg, error)
+      toast.error(errorMsg)
+      setTodayMenu([])
     }
-    void load()
-  }, [])
+  }, [getManagedMenuForWeekday])
 
   const updateOrderStatus = useCallback(async () => {
     await resetOrderStatus()
@@ -141,7 +121,7 @@ export default function MenuSelection() {
   const handleSubmit = async () => {
     if (!currentMember) { toast.error("請選擇訂餐人"); return }
     if (!selectedDish && !selectedDrink) { toast.error("請至少選擇餐點或飲品"); return }
-    const member = MEMBERS.find((m) => m.id === currentMember)
+    const member = employees.find((m) => m.id === currentMember)
     if (!member) { toast.error("無効な訂餐人"); return }
     try {
       setIsSubmitting(true)
@@ -215,7 +195,7 @@ export default function MenuSelection() {
             <OrderConfirmationCard
               dish={confirmedDish}
               drink={confirmedDrink}
-              memberName={MEMBERS.find((m) => m.id === currentMember)?.nameInChinese}
+              memberName={employees.find((m) => m.id === currentMember)?.nameInChinese}
               isModified={isModified}
             />
           </div>
@@ -224,7 +204,7 @@ export default function MenuSelection() {
 
       <div className="space-y-6">
         <div className="border rounded-md p-4">
-          <h3 className="font-bold text-lg mb-4">今日餐單 ({weekday})</h3>
+          <h3 className="font-bold text-lg mb-4">汀角路茶座 - 今日餐單 ({weekday})</h3>
           <div className="space-y-2">
             <div className="flex items-center">
               <input type="radio" id="no-dish" name="dish" value="" checked={selectedDish === ""} onChange={() => setSelectedDish("")} className="mr-2" />

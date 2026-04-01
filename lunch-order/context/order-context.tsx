@@ -4,18 +4,22 @@ import { useRef } from "react"
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState, useCallback } from "react"
-import type { Order, FoodpandaOrder, DailyOrders } from "../types"
+import type { Order, FoodpandaOrder, DailyOrders, EmployeeRecord, ManagedMenuItem } from "../types"
 import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
 import * as XLSX from "xlsx"
-import { MEMBERS } from "../data/members"
+import { EMPLOYEES_STORAGE_KEY, MENU_ITEMS_STORAGE_KEY, getDefaultEmployees, getDefaultMenuItems } from "../lib/local-master-data"
 
 interface OrderContextType {
   orders: DailyOrders
+  employees: EmployeeRecord[]
+  activeEmployees: EmployeeRecord[]
+  menuItems: ManagedMenuItem[]
   currentMember: string | null
   setCurrentMember: (member: string | null) => void
   addOrder: (order: Omit<Order, "id" | "timestamp">) => Promise<void>
   getWeekdayOrders: (weekday: string) => Order[]
+  getManagedMenuForWeekday: (weekday: string) => string[]
   hasOrdered: (memberId: string) => boolean
   exportToCSV: () => void
   resetOrders: () => Promise<void>
@@ -28,18 +32,82 @@ interface OrderContextType {
   hasFpOrdered: (memberId: string) => boolean
   cancelFpOrder: (memberId: string) => void
   resetFpOrders: () => void
+  saveEmployees: (employees: EmployeeRecord[]) => void
+  deleteEmployeePermanently: (employeeId: string) => void
+  saveMenuItems: (items: ManagedMenuItem[]) => void
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined)
 
 export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<DailyOrders>({})
+  const [employees, setEmployees] = useState<EmployeeRecord[]>(getDefaultEmployees)
+  const [menuItems, setMenuItems] = useState<ManagedMenuItem[]>(getDefaultMenuItems)
   const [currentMember, setCurrentMember] = useState<string | null>(null)
   const [lastResetTime, setLastResetTime] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const loadingRef = useRef(false)
   const [foodpandaOrders, setFoodpandaOrders] = useState<FoodpandaOrder[]>([])
+  const [masterDataLoaded, setMasterDataLoaded] = useState(false)
+
+  useEffect(() => {
+    try {
+      const storedEmployees = localStorage.getItem(EMPLOYEES_STORAGE_KEY)
+      if (storedEmployees) {
+        setEmployees(JSON.parse(storedEmployees) as EmployeeRecord[])
+      }
+      const storedMenuItems = localStorage.getItem(MENU_ITEMS_STORAGE_KEY)
+      if (storedMenuItems) {
+        setMenuItems(JSON.parse(storedMenuItems) as ManagedMenuItem[])
+      }
+    } catch (err) {
+      console.error("Error loading local master data:", err)
+    } finally {
+      setMasterDataLoaded(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!masterDataLoaded) return
+    try {
+      localStorage.setItem(EMPLOYEES_STORAGE_KEY, JSON.stringify(employees))
+    } catch (err) {
+      console.error("Error saving employees:", err)
+    }
+  }, [employees, masterDataLoaded])
+
+  useEffect(() => {
+    if (!masterDataLoaded) return
+    try {
+      localStorage.setItem(MENU_ITEMS_STORAGE_KEY, JSON.stringify(menuItems))
+    } catch (err) {
+      console.error("Error saving menu items:", err)
+    }
+  }, [menuItems, masterDataLoaded])
+
+  const activeEmployees = employees.filter((employee) => employee.isActive)
+
+  const saveEmployees = useCallback((nextEmployees: EmployeeRecord[]) => {
+    setEmployees(nextEmployees)
+  }, [])
+
+  const deleteEmployeePermanently = useCallback((employeeId: string) => {
+    setEmployees((prev) => prev.filter((employee) => employee.id !== employeeId))
+  }, [])
+
+  const saveMenuItems = useCallback((items: ManagedMenuItem[]) => {
+    setMenuItems(items)
+  }, [])
+
+  const getManagedMenuForWeekday = useCallback(
+    (weekday: string) =>
+      menuItems
+        .filter((item) => item.weekday === weekday)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((item) => item.dishName),
+    [menuItems],
+  )
 
   const addFpOrder = useCallback((order: Omit<FoodpandaOrder, "id" | "timestamp">) => {
     setFoodpandaOrders(prev => {
@@ -270,12 +338,12 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       const todayOrders = orders[today.toLocaleDateString("zh-HK", { weekday: "long" })] || []
 
-      const getMemberGroup = (memberId: string) => MEMBERS.find(m => m.id === memberId)?.group || "A"
+      const getMemberGroup = (memberId: string) => employees.find(m => m.id === memberId)?.group || "A"
       const groupA = todayOrders.filter(o => getMemberGroup(o.member_id) === "A")
       const groupB = todayOrders.filter(o => getMemberGroup(o.member_id) === "B")
 
       const memberIndex = (memberId: string) => {
-        const idx = MEMBERS.findIndex(m => m.id === memberId)
+        const idx = employees.findIndex(m => m.id === memberId)
         return idx === -1 ? 999 : idx
       }
       const buildDishGroups = (orderList: typeof todayOrders) => {
@@ -560,10 +628,14 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     <OrderContext.Provider
       value={{
         orders,
+        employees,
+        activeEmployees,
+        menuItems,
         currentMember,
         setCurrentMember,
         addOrder,
         getWeekdayOrders,
+        getManagedMenuForWeekday,
         hasOrdered,
         exportToCSV,
         resetOrders,
@@ -576,6 +648,9 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         hasFpOrdered,
         cancelFpOrder,
         resetFpOrders,
+        saveEmployees,
+        deleteEmployeePermanently,
+        saveMenuItems,
       }}
     >
       {children}

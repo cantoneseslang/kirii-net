@@ -1,21 +1,20 @@
 "use client"
 
 import { useOrders } from "../context/order-context"
-import { MEMBERS } from "../data/members"
-import type { Order, FoodpandaOrder } from "../types"
+import type { Order, FoodpandaOrder, EmployeeRecord } from "../types"
 
 interface DishGroup {
   dish: string
   orders: Order[]
 }
 
-function memberIndex(memberId: string): number {
-  const idx = MEMBERS.findIndex(m => m.id === memberId)
+function memberIndex(memberId: string, employees: EmployeeRecord[]): number {
+  const idx = employees.findIndex(m => m.id === memberId)
   return idx === -1 ? 999 : idx
 }
 
-function buildDishGroups(orderList: Order[]): DishGroup[] {
-  const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id) - memberIndex(b.member_id))
+function buildDishGroups(orderList: Order[], employees: EmployeeRecord[]): DishGroup[] {
+  const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id, employees) - memberIndex(b.member_id, employees))
   const groups: DishGroup[] = []
   const seen: string[] = []
   for (const o of sorted) {
@@ -27,13 +26,13 @@ function buildDishGroups(orderList: Order[]): DishGroup[] {
   return groups
 }
 
-function buildSummaryData(todayOrders: Order[]) {
-  const getMemberGroup = (memberId: string) => MEMBERS.find(m => m.id === memberId)?.group || "A"
+function buildSummaryData(todayOrders: Order[], employees: EmployeeRecord[]) {
+  const getMemberGroup = (memberId: string) => employees.find(m => m.id === memberId)?.group || "A"
   const groupA = todayOrders.filter(o => getMemberGroup(o.member_id) === "A")
   const groupB = todayOrders.filter(o => getMemberGroup(o.member_id) === "B")
 
-  const dishGroupsA = buildDishGroups(groupA)
-  const dishGroupsB = buildDishGroups(groupB)
+  const dishGroupsA = buildDishGroups(groupA, employees)
+  const dishGroupsB = buildDishGroups(groupB, employees)
 
   const dishCounts: Record<string, number> = {}
   const drinkCounts: Record<string, number> = {}
@@ -54,8 +53,8 @@ function buildSummaryData(todayOrders: Order[]) {
   return { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula }
 }
 
-function TingkokPreview({ formattedDate, todayOrders }: { formattedDate: string; todayOrders: Order[] }) {
-  const { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula } = buildSummaryData(todayOrders)
+function TingkokPreview({ formattedDate, todayOrders, employees }: { formattedDate: string; todayOrders: Order[]; employees: EmployeeRecord[] }) {
+  const { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula } = buildSummaryData(todayOrders, employees)
   const dishEntries = Object.entries(dishCounts)
   const drinkEntries = Object.entries(drinkCounts)
   let aNum = 0
@@ -169,8 +168,8 @@ interface FpDishGroup {
   orders: FoodpandaOrder[]
 }
 
-function buildFpDishGroups(orderList: FoodpandaOrder[]): FpDishGroup[] {
-  const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id) - memberIndex(b.member_id))
+function buildFpDishGroups(orderList: FoodpandaOrder[], employees: EmployeeRecord[]): FpDishGroup[] {
+  const sorted = [...orderList].sort((a, b) => memberIndex(a.member_id, employees) - memberIndex(b.member_id, employees))
   const groups: FpDishGroup[] = []
   const seen: string[] = []
   for (const o of sorted) {
@@ -182,13 +181,13 @@ function buildFpDishGroups(orderList: FoodpandaOrder[]): FpDishGroup[] {
   return groups
 }
 
-function FoodpandaPreview({ formattedDate, fpOrders }: { formattedDate: string; fpOrders: FoodpandaOrder[] }) {
-  const getMemberGroup = (memberId: string) => MEMBERS.find(m => m.id === memberId)?.group || "A"
+function FoodpandaPreview({ formattedDate, fpOrders, employees }: { formattedDate: string; fpOrders: FoodpandaOrder[]; employees: EmployeeRecord[] }) {
+  const getMemberGroup = (memberId: string) => employees.find(m => m.id === memberId)?.group || "A"
   const groupA = fpOrders.filter(o => getMemberGroup(o.member_id) === "A")
   const groupB = fpOrders.filter(o => getMemberGroup(o.member_id) === "B")
 
-  const dishGroupsA = buildFpDishGroups(groupA)
-  const dishGroupsB = buildFpDishGroups(groupB)
+  const dishGroupsA = buildFpDishGroups(groupA, employees)
+  const dishGroupsB = buildFpDishGroups(groupB, employees)
 
   const dishCounts: Record<string, number> = {}
   const drinkCounts: Record<string, number> = {}
@@ -310,7 +309,7 @@ function FoodpandaPreview({ formattedDate, fpOrders }: { formattedDate: string; 
 }
 
 export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: { onBack: () => void; restaurant?: "tingkok" | "foodpanda" }) {
-  const { orders, exportToCSV, foodpandaOrders } = useOrders()
+  const { orders, exportToCSV, foodpandaOrders, employees } = useOrders()
 
   const today = new Date()
   const weekdayNames = ["日", "一", "二", "三", "四", "五", "六"]
@@ -337,9 +336,9 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
       </div>
 
       {restaurant === "tingkok" ? (
-        <TingkokPreview formattedDate={formattedDate} todayOrders={todayOrders} />
+        <TingkokPreview formattedDate={formattedDate} todayOrders={todayOrders} employees={employees} />
       ) : (
-        <FoodpandaPreview formattedDate={formattedDate} fpOrders={foodpandaOrders} />
+        <FoodpandaPreview formattedDate={formattedDate} fpOrders={foodpandaOrders} employees={employees} />
       )}
     </div>
   )

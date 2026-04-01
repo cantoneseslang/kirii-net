@@ -4,8 +4,12 @@ import { useState } from "react"
 import { useOrders } from "../context/order-context"
 import { toast } from "react-hot-toast"
 import OrderSummaryPreview from "./order-summary-preview"
+import EmployeeListManager from "./employee-list-manager"
+import MenuListManager from "./menu-list-manager"
+import Link from "next/link"
 
 type AdminTab = "tingkok" | "foodpanda"
+type AdminSubview = "orders" | "employees" | "menus"
 
 export default function AdminPanel() {
   const { orders, getWeekdayOrders, exportToCSV, resetOrders, resetOrderStatus, lastResetTime, foodpandaOrders, resetFpOrders } = useOrders()
@@ -14,6 +18,7 @@ export default function AdminPanel() {
   const [showConfirmReset, setShowConfirmReset] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [adminTab, setAdminTab] = useState<AdminTab>("tingkok")
+  const [adminSubview, setAdminSubview] = useState<AdminSubview>("orders")
 
   const handleReset = async () => {
     try {
@@ -56,6 +61,35 @@ export default function AdminPanel() {
 
   return (
     <div className="space-y-4">
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Link
+          href="/monthly-summary"
+          className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          每月訂單統計
+        </Link>
+        <button
+          onClick={() => setAdminSubview("employees")}
+          className={`px-4 py-2 border rounded-md ${adminSubview === "employees" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+        >
+          員工名單
+        </button>
+        <button
+          onClick={() => setAdminSubview("menus")}
+          className={`px-4 py-2 border rounded-md ${adminSubview === "menus" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+        >
+          菜單名單
+        </button>
+        <button
+          onClick={() => setAdminSubview("orders")}
+          className={`px-4 py-2 border rounded-md ${adminSubview === "orders" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+        >
+          訂單管理
+        </button>
+      </div>
+
+      {adminSubview === "orders" && (
+        <>
       <div className="grid grid-cols-2 gap-0 border rounded-md overflow-hidden mb-4">
         <button
           onClick={() => setAdminTab("tingkok")}
@@ -70,7 +104,7 @@ export default function AdminPanel() {
           className={`py-3 text-center font-bold transition-colors ${
             adminTab === "foodpanda" ? "text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
-          style={adminTab === "foodpanda" ? { backgroundColor: '#d70f64' } : {}}
+          style={adminTab === "foodpanda" ? { backgroundColor: "#d70f64" } : {}}
         >
           🐼 foodpanda
         </button>
@@ -215,6 +249,11 @@ export default function AdminPanel() {
           )}
         </div>
       )}
+        </>
+      )}
+
+      {adminSubview === "employees" && <EmployeeListManager />}
+      {adminSubview === "menus" && <MenuListManager />}
     </div>
   )
 }

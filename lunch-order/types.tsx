@@ -18,6 +18,24 @@ export interface FoodpandaOrder {
   timestamp: string
 }
 
+export interface EmployeeRecord {
+  id: string
+  nameInChinese: string
+  nameInEnglish: string
+  group: "A" | "B"
+  isActive: boolean
+  joinedOn: string
+  leftOn: string
+}
+
+export interface ManagedMenuItem {
+  id: string
+  weekday: string
+  sortOrder: number
+  dishName: string
+  isFixed: boolean
+}
+
 export interface DailyOrders {
   [weekday: string]: Order[]
 }

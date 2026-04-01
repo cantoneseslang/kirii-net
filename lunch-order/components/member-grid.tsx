@@ -1,14 +1,13 @@
 "use client"
 
 import { useOrders } from "../context/order-context"
-import { MEMBERS } from "../data/members"
 
 export default function MemberGrid() {
-  const { currentMember, setCurrentMember, hasOrdered } = useOrders()
+  const { currentMember, setCurrentMember, hasOrdered, activeEmployees } = useOrders()
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      {MEMBERS.map((member) => (
+      {activeEmployees.map((member) => (
         <div
           key={member.id}
           className={`border rounded-md p-4 cursor-pointer ${
