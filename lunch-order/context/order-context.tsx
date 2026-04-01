@@ -8,7 +8,7 @@ import type { Order, FoodpandaOrder, DailyOrders, EmployeeRecord, ManagedMenuIte
 import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
 import * as XLSX from "xlsx"
-import { EMPLOYEES_STORAGE_KEY, MENU_ITEMS_STORAGE_KEY, getDefaultEmployees, getDefaultMenuItems } from "../lib/local-master-data"
+import { getDefaultEmployees, getDefaultMenuItems } from "../lib/local-master-data"
 
 interface OrderContextType {
   orders: DailyOrders
@@ -32,12 +32,27 @@ interface OrderContextType {
   hasFpOrdered: (memberId: string) => boolean
   cancelFpOrder: (memberId: string) => void
   resetFpOrders: () => void
-  saveEmployees: (employees: EmployeeRecord[]) => void
-  deleteEmployeePermanently: (employeeId: string) => void
-  saveMenuItems: (items: ManagedMenuItem[]) => void
+  saveEmployees: (employees: EmployeeRecord[]) => Promise<void>
+  deleteEmployeePermanently: (employeeId: string) => Promise<void>
+  saveMenuItems: (items: ManagedMenuItem[]) => Promise<void>
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined)
+
+const META_EMPLOYEE_PREFIX = "meta-employee-"
+const META_MENU_PREFIX = "meta-menu-"
+
+function isEmployeeMetaRow(memberId: string) {
+  return memberId.startsWith(META_EMPLOYEE_PREFIX)
+}
+
+function isMenuMetaRow(memberId: string) {
+  return memberId.startsWith(META_MENU_PREFIX)
+}
+
+function isMetaRow(memberId: string) {
+  return isEmployeeMetaRow(memberId) || isMenuMetaRow(memberId)
+}
 
 export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [orders, setOrders] = useState<DailyOrders>({})
@@ -49,56 +64,105 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null)
   const loadingRef = useRef(false)
   const [foodpandaOrders, setFoodpandaOrders] = useState<FoodpandaOrder[]>([])
-  const [masterDataLoaded, setMasterDataLoaded] = useState(false)
-
-  useEffect(() => {
-    try {
-      const storedEmployees = localStorage.getItem(EMPLOYEES_STORAGE_KEY)
-      if (storedEmployees) {
-        setEmployees(JSON.parse(storedEmployees) as EmployeeRecord[])
-      }
-      const storedMenuItems = localStorage.getItem(MENU_ITEMS_STORAGE_KEY)
-      if (storedMenuItems) {
-        setMenuItems(JSON.parse(storedMenuItems) as ManagedMenuItem[])
-      }
-    } catch (err) {
-      console.error("Error loading local master data:", err)
-    } finally {
-      setMasterDataLoaded(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!masterDataLoaded) return
-    try {
-      localStorage.setItem(EMPLOYEES_STORAGE_KEY, JSON.stringify(employees))
-    } catch (err) {
-      console.error("Error saving employees:", err)
-    }
-  }, [employees, masterDataLoaded])
-
-  useEffect(() => {
-    if (!masterDataLoaded) return
-    try {
-      localStorage.setItem(MENU_ITEMS_STORAGE_KEY, JSON.stringify(menuItems))
-    } catch (err) {
-      console.error("Error saving menu items:", err)
-    }
-  }, [menuItems, masterDataLoaded])
 
   const activeEmployees = employees.filter((employee) => employee.isActive)
 
-  const saveEmployees = useCallback((nextEmployees: EmployeeRecord[]) => {
+  const loadMasterData = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .or(`member_id.like.${META_EMPLOYEE_PREFIX}%,member_id.like.${META_MENU_PREFIX}%`)
+        .order("timestamp", { ascending: false })
+
+      if (error) {
+        console.error("Error loading master data:", error)
+        return
+      }
+
+      const nextEmployeesMap = new Map<string, EmployeeRecord>()
+      const nextMenuItemsMap = new Map<string, ManagedMenuItem>()
+
+      for (const row of data ?? []) {
+        if (isEmployeeMetaRow(row.member_id)) {
+          try {
+            const record = JSON.parse(row.dish) as EmployeeRecord
+            if (!nextEmployeesMap.has(record.id)) nextEmployeesMap.set(record.id, record)
+          } catch (err) {
+            console.error("Invalid employee meta row:", row, err)
+          }
+        }
+        if (isMenuMetaRow(row.member_id)) {
+          try {
+            const record = JSON.parse(row.dish) as ManagedMenuItem
+            if (!nextMenuItemsMap.has(record.id)) nextMenuItemsMap.set(record.id, record)
+          } catch (err) {
+            console.error("Invalid menu meta row:", row, err)
+          }
+        }
+      }
+
+      setEmployees(nextEmployeesMap.size > 0 ? Array.from(nextEmployeesMap.values()) : getDefaultEmployees())
+      setMenuItems(nextMenuItemsMap.size > 0 ? Array.from(nextMenuItemsMap.values()) : getDefaultMenuItems())
+    } catch (err) {
+      console.error("Unexpected error loading master data:", err)
+    }
+  }, [])
+
+  const persistEmployees = useCallback(async (nextEmployees: EmployeeRecord[]) => {
+    const now = new Date().toISOString()
+    const { error: deleteError } = await supabase.from("orders").delete().like("member_id", `${META_EMPLOYEE_PREFIX}%`)
+    if (deleteError) throw deleteError
+
+    if (nextEmployees.length > 0) {
+      const rows = nextEmployees.map((employee) => ({
+        member_id: `${META_EMPLOYEE_PREFIX}${employee.id}`,
+        member_name: employee.nameInChinese || "employee",
+        dish: JSON.stringify(employee),
+        drink: "__meta_employee__",
+        timestamp: now,
+      }))
+      const { error: insertError } = await supabase.from("orders").insert(rows)
+      if (insertError) throw insertError
+    }
+  }, [])
+
+  const persistMenuItems = useCallback(async (items: ManagedMenuItem[]) => {
+    const now = new Date().toISOString()
+    const { error: deleteError } = await supabase.from("orders").delete().like("member_id", `${META_MENU_PREFIX}%`)
+    if (deleteError) throw deleteError
+
+    if (items.length > 0) {
+      const rows = items.map((item) => ({
+        member_id: `${META_MENU_PREFIX}${item.id}`,
+        member_name: item.weekday,
+        dish: JSON.stringify(item),
+        drink: "__meta_menu__",
+        timestamp: now,
+      }))
+      const { error: insertError } = await supabase.from("orders").insert(rows)
+      if (insertError) throw insertError
+    }
+  }, [])
+
+  const saveEmployees = useCallback(async (nextEmployees: EmployeeRecord[]) => {
     setEmployees(nextEmployees)
-  }, [])
+    await persistEmployees(nextEmployees)
+    await loadMasterData()
+  }, [persistEmployees, loadMasterData])
 
-  const deleteEmployeePermanently = useCallback((employeeId: string) => {
-    setEmployees((prev) => prev.filter((employee) => employee.id !== employeeId))
-  }, [])
+  const deleteEmployeePermanently = useCallback(async (employeeId: string) => {
+    const nextEmployees = employees.filter((employee) => employee.id !== employeeId)
+    setEmployees(nextEmployees)
+    await persistEmployees(nextEmployees)
+    await loadMasterData()
+  }, [employees, persistEmployees, loadMasterData])
 
-  const saveMenuItems = useCallback((items: ManagedMenuItem[]) => {
+  const saveMenuItems = useCallback(async (items: ManagedMenuItem[]) => {
     setMenuItems(items)
-  }, [])
+    await persistMenuItems(items)
+    await loadMasterData()
+  }, [persistMenuItems, loadMasterData])
 
   const getManagedMenuForWeekday = useCallback(
     (weekday: string) =>
@@ -185,14 +249,15 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      console.log("Loaded orders data:", data)
+      const orderRows = (data ?? []).filter((row) => !isMetaRow(row.member_id))
+      console.log("Loaded orders data:", orderRows)
 
-      if (!data || data.length === 0) {
+      if (!orderRows || orderRows.length === 0) {
         console.log("No orders found")
         setOrders({})
       } else {
         // 日付ごとにグループ化
-        const groupedOrders = data.reduce((acc, order) => {
+        const groupedOrders = orderRows.reduce((acc, order) => {
           try {
             const orderDate = new Date(order.timestamp)
             const weekday = orderDate.toLocaleDateString("zh-HK", { weekday: "long" })
@@ -222,15 +287,17 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
   // 初期ロード
   useEffect(() => {
+    loadMasterData()
     loadOrders()
 
     // 定期的に更新（ポーリング）
     const intervalId = setInterval(() => {
+      loadMasterData()
       loadOrders()
     }, 30000) // 30秒ごとに更新
 
     return () => clearInterval(intervalId)
-  }, [loadOrders])
+  }, [loadOrders, loadMasterData])
 
   // リアルタイム更新（可能な場合）
   useEffect(() => {
@@ -246,6 +313,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
           },
           (payload) => {
             console.log("Received real-time update:", payload)
+            loadMasterData()
             loadOrders()
           },
         )
@@ -260,7 +328,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       console.error("Error setting up real-time subscription:", err)
       // リアルタイム更新に失敗してもアプリは動作し続ける
     }
-  }, [loadOrders])
+  }, [loadOrders, loadMasterData])
 
   const hasOrdered = useCallback(
     (memberId: string): boolean => {

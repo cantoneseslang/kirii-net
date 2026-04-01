@@ -33,18 +33,28 @@ export default function EmployeeListManager() {
     setDraft((prev) => [...prev, createEmptyEmployee()])
   }
 
-  const save = () => {
-    saveEmployees(draft)
-    toast.success("員工名單已儲存")
+  const save = async () => {
+    try {
+      await saveEmployees(draft)
+      toast.success("員工名單已儲存")
+    } catch (err) {
+      console.error(err)
+      toast.error("員工名單儲存失敗")
+    }
   }
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     const first = window.confirm("你係咪確定要喺員工名單刪除此員工？")
     if (!first) return
     const second = window.confirm("最後確認：刪除後將會喺員工名單完全移除此員工，是否繼續？")
     if (!second) return
-    deleteEmployeePermanently(id)
-    toast.success("員工已刪除")
+    try {
+      await deleteEmployeePermanently(id)
+      toast.success("員工已刪除")
+    } catch (err) {
+      console.error(err)
+      toast.error("刪除員工失敗")
+    }
   }
 
   return (

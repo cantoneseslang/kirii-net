@@ -65,9 +65,14 @@ export default function MenuListManager() {
     )
   }
 
-  const save = () => {
-    saveMenuItems(draft)
-    toast.success("菜單名單已保存")
+  const save = async () => {
+    try {
+      await saveMenuItems(draft)
+      toast.success("菜單名單已保存")
+    } catch (err) {
+      console.error(err)
+      toast.error("菜單名單保存失敗")
+    }
   }
 
   return (
