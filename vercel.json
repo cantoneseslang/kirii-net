@@ -1,6 +1,5 @@
 {
-  "buildCommand": "cd kirii-net && pnpm install && pnpm run build",
-  "devCommand": "cd kirii-net && pnpm dev",
-  "installCommand": "cd kirii-net && pnpm install",
-  "outputDirectory": "kirii-net/.next"
+  "installCommand": "corepack enable && corepack prepare pnpm@10.18.0 --activate && cd kirii-net && pnpm install --frozen-lockfile",
+  "buildCommand": "cd kirii-net && pnpm run build",
+  "framework": "nextjs"
 }
