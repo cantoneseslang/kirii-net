@@ -1,5 +1,0 @@
-{
-  "installCommand": "cd kirii-net && pnpm install",
-  "buildCommand": "cd kirii-net && pnpm run build",
-  "framework": "nextjs"
-}
