@@ -27,7 +27,7 @@ export function Footer() {
             <Link href="/" className="flex items-center">
               <img src="/images/kirii-new-logo.png" alt="KIRII" className="h-10 w-auto" />
             </Link>
-            <p className="text-sm text-gray-500">為香港建築行業提供高品質建築材料的網上商店。</p>
+            <p className="text-sm text-gray-500 whitespace-nowrap">為香港建築行業提供高品質建築材料的網上商店。</p>
           </div>
           <div>
             <h3 className="font-medium mb-4">產品</h3>
