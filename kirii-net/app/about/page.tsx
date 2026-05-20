@@ -37,11 +37,12 @@ export default function AboutPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative w-full py-16 md:py-24 overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-          <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 -z-10 opacity-30">
             <Image
               src="/images/uploaded/main-home-page.png"
               alt=""
               fill
+              sizes="100vw"
               className="object-cover"
               priority
             />

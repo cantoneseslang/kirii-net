@@ -14,18 +14,16 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <section className="relative w-full py-20 md:py-32 overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 -z-10">
             <Image
               src="/images/uploaded/main-home-page.png"
               alt="メイン背景"
               fill
+              sizes="100vw"
               style={{ opacity: 0.3 }}
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center" />
-            </div>
           </div>
           <div className="relative z-10 container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -73,7 +71,7 @@ export default function Home() {
                 title="鐵建築鋼材"
                 description="建築用鋼材"
                 href="/products/steel-materials"
-                imagePath="/placeholder.svg?height=300&width=300"
+                imagePath="/images/metal-studs.png"
               />
               <CategoryCard
                 title="石膏板"
