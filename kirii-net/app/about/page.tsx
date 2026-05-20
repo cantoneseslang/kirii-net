@@ -36,8 +36,8 @@ export default function AboutPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative w-full py-16 md:py-24 overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-          <div className="absolute inset-0 -z-10 opacity-30">
+        <section className="relative w-full py-16 md:py-24 overflow-hidden text-white">
+          <div className="absolute inset-0">
             <Image
               src="/images/uploaded/main-home-page.png"
               alt=""
@@ -46,6 +46,7 @@ export default function AboutPage() {
               className="object-cover"
               priority
             />
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 to-gray-800/80" />
           </div>
           <div className="relative z-10 container px-4 md:px-6">
             <div className="max-w-3xl mx-auto text-center space-y-6">
