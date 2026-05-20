@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd kirii-net && pnpm install && pnpm run build",
+  "devCommand": "cd kirii-net && pnpm dev",
+  "installCommand": "cd kirii-net && pnpm install",
+  "outputDirectory": "kirii-net/.next"
+}
