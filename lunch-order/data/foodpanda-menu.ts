@@ -52,6 +52,21 @@ export const FOODPANDA_RESTAURANT: FoodpandaRestaurant = {
         { name: "關東煮", price: 40, description: "配 前菜、豚骨湯、泡菜及白飯" },
       ],
     },
+    {
+      category: "西式早餐",
+      items: [
+        {
+          name: "吉列魚柳",
+          price: 45,
+          description: "人氣之選 · 配茄汁豆、炒蛋及新鮮丹麥多士",
+        },
+        {
+          name: "火腿扒雞肉腸",
+          price: 41.4,
+          description: "配茄汁豆、炒蛋及新鮮丹麥多士",
+        },
+      ],
+    },
   ],
   noodleOptions: [
     { name: "嗌嗌粉", extraPrice: 0 },

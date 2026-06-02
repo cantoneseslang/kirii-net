@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
-import { getCurrentMenu, DRINKS } from '../../../../data/menu-schedule'
+import { DRINKS } from '../../../../data/menu-schedule'
+import { getEffectiveMenus } from '@/lib/menu-source'
 
 export async function GET() {
   try {
-    const { menus } = getCurrentMenu()
+    const menus = await getEffectiveMenus()
     
     // メニューをそのまま使用
     const allMenus = menus

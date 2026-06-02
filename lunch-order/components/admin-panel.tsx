@@ -1,18 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useOrders } from "../context/order-context"
+import type { FoodpandaOrder, Order } from "../types"
 import { toast } from "react-hot-toast"
 import OrderSummaryPreview from "./order-summary-preview"
 import EmployeeListManager from "./employee-list-manager"
 import MenuListManager from "./menu-list-manager"
 import Link from "next/link"
+import { formatHongKongPeriodDate, getHongKongDateKey } from "../lib/hong-kong-calendar"
+import OrderDateQueryBar from "./order-date-query-bar"
 
 type AdminTab = "tingkok" | "foodpanda"
 type AdminSubview = "orders" | "employees" | "menus"
 
 export default function AdminPanel() {
-  const { orders, getWeekdayOrders, exportToCSV, resetOrders, resetOrderStatus, lastResetTime, foodpandaOrders, resetFpOrders } = useOrders()
+  const {
+    fetchOrdersForDate,
+    fetchFoodpandaOrdersForDate,
+    exportToCSV,
+    resetOrders,
+    resetOrderStatus,
+    lastResetTime,
+    resetFpOrders,
+  } = useOrders()
   const [isResetting, setIsResetting] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showConfirmReset, setShowConfirmReset] = useState(false)
@@ -26,7 +37,7 @@ export default function AdminPanel() {
       if (adminTab === "tingkok") {
         await resetOrders()
       } else {
-        resetFpOrders()
+        await resetFpOrders()
       }
       toast.success("注文記録がリセットされました")
       setShowConfirmReset(false)
@@ -51,9 +62,42 @@ export default function AdminPanel() {
     }
   }
 
-  const today = new Date().toLocaleDateString("zh-HK", { weekday: "long" })
-  const todayOrders = getWeekdayOrders(today)
-  const weekdays = Object.keys(orders)
+  const todayKey = getHongKongDateKey()
+  const [queriedDateKey, setQueriedDateKey] = useState<string | null>(null)
+  const [selectedOrders, setSelectedOrders] = useState<Order[]>([])
+  const [selectedFpOrders, setSelectedFpOrders] = useState<FoodpandaOrder[]>([])
+  const [loadingDate, setLoadingDate] = useState(false)
+  const [hasQueried, setHasQueried] = useState(false)
+
+  const runDateQuery = useCallback(
+    async (dateKey: string) => {
+      setLoadingDate(true)
+      setQueriedDateKey(dateKey)
+      setHasQueried(true)
+      try {
+        const [tingkok, fp] = await Promise.all([
+          fetchOrdersForDate(dateKey),
+          fetchFoodpandaOrdersForDate(dateKey),
+        ])
+        setSelectedOrders(tingkok)
+        setSelectedFpOrders(fp)
+      } catch {
+        setSelectedOrders([])
+        setSelectedFpOrders([])
+        toast.error("查詢失敗，請稍後再試")
+      } finally {
+        setLoadingDate(false)
+      }
+    },
+    [fetchOrdersForDate, fetchFoodpandaOrdersForDate],
+  )
+
+  const didInitialQuery = useRef(false)
+  useEffect(() => {
+    if (didInitialQuery.current) return
+    didInitialQuery.current = true
+    void runDateQuery(todayKey)
+  }, [runDateQuery, todayKey])
 
   if (showPreview) {
     return <OrderSummaryPreview onBack={() => setShowPreview(false)} restaurant={adminTab} />
@@ -141,23 +185,34 @@ export default function AdminPanel() {
 
       {lastResetTime && adminTab === "tingkok" && <p className="text-sm text-gray-500">最終リセット: {lastResetTime.toLocaleString("zh-HK")}</p>}
 
+      <div className="mb-4">
+        <OrderDateQueryBar
+          todayKey={todayKey}
+          defaultDateKey={todayKey}
+          loading={loadingDate}
+          onQuery={runDateQuery}
+        />
+      </div>
+
       {adminTab === "tingkok" && (
         <>
-          {weekdays.length === 0 ? (
-            <div className="border rounded-md p-8 text-center text-gray-500">沒有落單記錄</div>
-          ) : (
+          {!hasQueried || loadingDate ? (
+            <div className="border rounded-md p-8 text-center text-gray-500">
+              {loadingDate ? "查詢中…" : "請選擇期日"}
+            </div>
+          ) : selectedOrders.length === 0 && queriedDateKey ? (
+            <div className="border rounded-md p-8 text-center text-gray-500">
+              {formatHongKongPeriodDate(queriedDateKey)} 沒有落單記錄
+            </div>
+          ) : queriedDateKey ? (
             <div className="space-y-4">
-              <div className="border-b pb-2">
-                <button className="px-4 py-2 rounded-md bg-blue-500 text-white">{today}</button>
-              </div>
               <div>
-                <h3 className="font-bold text-lg mb-4">{today}の注文 ({todayOrders.length}件)</h3>
-                {todayOrders.length === 0 ? (
-                  <div className="text-center text-gray-500 p-4">沒有落單記錄</div>
-                ) : (
+                <h3 className="font-bold text-lg mb-4">
+                  {formatHongKongPeriodDate(queriedDateKey)} の注文 ({selectedOrders.length}件)
+                </h3>
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {todayOrders.map((order) => (
+                      {selectedOrders.map((order) => (
                         <div key={order.id} className="border rounded-md p-4 bg-gray-50">
                           <div className="flex justify-between">
                             <h4 className="font-bold">{order.member_name}</h4>
@@ -176,7 +231,7 @@ export default function AdminPanel() {
                         <div>
                           <h5 className="font-medium mb-1">餐點:</h5>
                           <ul className="space-y-1">
-                            {Object.entries(todayOrders.reduce((acc, order) => { acc[order.dish] = (acc[order.dish] || 0) + 1; return acc }, {} as Record<string, number>)).map(([dish, count]) => (
+                            {Object.entries(selectedOrders.reduce((acc, order) => { acc[order.dish] = (acc[order.dish] || 0) + 1; return acc }, {} as Record<string, number>)).map(([dish, count]) => (
                               <li key={dish}>{dish}: {count}件</li>
                             ))}
                           </ul>
@@ -184,7 +239,7 @@ export default function AdminPanel() {
                         <div>
                           <h5 className="font-medium mb-1">飲品:</h5>
                           <ul className="space-y-1">
-                            {Object.entries(todayOrders.reduce((acc, order) => { acc[order.drink] = (acc[order.drink] || 0) + 1; return acc }, {} as Record<string, number>)).map(([drink, count]) => (
+                            {Object.entries(selectedOrders.reduce((acc, order) => { acc[order.drink] = (acc[order.drink] || 0) + 1; return acc }, {} as Record<string, number>)).map(([drink, count]) => (
                               <li key={drink}>{drink}: {count}件</li>
                             ))}
                           </ul>
@@ -192,24 +247,30 @@ export default function AdminPanel() {
                       </div>
                     </div>
                   </div>
-                )}
               </div>
             </div>
-          )}
+          ) : null}
         </>
       )}
 
       {adminTab === "foodpanda" && (
         <div className="space-y-4">
+          {!hasQueried || loadingDate ? (
+            <div className="border rounded-md p-8 text-center text-gray-500">
+              {loadingDate ? "查詢中…" : "請選擇期日"}
+            </div>
+          ) : selectedFpOrders.length === 0 && queriedDateKey ? (
+            <div className="border rounded-md p-8 text-center text-gray-500">
+              {formatHongKongPeriodDate(queriedDateKey)} 沒有 foodpanda 落單記錄
+            </div>
+          ) : queriedDateKey ? (
+            <>
           <h3 className="font-bold text-lg" style={{ color: '#d70f64' }}>
-            🐼 foodpanda 注文 ({foodpandaOrders.length}件)
+            🐼 foodpanda 注文 ({selectedFpOrders.length}件) — {formatHongKongPeriodDate(queriedDateKey)}
           </h3>
-          {foodpandaOrders.length === 0 ? (
-            <div className="border rounded-md p-8 text-center text-gray-500">沒有 foodpanda 落單記錄</div>
-          ) : (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {foodpandaOrders.map((order) => (
+                {selectedFpOrders.map((order) => (
                   <div key={order.id} className="border rounded-md p-4" style={{ backgroundColor: '#fff0f5', borderColor: '#d70f64' }}>
                     <div className="flex justify-between">
                       <h4 className="font-bold">{order.member_name}</h4>
@@ -230,7 +291,7 @@ export default function AdminPanel() {
                   <div>
                     <h5 className="font-medium mb-1">餐點:</h5>
                     <ul className="space-y-1">
-                      {Object.entries(foodpandaOrders.reduce((acc, o) => { acc[o.dish] = (acc[o.dish] || 0) + 1; return acc }, {} as Record<string, number>)).map(([dish, count]) => (
+                      {Object.entries(selectedFpOrders.reduce((acc, o) => { acc[o.dish] = (acc[o.dish] || 0) + 1; return acc }, {} as Record<string, number>)).map(([dish, count]) => (
                         <li key={dish}>{dish}: {count}件</li>
                       ))}
                     </ul>
@@ -238,7 +299,7 @@ export default function AdminPanel() {
                   <div>
                     <h5 className="font-medium mb-1">飲品:</h5>
                     <ul className="space-y-1">
-                      {Object.entries(foodpandaOrders.reduce((acc, o) => { acc[o.drink] = (acc[o.drink] || 0) + 1; return acc }, {} as Record<string, number>)).map(([drink, count]) => (
+                      {Object.entries(selectedFpOrders.reduce((acc, o) => { acc[o.drink] = (acc[o.drink] || 0) + 1; return acc }, {} as Record<string, number>)).map(([drink, count]) => (
                         <li key={drink}>{drink}: {count}件</li>
                       ))}
                     </ul>
@@ -246,7 +307,8 @@ export default function AdminPanel() {
                 </div>
               </div>
             </div>
-          )}
+            </>
+          ) : null}
         </div>
       )}
         </>

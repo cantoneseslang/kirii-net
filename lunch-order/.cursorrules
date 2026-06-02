@@ -1,0 +1,29 @@
+# Vercel Deploy Rules
+
+## 重要: デプロイ先プロジェクト情報
+
+このプロジェクトのデプロイ先は**必ず**以下に固定してください：
+
+- **Project URL**: vercel.com/kirii/v0-random-ui-example
+- **Team ID**: team_hfdVMgcn7GojZhG8Cz5Pb3iA
+- **Project ID**: prj_seXpPQd8AWY5dVMwYq8UySWoYnqQ
+
+## .vercel/project.json の正しい内容
+
+```json
+{
+  "projectId": "prj_seXpPQd8AWY5dVMwYq8UySWoYnqQ",
+  "orgId": "team_hfdVMgcn7GojZhG8Cz5Pb3iA"
+}
+```
+
+## デプロイコマンド実行時の注意
+
+- `vercel --prod --yes` を実行する前に、必ず `.vercel/project.json` の内容が上記と一致していることを確認する
+- 他のプロジェクト（lunch-order等）にデプロイしない
+- デプロイ後は必ず `vercel.com/kirii/v0-random-ui-example` にデプロイされていることを確認する
+
+## 絶対に間違えてはいけないプロジェクトID
+
+- ✅ 正しい: prj_seXpPQd8AWY5dVMwYq8UySWoYnqQ (v0-random-ui-example)
+- ❌ 間違い: prj_nrESjMhViYRSLtfXcHRctBMINYpY (lunch-order) 

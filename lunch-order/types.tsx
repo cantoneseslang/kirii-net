@@ -36,6 +36,12 @@ export interface ManagedMenuItem {
   isFixed: boolean
 }
 
+/** 香港暦日キー YYYY-MM-DD → その日の注文 */
 export interface DailyOrders {
-  [weekday: string]: Order[]
+  [dateKey: string]: Order[]
+}
+
+/** 香港暦日キー YYYY-MM-DD → その日の foodpanda 注文 */
+export interface DailyFoodpandaOrders {
+  [dateKey: string]: FoodpandaOrder[]
 }

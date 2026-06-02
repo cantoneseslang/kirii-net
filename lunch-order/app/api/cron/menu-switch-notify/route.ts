@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server"
+import { getMenuSwitchSettings } from "@/lib/menu-switch-settings"
 
 export const dynamic = "force-dynamic"
 
 const HK_TIMEZONE = "Asia/Hong_Kong"
-const TARGET_EMAIL = "bestinksalesman@gmail.com"
-const SWITCH_AT_HK = "2026-03-03T12:00:00+08:00"
-const PRE_NOTIFY_AT_HK = "2026-03-03T11:50:00+08:00"
 
 function getHkDateParts(date: Date): { yyyyMmDd: string; hhMm: string } {
   const formatter = new Intl.DateTimeFormat("en-CA", {
@@ -26,7 +24,7 @@ function getHkDateParts(date: Date): { yyyyMmDd: string; hhMm: string } {
   }
 }
 
-async function sendByResend(subject: string, html: string): Promise<void> {
+async function sendByResend(to: string, subject: string, html: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.MENU_ALERT_FROM_EMAIL || "onboarding@resend.dev"
 
@@ -42,7 +40,7 @@ async function sendByResend(subject: string, html: string): Promise<void> {
     },
     body: JSON.stringify({
       from,
-      to: [TARGET_EMAIL],
+      to: [to],
       subject,
       html,
     }),
@@ -66,10 +64,22 @@ export async function GET(request: Request) {
   const now = new Date()
   const hk = getHkDateParts(now)
 
-  // 2026-03-03 の 11:50 と 12:00 だけ送信（HK時間）
-  const isTargetDay = hk.yyyyMmDd === "2026-03-03"
-  const isPre = isTargetDay && hk.hhMm === "11:50"
-  const isPost = isTargetDay && hk.hhMm === "12:00"
+  const settings = await getMenuSwitchSettings()
+  const switchDate = new Date(settings.switchAtHk)
+  if (Number.isNaN(switchDate.getTime())) {
+    return NextResponse.json(
+      { ok: false, error: "Invalid switchAtHk in settings" },
+      { status: 500 },
+    )
+  }
+
+  const preNotifyDate = new Date(
+    switchDate.getTime() - Math.max(0, settings.preNotifyMinutes) * 60 * 1000,
+  )
+  const switchHk = getHkDateParts(switchDate)
+  const preHk = getHkDateParts(preNotifyDate)
+  const isPre = hk.yyyyMmDd === preHk.yyyyMmDd && hk.hhMm === preHk.hhMm
+  const isPost = hk.yyyyMmDd === switchHk.yyyyMmDd && hk.hhMm === switchHk.hhMm
 
   if (!isPre && !isPost) {
     return NextResponse.json({
@@ -77,29 +87,31 @@ export async function GET(request: Request) {
       sent: false,
       reason: "Outside notification window",
       hkNow: `${hk.yyyyMmDd} ${hk.hhMm}`,
+      switchAtHk: settings.switchAtHk,
+      preNotifyMinutes: settings.preNotifyMinutes,
     })
   }
 
   const subject = isPre
-    ? "[Menu Switch Alert] 10 minutes before switch (HK 11:50)"
-    : "[Menu Switch Alert] Menu switched now (HK 12:00)"
+    ? `[Menu Switch Alert] ${settings.preNotifyMinutes} minutes before switch`
+    : "[Menu Switch Alert] Menu switched now"
 
   const html = `
     <h2>Menu Switch Notification</h2>
     <p>Timezone: Asia/Hong_Kong</p>
     <p>Current HK Time: ${hk.yyyyMmDd} ${hk.hhMm}</p>
-    <p>Switch time: ${SWITCH_AT_HK}</p>
-    <p>Pre-notify time: ${PRE_NOTIFY_AT_HK}</p>
+    <p>Switch time: ${settings.switchAtHk}</p>
+    <p>Pre-notify minutes: ${settings.preNotifyMinutes}</p>
     <p>Status: ${isPre ? "10 minutes before switch" : "switch time reached"}</p>
   `
 
   try {
-    await sendByResend(subject, html)
+    await sendByResend(settings.targetEmail, subject, html)
     return NextResponse.json({
       ok: true,
       sent: true,
       stage: isPre ? "pre" : "post",
-      to: TARGET_EMAIL,
+      to: settings.targetEmail,
       hkNow: `${hk.yyyyMmDd} ${hk.hhMm}`,
     })
   } catch (error) {

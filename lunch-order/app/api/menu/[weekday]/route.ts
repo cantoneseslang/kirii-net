@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { getCurrentMenu, DRINKS } from '../../../../data/menu-schedule'
+import { DRINKS } from '../../../../data/menu-schedule'
+import { getEffectiveMenus } from '@/lib/menu-source'
 
 export async function GET(
   request: Request,
@@ -9,7 +10,7 @@ export async function GET(
     const { weekday } = await params
     
     // 現在のメニューを取得
-    const { menus } = getCurrentMenu()
+    const menus = await getEffectiveMenus()
     
     // 曜日の検証
     const validWeekdays = Object.keys(menus)

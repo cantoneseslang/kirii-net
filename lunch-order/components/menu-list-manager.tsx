@@ -2,19 +2,24 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "react-hot-toast"
-import { useOrders } from "../context/order-context"
+import { formatPostgrestErrorMessage, useOrders } from "../context/order-context"
 import type { ManagedMenuItem } from "../types"
 
 const WEEKDAYS = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
 
 export default function MenuListManager() {
-  const { menuItems, saveMenuItems } = useOrders()
+  const { menuItems, saveMenuItems, menuPersistResult } = useOrders()
   const [selectedWeekday, setSelectedWeekday] = useState("星期一")
   const [draft, setDraft] = useState<ManagedMenuItem[]>(menuItems)
+  /** Context の menuItems は約30秒ごとの loadMasterData で更新される。編集中に同期すると入力が消えるので止める */
+  const [draftDirty, setDraftDirty] = useState(false)
 
   useEffect(() => {
+    if (draftDirty) return
+    // 一瞬 menuItems が [] になると draft が全部消える（携帯で白画面）— 空は上書きしない
+    if (menuItems.length === 0 && draft.length > 0) return
     setDraft(menuItems)
-  }, [menuItems])
+  }, [menuItems, draftDirty, draft.length])
 
   const weekdayItems = useMemo(
     () =>
@@ -25,10 +30,12 @@ export default function MenuListManager() {
   )
 
   const updateItem = (id: string, patch: Partial<ManagedMenuItem>) => {
+    setDraftDirty(true)
     setDraft((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)))
   }
 
   const addItem = () => {
+    setDraftDirty(true)
     const nextOrder = weekdayItems.length
     setDraft((prev) => [
       ...prev,
@@ -54,6 +61,7 @@ export default function MenuListManager() {
   }
 
   const removeItem = (id: string) => {
+    setDraftDirty(true)
     setDraft((prev) =>
       prev
         .filter((item) => item.id !== id)
@@ -68,10 +76,15 @@ export default function MenuListManager() {
   const save = async () => {
     try {
       await saveMenuItems(draft)
+      setDraftDirty(false)
       toast.success("菜單名單已保存")
     } catch (err) {
       console.error(err)
-      toast.error("菜單名單保存失敗")
+      const detail =
+        err && typeof err === "object" && "message" in err
+          ? formatPostgrestErrorMessage(err as { message?: string; code?: string; details?: string; hint?: string })
+          : String(err)
+      toast.error("菜單名單保存失敗: " + detail)
     }
   }
 
@@ -88,6 +101,39 @@ export default function MenuListManager() {
           </button>
         </div>
       </div>
+
+      {menuPersistResult && (
+        <div
+          className={`rounded-md border px-3 py-2 text-sm ${
+            menuPersistResult.verifyError
+              ? "border-amber-300 bg-amber-50 text-amber-950"
+              : menuPersistResult.supabaseMetaRowCount === menuPersistResult.rowsWritten
+                ? "border-green-300 bg-green-50 text-green-950"
+                : "border-amber-300 bg-amber-50 text-amber-950"
+          }`}
+          role="status"
+        >
+          <div className="font-semibold">Supabase save result (orders · meta-menu)</div>
+          <ul className="mt-1 list-inside list-disc space-y-0.5">
+            <li>
+              Saved at:{" "}
+              {new Date(menuPersistResult.savedAtIso).toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "medium",
+              })}
+            </li>
+            <li>Rows written: {menuPersistResult.rowsWritten}</li>
+            <li>
+              DB row count (COUNT): {menuPersistResult.supabaseMetaRowCount ?? "—"}
+              {menuPersistResult.verifyError
+                ? ` — verify failed: ${menuPersistResult.verifyError}`
+                : menuPersistResult.supabaseMetaRowCount === menuPersistResult.rowsWritten
+                  ? " — matches written count"
+                  : " — mismatch; check network or RLS"}
+            </li>
+          </ul>
+        </div>
+      )}
 
       <div className="grid grid-cols-7 gap-2">
         {WEEKDAYS.map((weekday) => (

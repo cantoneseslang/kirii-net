@@ -1,3 +1,9 @@
+/**
+ * 社員 id のルール:
+ * - 欠番（6, 16, 19, 20, 22 など）はあえて埋めない（退職・履歴用に空けた番号として残す）。
+ * - 新規メンバーは必ず「現在ある id の最大値 + 1」の新しい番号を付ける（次は 25）。
+ * - 勝手に空き番を割り当てないこと。
+ */
 export const MEMBERS = [
   { id: "1", name: "Sakon Hiroki", nameInChinese: "佐近宏樹", nameInEnglish: "Sakon Hiroki", group: "A" },
   { id: "2", name: "Wong Hong Keung", englishName: "Alex", nameInChinese: "黃漢強", nameInEnglish: "Alex", group: "B" },
@@ -16,5 +22,6 @@ export const MEMBERS = [
   { id: "17", name: "Hui Oi Han", nameInChinese: "許愛嫻", nameInEnglish: "Hui Oi Han", group: "A" },
   { id: "18", name: "Lin Daoqun", nameInChinese: "林道群", nameInEnglish: "Lin Daoqun", group: "A" },
   { id: "21", name: "Yau Siu Yin", nameInChinese: "邱少燕", nameInEnglish: "Yau Siu Yin", group: "A" },
-  { id: "23", name: "Lee Ka Lin", nameInChinese: "李家年", nameInEnglish: "Lee Ka Lin", group: "A" }
+  { id: "23", name: "Lee Ka Lin", nameInChinese: "李家年", nameInEnglish: "Lee Ka Lin", group: "A" },
+  { id: "24", name: "Yiu Pak Ho", nameInChinese: "姚栢浩", nameInEnglish: "Yiu Pak Ho", group: "A" }
 ]

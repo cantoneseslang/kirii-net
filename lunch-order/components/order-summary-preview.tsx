@@ -1,7 +1,10 @@
 "use client"
 
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useOrders } from "../context/order-context"
 import type { Order, FoodpandaOrder, EmployeeRecord } from "../types"
+import { formatHongKongPeriodDate, getHongKongDateKey } from "../lib/hong-kong-calendar"
+import OrderDateQueryBar from "./order-date-query-bar"
 
 interface DishGroup {
   dish: string
@@ -309,24 +312,72 @@ function FoodpandaPreview({ formattedDate, fpOrders, employees }: { formattedDat
 }
 
 export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: { onBack: () => void; restaurant?: "tingkok" | "foodpanda" }) {
-  const { orders, exportToCSV, foodpandaOrders, employees } = useOrders()
+  const { exportToCSV, employees, fetchOrdersForDate, fetchFoodpandaOrdersForDate } = useOrders()
+  const todayKey = getHongKongDateKey()
+  const [queriedDateKey, setQueriedDateKey] = useState<string | null>(null)
+  const [dayOrders, setDayOrders] = useState<Order[]>([])
+  const [fpOrders, setFpOrders] = useState<FoodpandaOrder[]>([])
+  const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [hasQueried, setHasQueried] = useState(false)
 
-  const today = new Date()
-  const weekdayNames = ["日", "一", "二", "三", "四", "五", "六"]
-  const formattedDate = `期日:${today.getMonth() + 1}月${today.getDate()}號星期${weekdayNames[today.getDay()]}`
-  const weekday = today.toLocaleDateString("zh-HK", { weekday: "long" })
-  const todayOrders = orders[weekday] || []
+  const runDateQuery = useCallback(
+    async (dateKey: string) => {
+      setLoading(true)
+      setLoadError(null)
+      setQueriedDateKey(dateKey)
+      setHasQueried(true)
+      try {
+        if (restaurant === "tingkok") {
+          const data = await fetchOrdersForDate(dateKey)
+          setDayOrders(data)
+          setFpOrders([])
+        } else {
+          const data = await fetchFoodpandaOrdersForDate(dateKey)
+          setFpOrders(data)
+          setDayOrders([])
+        }
+      } catch (e) {
+        setLoadError(e instanceof Error ? e.message : "載入失敗")
+        setDayOrders([])
+        setFpOrders([])
+      } finally {
+        setLoading(false)
+      }
+    },
+    [restaurant, fetchOrdersForDate, fetchFoodpandaOrdersForDate],
+  )
 
+  const didInitialQuery = useRef(false)
+  useEffect(() => {
+    if (didInitialQuery.current) return
+    didInitialQuery.current = true
+    void runDateQuery(todayKey)
+  }, [runDateQuery, todayKey])
+
+  const formattedDate = queriedDateKey ? formatHongKongPeriodDate(queriedDateKey) : ""
   const handlePrint = () => { window.print() }
+  const isTingkok = restaurant === "tingkok"
+  const displayOrders = isTingkok ? dayOrders : fpOrders
 
   return (
     <div>
-      <div className="flex gap-2 mb-4 print:hidden">
+      <div className="flex flex-wrap items-end gap-3 mb-4 print:hidden">
         <button onClick={onBack} className="px-4 py-2 border rounded-md bg-gray-100 hover:bg-gray-200">
           ← 返回
         </button>
-        {restaurant === "tingkok" && (
-          <button onClick={exportToCSV} className="px-4 py-2 border rounded-md bg-green-500 hover:bg-green-600 text-white font-bold">
+        <OrderDateQueryBar
+          todayKey={todayKey}
+          defaultDateKey={todayKey}
+          loading={loading}
+          onQuery={runDateQuery}
+        />
+        {isTingkok && (
+          <button
+            onClick={() => queriedDateKey && exportToCSV(queriedDateKey)}
+            disabled={!queriedDateKey || dayOrders.length === 0}
+            className="px-4 py-2 border rounded-md bg-green-500 hover:bg-green-600 text-white font-bold disabled:opacity-50 self-end"
+          >
             導出 Excel
           </button>
         )}
@@ -335,10 +386,28 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
         </button>
       </div>
 
-      {restaurant === "tingkok" ? (
-        <TingkokPreview formattedDate={formattedDate} todayOrders={todayOrders} employees={employees} />
+      {!hasQueried && !loading && (
+        <div className="border rounded-md p-8 text-center text-gray-500 mb-4 print:hidden">
+          請選擇期日
+        </div>
+      )}
+      {loadError && (
+        <p className="text-red-600 mb-4 print:hidden">{loadError}</p>
+      )}
+      {hasQueried && !loading && !loadError && displayOrders.length === 0 && queriedDateKey && (
+        <div className="border rounded-md p-8 text-center text-gray-500 mb-4 print:hidden">
+          {formatHongKongPeriodDate(queriedDateKey)} 沒有{isTingkok ? "" : " foodpanda "}落單記錄
+        </div>
+      )}
+
+      {isTingkok ? (
+        dayOrders.length > 0 && queriedDateKey ? (
+          <TingkokPreview formattedDate={formattedDate} todayOrders={dayOrders} employees={employees} />
+        ) : null
       ) : (
-        <FoodpandaPreview formattedDate={formattedDate} fpOrders={foodpandaOrders} employees={employees} />
+        fpOrders.length > 0 && queriedDateKey ? (
+          <FoodpandaPreview formattedDate={formattedDate} fpOrders={fpOrders} employees={employees} />
+        ) : null
       )}
     </div>
   )

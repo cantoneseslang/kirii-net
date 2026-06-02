@@ -1,15 +1,50 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface OrderConfirmationCardProps {
   dish: string
   drink: string
   memberName?: string
   isModified?: boolean
+  /** 茶餐廳＝青、foodpanda＝ブランド赤（#d70f64）でカード枠・ヘッダー背景を切替 */
+  channel?: "tingkok" | "foodpanda"
+  /** 汀角路／foodpanda 兩邊互斥時の全文（此欄有值則只顯示提示，不顯示餐單內容） */
+  crossOrderWarning?: string | null
+  onDismissCrossOrderWarning?: () => void
 }
 
-export default function OrderConfirmationCard({ dish, drink, memberName, isModified = false }: OrderConfirmationCardProps) {
+export default function OrderConfirmationCard({
+  dish,
+  drink,
+  isModified = false,
+  channel = "tingkok",
+  crossOrderWarning,
+  onDismissCrossOrderWarning,
+}: OrderConfirmationCardProps) {
+  if (crossOrderWarning) {
+    return (
+      <Card className="w-full border-2 border-amber-500 shadow-lg pointer-events-auto">
+        <CardHeader className="bg-amber-50 pb-3">
+          <CardTitle className="text-lg font-bold text-gray-800">溫馨提示</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap">{crossOrderWarning}</p>
+          {onDismissCrossOrderWarning && (
+            <button
+              type="button"
+              onClick={onDismissCrossOrderWarning}
+              className="w-full py-2.5 rounded-md bg-amber-500 text-white font-bold hover:bg-amber-600"
+            >
+              知道了
+            </button>
+          )}
+        </CardContent>
+      </Card>
+    )
+  }
+
   // 食事とドリンクの両方があるかチェック
   const hasDish = dish && dish !== "未選擇"
   const hasDrink = drink && drink !== "未選擇"
@@ -29,9 +64,18 @@ export default function OrderConfirmationCard({ dish, drink, memberName, isModif
     return null
   }
 
+  const isFoodpanda = channel === "foodpanda"
+
   return (
-    <Card className="w-full border-2 border-blue-500 shadow-lg">
-      <CardHeader className="bg-blue-50 pb-3">
+    <Card
+      className={cn(
+        "w-full border-2 shadow-lg",
+        isFoodpanda ? "border-[#d70f64]" : "border-blue-500",
+      )}
+    >
+      <CardHeader
+        className={cn("pb-3", isFoodpanda ? "bg-[#fff0f5]" : "bg-blue-50")}
+      >
         <CardTitle className="text-lg font-bold text-gray-800">
           {titleText}
         </CardTitle>
@@ -69,7 +113,12 @@ export default function OrderConfirmationCard({ dish, drink, memberName, isModif
           </div>
         )}
         {isFoodOnly && (
-          <div className="pt-2 text-blue-600 text-lg font-bold">
+          <div
+            className={cn(
+              "pt-2 text-lg font-bold",
+              isFoodpanda ? "text-[#d70f64]" : "text-blue-600",
+            )}
+          >
             {foodConcernText}
           </div>
         )}

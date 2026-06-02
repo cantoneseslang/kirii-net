@@ -1,0 +1,13 @@
+このプロジェクトのデプロイ先は必ず以下に固定してください：
+
+vercel.com/kirii/v0-random-ui-example
+Team ID: team_hfdVMgcn7GojZhG8Cz5Pb3iA  
+Project ID: prj_seXpPQd8AWY5dVMwYq8UySWoYnqQ
+
+デプロイコマンドを実行する際は、必ずこのプロジェクトIDを使用し、他のプロジェクト（lunch-orderなど）にデプロイしないでください。
+
+.vercel/project.json の内容は以下の通りです：
+{
+  "projectId": "prj_seXpPQd8AWY5dVMwYq8UySWoYnqQ",
+  "orgId": "team_hfdVMgcn7GojZhG8Cz5Pb3iA"
+}

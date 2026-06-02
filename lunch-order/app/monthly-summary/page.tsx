@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,9 +11,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { stringify } from 'csv-stringify/sync';
 import Link from 'next/link';
-import { DRINKS } from '@/components/menu-selection';
+import { DRINKS } from '@/data/menu-schedule';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import Tesseract from 'tesseract.js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,10 +38,42 @@ interface OrderSummary {
   };
 }
 
+interface DailyOrder {
+  id: string;
+  member_id: string;
+  member_name: string;
+  dish: string;
+  drink: string;
+  timestamp: string;
+  date: string;
+}
+
+interface DailyOrdersData {
+  [date: string]: DailyOrder[];
+}
+
+type WeekdayKey = '星期一' | '星期二' | '星期三' | '星期四' | '星期五' | '星期六' | '星期日';
+type MenusByWeekday = Record<WeekdayKey, string[]>;
+
+const WEEKDAY_KEYS: WeekdayKey[] = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+
+const EMPTY_MENUS: MenusByWeekday = {
+  星期一: [],
+  星期二: [],
+  星期三: [],
+  星期四: [],
+  星期五: [],
+  星期六: [],
+  星期日: [],
+};
+
 export default function MonthlySummary() {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('');
   const [periods, setPeriods] = useState<string[]>([]);
   const [summary, setSummary] = useState<OrderSummary | null>(null);
+  const [dailyOrders, setDailyOrders] = useState<DailyOrdersData>({});
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [showDailyDetails, setShowDailyDetails] = useState<boolean>(false);
   const [dishPrice, setDishPrice] = useState<number>(37);
   const [hotDrinkPrice, setHotDrinkPrice] = useState<number>(16);
   const [coldDrinkPrice, setColdDrinkPrice] = useState<number>(18);
@@ -48,16 +81,25 @@ export default function MonthlySummary() {
   const [herbTeaPrice, setHerbTeaPrice] = useState<number>(15);
   const [isEditingPrices, setIsEditingPrices] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [menuSwitchAt, setMenuSwitchAt] = useState<string>('');
+  const [menuNotifyEmail, setMenuNotifyEmail] = useState<string>('bestinksalesman@gmail.com');
+  const [menuPreNotifyMinutes, setMenuPreNotifyMinutes] = useState<number>(10);
+  const [isSavingMenuSetup, setIsSavingMenuSetup] = useState<boolean>(false);
+  const [menuText, setMenuText] = useState<string>('');
+  const [isOcrProcessing, setIsOcrProcessing] = useState<boolean>(false);
+  const [selectedMenuImage, setSelectedMenuImage] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
     fetchPeriods();
     fetchPrices();
+    fetchMenuSwitchSettings();
   }, []);
 
   useEffect(() => {
     if (selectedPeriod) {
       fetchSummary(selectedPeriod);
+      fetchDailyOrders(selectedPeriod);
     }
   }, [selectedPeriod]);
 
@@ -163,6 +205,45 @@ export default function MonthlySummary() {
     });
   };
 
+  const fetchDailyOrders = async (periodStart: string) => {
+    const periodStartDate = new Date(periodStart);
+    const periodEndDate = new Date(periodStartDate);
+    periodEndDate.setMonth(periodEndDate.getMonth() + 1);
+
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .gte('timestamp', periodStart)
+      .lt('timestamp', format(periodEndDate, 'yyyy-MM-dd'))
+      .order('timestamp', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching daily orders:', error);
+      return;
+    }
+
+    // 日付別に注文をグループ化
+    const dailyData: DailyOrdersData = {};
+    data.forEach(order => {
+      const date = order.timestamp.split('T')[0]; // YYYY-MM-DD形式
+      if (!dailyData[date]) {
+        dailyData[date] = [];
+      }
+      dailyData[date].push({
+        ...order,
+        date: date
+      });
+    });
+
+    setDailyOrders(dailyData);
+    
+    // 最初の日付を選択
+    const dates = Object.keys(dailyData).sort();
+    if (dates.length > 0) {
+      setSelectedDate(dates[0]);
+    }
+  };
+
   const calculateTotalAmount = (setMealCount: number, orders: any[]) => {
     // セット注文の合計（飲み物込み）
     const setMealTotal = setMealCount * dishPrice;
@@ -238,6 +319,212 @@ export default function MonthlySummary() {
       if (herbTeaPriceData) {
         setHerbTeaPrice(Number(herbTeaPriceData.price));
       }
+    }
+  };
+
+  const toLocalDatetimeInput = (iso: string): string => {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return offsetDate.toISOString().slice(0, 16);
+  };
+
+  const toIsoWithCurrentOffset = (value: string): string => {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const offsetMin = -date.getTimezoneOffset();
+    const sign = offsetMin >= 0 ? '+' : '-';
+    const abs = Math.abs(offsetMin);
+    const hh = String(Math.floor(abs / 60)).padStart(2, '0');
+    const mm = String(abs % 60).padStart(2, '0');
+    const base = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+      date.getDate(),
+    ).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(
+      2,
+      '0',
+    )}:00`;
+    return `${base}${sign}${hh}:${mm}`;
+  };
+
+  const formatMenusToMenuText = (menus: MenusByWeekday): string => {
+    return WEEKDAY_KEYS.map((day) => {
+      const items = menus[day].map((item) => `"${item}"`).join(', ');
+      return `"${day}"\n${items}`;
+    }).join('\n');
+  };
+
+  const parseMenuTextToMenus = (text: string): MenusByWeekday | null => {
+    const rows = text
+      .split('\n')
+      .map((row) => row.trim())
+      .filter(Boolean);
+
+    const result: MenusByWeekday = {
+      星期一: [],
+      星期二: [],
+      星期三: [],
+      星期四: [],
+      星期五: [],
+      星期六: [],
+      星期日: [],
+    };
+
+    let currentDay: WeekdayKey | null = null;
+    for (const row of rows) {
+      const dayMatch = row.match(/^"?星期([一二三四五六日])"?$/);
+      if (dayMatch) {
+        currentDay = `星期${dayMatch[1]}` as WeekdayKey;
+        continue;
+      }
+      if (!currentDay) continue;
+
+      const items = Array.from(row.matchAll(/"([^"]+)"/g)).map((m) => m[1].trim());
+      if (items.length > 0) {
+        result[currentDay] = items;
+      }
+    }
+
+    const isValid = WEEKDAY_KEYS.every((day) => result[day].length > 0);
+    return isValid ? result : null;
+  };
+
+  const extractMenusFromOcrText = (rawText: string): MenusByWeekday | null => {
+    const rows = rawText
+      .split('\n')
+      .map((row) => row.replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+
+    const blockMap: MenusByWeekday = {
+      星期一: [],
+      星期二: [],
+      星期三: [],
+      星期四: [],
+      星期五: [],
+      星期六: [],
+      星期日: [],
+    };
+
+    let current: WeekdayKey | null = null;
+    for (const row of rows) {
+      const normalized = row
+        .replace(/星期六\s*\/\s*日/g, '星期六/日')
+        .replace(/星期六\s*\/\s*星期日/g, '星期六/日');
+      const weekdayMatch = normalized.match(/星期([一二三四五六日])/);
+
+      if (normalized.includes('星期六/日')) {
+        current = '星期六';
+        continue;
+      }
+      if (weekdayMatch) {
+        current = `星期${weekdayMatch[1]}` as WeekdayKey;
+        continue;
+      }
+      if (!current) continue;
+
+      const cleaned = normalized.replace(/^\d+[.)、]?\s*/, '').trim();
+      if (!cleaned) continue;
+      if (/^(奉送|飯盒套餐|每日供應素食|2月|電話|2662|9667)/.test(cleaned)) continue;
+      blockMap[current].push(cleaned);
+    }
+
+    if (blockMap['星期六'].length > 0) {
+      blockMap['星期日'] = [...blockMap['星期六']];
+    }
+
+    const weekdaysOk = WEEKDAY_KEYS.every((day) => blockMap[day].length > 0);
+    if (!weekdaysOk) return null;
+
+    return blockMap;
+  };
+
+  const handleMenuImageSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setSelectedMenuImage(file.name);
+    // Always reset previous text to prevent stale hardcoded-like display.
+    setMenuText('');
+    setIsOcrProcessing(true);
+    try {
+      const result = await Tesseract.recognize(file, 'chi_tra+eng');
+      const extracted = extractMenusFromOcrText(result.data.text);
+      if (!extracted) {
+        throw new Error('OCR結果から曜日別メニューを抽出できませんでした');
+      }
+      setMenuText(formatMenusToMenuText(extracted));
+      toast.success('OCR完了: menu text を自動更新しました');
+    } catch (error) {
+      console.error('OCR failed:', error);
+      setMenuText('');
+      toast.error(error instanceof Error ? error.message : 'OCR処理に失敗しました');
+    } finally {
+      setIsOcrProcessing(false);
+      event.target.value = '';
+    }
+  };
+
+  async function fetchMenuSwitchSettings() {
+    try {
+      const res = await fetch('/api/menu/switch-settings', { cache: 'no-store' });
+      const json = await res.json();
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.error || 'Failed to load menu switch settings');
+      }
+      setMenuSwitchAt(toLocalDatetimeInput(json.data.switchAtHk));
+      setMenuNotifyEmail(json.data.targetEmail || 'bestinksalesman@gmail.com');
+      setMenuPreNotifyMinutes(
+        typeof json.data.preNotifyMinutes === 'number' ? json.data.preNotifyMinutes : 10,
+      );
+      setMenuText('');
+    } catch (error) {
+      console.error('Error loading menu switch settings:', error);
+    }
+  }
+
+  const handleMenuSwitchSetupSave = async () => {
+    try {
+      setIsSavingMenuSetup(true);
+      const switchAtHk = toIsoWithCurrentOffset(menuSwitchAt);
+      if (!switchAtHk) {
+        toast.error('切替日時が不正です');
+        return;
+      }
+      if (!menuNotifyEmail.trim()) {
+        toast.error('通知先メールアドレスを入力してください');
+        return;
+      }
+      const parsedMenus = parseMenuTextToMenus(menuText);
+      if (!parsedMenus) {
+        toast.error('menu text の形式が不正です（曜日7日分が必要）');
+        return;
+      }
+
+      const res = await fetch('/api/menu/switch-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          switchAtHk,
+          targetEmail: menuNotifyEmail.trim(),
+          preNotifyMinutes: Number(menuPreNotifyMinutes) || 10,
+          nextMenus: parsedMenus,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.error || '設定保存に失敗しました');
+      }
+
+      if (json.mailSent) {
+        toast.success('切替設定を保存し、完了メールを送信しました');
+      } else {
+        toast.success('切替設定を保存しました（メール送信は失敗）');
+      }
+    } catch (error) {
+      console.error('Error saving menu switch setup:', error);
+      toast.error(error instanceof Error ? error.message : '切替設定保存に失敗しました');
+    } finally {
+      setIsSavingMenuSetup(false);
     }
   };
 
@@ -320,22 +607,40 @@ export default function MonthlySummary() {
   const exportToPDF = async () => {
     if (!summary) return;
 
-    const element = document.getElementById('summary-content');
-    if (!element) return;
+    // 日別詳細が表示されている場合は、そのコンテンツも含める
+    const summaryElement = document.getElementById('summary-content');
+    const dailyDetailsElement = document.getElementById('daily-details-content');
+    
+    if (summaryElement) {
+      const canvas = await html2canvas(summaryElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false
-    });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`訂單統計_${format(new Date(summary.period), 'yyyyMMdd')}.pdf`);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      
+      // 日別詳細がある場合は追加ページとして追加
+      if (dailyDetailsElement && showDailyDetails) {
+        const dailyCanvas = await html2canvas(dailyDetailsElement, {
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+        
+        const dailyImgData = dailyCanvas.toDataURL('image/png');
+        pdf.addPage();
+        const dailyPdfHeight = (dailyCanvas.height * pdfWidth) / dailyCanvas.width;
+        pdf.addImage(dailyImgData, 'PNG', 0, 0, pdfWidth, dailyPdfHeight);
+      }
+      
+      pdf.save(`訂單統計_${format(new Date(summary.period), 'yyyyMMdd')}.pdf`);
+    }
   };
 
   const exportToCSV = () => {
@@ -363,11 +668,61 @@ export default function MonthlySummary() {
         .map(([drink, count]) => [drink, `${count}單`])
     ];
 
+    // 日別詳細が表示されている場合は、選択された日のデータも含める
+    if (showDailyDetails && selectedDate && dailyOrders[selectedDate]) {
+      rows.push([], ['日別注文詳細', format(new Date(selectedDate), 'yyyy年MM月dd日')]);
+      rows.push(['日付', '社員ID', '社員名', '餐品', '飲品', '注文時間']);
+      
+      dailyOrders[selectedDate].forEach(order => {
+        rows.push([
+          selectedDate,
+          order.member_id,
+          order.member_name,
+          order.dish,
+          order.drink,
+          order.timestamp
+        ]);
+      });
+    }
+
     const csvContent = stringify(rows, { delimiter: ',' });
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `訂單統計_${format(new Date(summary.period), 'yyyyMMdd')}.csv`;
+    link.click();
+  };
+
+  const exportDailyDetailsToCSV = () => {
+    if (!dailyOrders || Object.keys(dailyOrders).length === 0) return;
+
+    const rows = [
+      ['日別注文詳細', format(new Date(summary?.period || ''), 'yyyy年MM月dd日')],
+      [],
+      ['日付', '社員ID', '社員名', '餐品', '飲品', '注文時間']
+    ];
+
+    // 日付順にソートして各行を追加
+    Object.keys(dailyOrders)
+      .sort()
+      .forEach(date => {
+        dailyOrders[date].forEach(order => {
+          rows.push([
+            date,
+            order.member_id,
+            order.member_name,
+            order.dish,
+            order.drink,
+            order.timestamp
+          ]);
+        });
+      });
+
+    const csvContent = stringify(rows, { delimiter: ',' });
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `日別注文詳細_${format(new Date(summary?.period || ''), 'yyyyMMdd')}.csv`;
     link.click();
   };
 
@@ -383,6 +738,9 @@ export default function MonthlySummary() {
             <Button onClick={exportToCSV} variant="outline">
               輸出CSV
             </Button>
+            <Button onClick={exportDailyDetailsToCSV} variant="outline">
+              輸出日別詳細CSV
+            </Button>
           </div>
         )}
       </div>
@@ -395,24 +753,119 @@ export default function MonthlySummary() {
         </Link>
       </div>
 
-      <div className="mb-6">
-        <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-          <SelectTrigger className="w-[280px]">
-            <SelectValue placeholder="選擇日期" />
-          </SelectTrigger>
-          <SelectContent>
-            {periods.map((period) => {
-              const startDate = new Date(period);
-              const endDate = new Date(startDate);
-              endDate.setMonth(endDate.getMonth() + 1);
-              return (
-                <SelectItem key={period} value={period}>
-                  {format(startDate, 'yyyy年MM月dd日')}至{format(endDate, 'MM月dd日')}
-                </SelectItem>
-              );
-            })}
-          </SelectContent>
-        </Select>
+      <div className="mb-6 space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>メニュー切替日時設定（HK）</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <span className="font-medium">メニュー画像（選択で自動OCR）</span>
+                <Input type="file" accept="image/*" onChange={handleMenuImageSelect} />
+                <p className="text-sm text-gray-600">
+                  {isOcrProcessing
+                    ? 'OCR処理中...'
+                    : selectedMenuImage
+                      ? `選択: ${selectedMenuImage}`
+                      : '画像未選択'}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <span className="font-medium">menu text</span>
+                <textarea
+                  value={menuText}
+                  onChange={(e) => setMenuText(e.target.value)}
+                  rows={16}
+                  className="flex h-[450px] w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm max-h-[32rem] overflow-y-auto"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-40">切替日時</span>
+                <Input
+                  type="datetime-local"
+                  value={menuSwitchAt}
+                  onChange={(e) => setMenuSwitchAt(e.target.value)}
+                  className="w-[280px]"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-40">通知先メール</span>
+                <Input
+                  type="email"
+                  value={menuNotifyEmail}
+                  onChange={(e) => setMenuNotifyEmail(e.target.value)}
+                  className="w-[320px]"
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-40">事前通知（分）</span>
+                <Input
+                  type="number"
+                  min={0}
+                  step={1}
+                  value={menuPreNotifyMinutes}
+                  onChange={(e) => setMenuPreNotifyMinutes(Number(e.target.value) || 0)}
+                  className="w-24"
+                />
+              </div>
+              <div>
+                <Button onClick={handleMenuSwitchSetupSave} disabled={isSavingMenuSetup}>
+                  {isSavingMenuSetup ? '保存中...' : '切替設定を保存して完了メール送信'}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex items-center gap-4">
+          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="選擇日期" />
+            </SelectTrigger>
+            <SelectContent>
+              {periods.map((period) => {
+                const startDate = new Date(period);
+                const endDate = new Date(startDate);
+                endDate.setMonth(endDate.getMonth() + 1);
+                return (
+                  <SelectItem key={period} value={period}>
+                    {format(startDate, 'yyyy年MM月dd日')}至{format(endDate, 'MM月dd日')}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+          
+          <Button 
+            onClick={() => setShowDailyDetails(!showDailyDetails)} 
+            variant={showDailyDetails ? "default" : "outline"}
+          >
+            {showDailyDetails ? "隱藏日別詳細" : "顯示日別詳細"}
+          </Button>
+        </div>
+
+        {showDailyDetails && Object.keys(dailyOrders).length > 0 && (
+          <div className="flex items-center gap-4">
+            <Select value={selectedDate} onValueChange={setSelectedDate}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="選擇日期" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px] overflow-y-auto">
+                {Object.keys(dailyOrders)
+                  .sort()
+                  .map((date) => (
+                    <SelectItem key={date} value={date}>
+                      {format(new Date(date), 'yyyy年MM月dd日')}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+            <span className="text-sm text-gray-600">
+              {selectedDate && dailyOrders[selectedDate] ? `${dailyOrders[selectedDate].length}單注文` : ''}
+            </span>
+          </div>
+        )}
       </div>
 
       {summary && (
@@ -608,6 +1061,49 @@ export default function MonthlySummary() {
                       <span>{count}單</span>
                     </div>
                   ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {showDailyDetails && selectedDate && dailyOrders[selectedDate] && (
+        <div id="daily-details-content" className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                {format(new Date(selectedDate), 'yyyy年MM月dd日')} 日別注文詳細
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="border border-gray-300 px-4 py-2 text-left">社員ID</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">社員名</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">餐品</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">飲品</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">注文時間</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dailyOrders[selectedDate].map((order) => (
+                      <tr key={order.id} className="hover:bg-gray-50">
+                        <td className="border border-gray-300 px-4 py-2">{order.member_id}</td>
+                        <td className="border border-gray-300 px-4 py-2">{order.member_name}</td>
+                        <td className="border border-gray-300 px-4 py-2">{order.dish}</td>
+                        <td className="border border-gray-300 px-4 py-2">{order.drink}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {format(new Date(order.timestamp), 'HH:mm:ss')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-4 text-sm text-gray-600">
+                <p>合計: {dailyOrders[selectedDate].length}單注文</p>
               </div>
             </CardContent>
           </Card>
