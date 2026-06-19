@@ -8,11 +8,9 @@ import Image from "next/image"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { LocalizedLink } from "@/components/localized-link"
-import { useLanguage } from "@/components/language-provider"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Language } from "@/lib/i18n"
 
-export default function HomePageClient() {
-  const { language } = useLanguage()
+export default function HomePageClient({ language }: { language: Language }) {
   const t = getTranslation(language)
 
   return (

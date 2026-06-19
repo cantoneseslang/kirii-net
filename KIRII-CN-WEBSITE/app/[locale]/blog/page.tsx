@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
@@ -9,7 +11,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getAllBlogPosts } from "@/lib/blog-data"
 import { isValidLocale, localizedPath, type Locale } from "@/lib/locale"
-import { notFound } from "next/navigation"
+import { buildPageMetadata, getPageSeo } from "@/lib/page-seo"
+import { resolvePageLanguage } from "@/lib/server-page"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale: localeParam } = await params
+  return buildPageMetadata(localeParam, "blog", "/blog")
+}
 
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: localeParam } = await params
@@ -19,7 +31,13 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
   }
 
   const locale = localeParam as Locale
+  const language = await resolvePageLanguage(params)
+  const { title, description } = getPageSeo(locale, "blog")
   const posts = getAllBlogPosts()
+
+  const readMoreLabel =
+    language === "en" ? "Read More" : language === "zh-HK" ? "閱讀更多" : "阅读更多"
+  const insightsLabel = language === "en" ? "Insights" : language === "zh-HK" ? "資訊" : "资讯"
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -30,20 +48,18 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
           <div className="absolute inset-0">
             <Image
               src="/images/about-kirii-01.jpg"
-              alt="Kirii Construction Materials"
+              alt={title}
               fill
               className="object-cover opacity-30"
               priority
+              sizes="100vw"
             />
           </div>
           <div className="container mx-auto px-4 md:px-6 relative">
             <div className="max-w-3xl mx-auto text-center">
-              <Badge className="mb-4 bg-gold-500 text-slate-900 hover:bg-gold-600">Insights</Badge>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">Blog & Resources</h1>
-              <p className="text-xl text-slate-200">
-                Technical articles and industry insights on ceiling systems, building materials, and construction
-                solutions.
-              </p>
+              <Badge className="mb-4 bg-gold-500 text-slate-900 hover:bg-gold-600">{insightsLabel}</Badge>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">{title}</h1>
+              <p className="text-xl text-slate-200">{description}</p>
             </div>
           </div>
         </section>
@@ -62,6 +78,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                       alt={post.title}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                     <Badge className="absolute top-4 right-4 bg-gold-500 text-slate-900">{post.category}</Badge>
                   </div>
@@ -80,7 +97,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                     <p className="text-slate-600 mb-4 line-clamp-3">{post.excerpt}</p>
                     <Button asChild variant="link" className="p-0 h-auto text-gold-600 hover:text-gold-700">
                       <Link href={localizedPath(`/blog/${post.slug}`, locale)}>
-                        Read More
+                        {readMoreLabel}
                         <ArrowRight className="ml-1 h-4 w-4" />
                       </Link>
                     </Button>

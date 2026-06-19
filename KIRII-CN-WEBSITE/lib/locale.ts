@@ -91,4 +91,14 @@ export function resolveLocaleFromPathname(pathname: string): Locale {
   return getLocaleFromPathname(pathname).locale
 }
 
-export const staticPaths = ["/", "/about", "/products", "/projects", "/contact", "/blog"] as const
+export const staticPaths = [
+  "/",
+  "/about",
+  "/products",
+  "/projects",
+  "/contact",
+  "/blog",
+  "/privacy",
+  "/terms",
+  "/cookies",
+] as const

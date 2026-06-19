@@ -4,10 +4,12 @@ import { Phone, VoicemailIcon as Fax, Mail } from "lucide-react"
 import { LocalizedLink } from "@/components/localized-link"
 import { useLanguage } from "@/components/language-provider"
 import { getTranslation } from "@/lib/i18n"
+import { navLabels } from "@/lib/page-seo"
 
 export function SiteFooter() {
   const { language } = useLanguage()
   const t = getTranslation(language)
+  const labels = navLabels[language]
 
   return (
     <footer className="bg-gray-100 py-12">
@@ -64,7 +66,7 @@ export function SiteFooter() {
                 <LocalizedLink href="/projects">{t.projects}</LocalizedLink>
               </li>
               <li>
-                <LocalizedLink href="/blog">Blog</LocalizedLink>
+                <LocalizedLink href="/blog">{labels.blog}</LocalizedLink>
               </li>
               <li>
                 <LocalizedLink href="/contact">{t.contact}</LocalizedLink>
@@ -72,16 +74,18 @@ export function SiteFooter() {
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t.newsletter}</h3>
-            <p className="text-gray-600 mb-4">{t.newsletterDesc}</p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder={t.enterEmail}
-                className="border border-gray-300 rounded-l px-4 py-2 w-full"
-              />
-              <button className="bg-gold-500 text-white rounded-r px-4 py-2">{t.subscribe}</button>
-            </div>
+            <h3 className="text-lg font-semibold mb-4">{labels.legal}</h3>
+            <ul className="text-gray-600 space-y-2">
+              <li>
+                <LocalizedLink href="/privacy">{labels.privacy}</LocalizedLink>
+              </li>
+              <li>
+                <LocalizedLink href="/terms">{labels.terms}</LocalizedLink>
+              </li>
+              <li>
+                <LocalizedLink href="/cookies">{labels.cookies}</LocalizedLink>
+              </li>
+            </ul>
           </div>
         </div>
         <div className="text-center mt-8">

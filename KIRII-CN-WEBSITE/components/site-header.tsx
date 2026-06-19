@@ -7,10 +7,12 @@ import { LanguageSwitcherClient } from "@/components/language-switcher-client"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/components/language-provider"
 import { getTranslation } from "@/lib/i18n"
+import { navLabels } from "@/lib/page-seo"
 
 export function SiteHeader() {
   const { language } = useLanguage()
   const t = getTranslation(language)
+  const labels = navLabels[language]
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -34,7 +36,7 @@ export function SiteHeader() {
               {t.projects}
             </LocalizedLink>
             <LocalizedLink href="/blog" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Blog
+              {labels.blog}
             </LocalizedLink>
             <LocalizedLink href="/contact" className="transition-colors hover:text-foreground/80 text-foreground/60">
               {t.contact}

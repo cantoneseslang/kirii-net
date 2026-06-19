@@ -8,11 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { sendContactEmail } from "@/app/actions/send-email"
-import { useLanguage } from "@/components/language-provider"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Language } from "@/lib/i18n"
 
-export function ContactForm() {
-  const { language } = useLanguage()
+export function ContactForm({ language }: { language: Language }) {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()

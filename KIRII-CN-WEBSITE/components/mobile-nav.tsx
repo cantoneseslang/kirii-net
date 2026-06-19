@@ -8,11 +8,13 @@ import { LanguageSwitcherClient } from "@/components/language-switcher-client"
 import { LocalizedLink } from "@/components/localized-link"
 import { useLanguage } from "@/components/language-provider"
 import { getTranslation } from "@/lib/i18n"
+import { navLabels } from "@/lib/page-seo"
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
   const { language } = useLanguage()
   const t = getTranslation(language)
+  const labels = navLabels[language]
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -64,7 +66,7 @@ export function MobileNav() {
               className="text-foreground/70 transition-colors hover:text-foreground"
               onClick={() => setOpen(false)}
             >
-              Blog
+              {labels.blog}
             </LocalizedLink>
             <LocalizedLink
               href="/contact"
