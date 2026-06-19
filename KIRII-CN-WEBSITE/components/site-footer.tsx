@@ -1,18 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Phone, VoicemailIcon as Fax, Mail } from "lucide-react"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { LocalizedLink } from "@/components/localized-link"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export function SiteFooter() {
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
-
+  const { language } = useLanguage()
   const t = getTranslation(language)
+
   return (
     <footer className="bg-gray-100 py-12">
       <div className="container mx-auto px-4">
@@ -35,18 +31,20 @@ export function SiteFooter() {
                 <div>
                   <div>{t.tel}</div>
                   <div>{t.telephone}</div>
-                  {language !== "en" && (
-                    <div>{t.phoneNumber2}</div>
-                  )}
+                  {language !== "en" && <div>{t.phoneNumber2}</div>}
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Fax className="h-4 w-4 text-gold-500" />
-                <span>{t.fax}: {t.faxNumber}</span>
+                <span>
+                  {t.fax}: {t.faxNumber}
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-gold-500" />
-                <span>{t.email}: {t.emailAddress}</span>
+                <span>
+                  {t.email}: {t.emailAddress}
+                </span>
               </div>
             </div>
           </div>
@@ -54,16 +52,22 @@ export function SiteFooter() {
             <h3 className="text-lg font-semibold mb-4">{t.quickLinks}</h3>
             <ul className="text-gray-600 space-y-2">
               <li>
-                <a href="/">{t.home}</a>
+                <LocalizedLink href="/">{t.home}</LocalizedLink>
               </li>
               <li>
-                <a href="/about">{t.about}</a>
+                <LocalizedLink href="/about">{t.about}</LocalizedLink>
               </li>
               <li>
-                <a href="/products">{t.products}</a>
+                <LocalizedLink href="/products">{t.products}</LocalizedLink>
               </li>
               <li>
-                <a href="/contact">{t.contact}</a>
+                <LocalizedLink href="/projects">{t.projects}</LocalizedLink>
+              </li>
+              <li>
+                <LocalizedLink href="/blog">Blog</LocalizedLink>
+              </li>
+              <li>
+                <LocalizedLink href="/contact">{t.contact}</LocalizedLink>
               </li>
             </ul>
           </div>
@@ -81,7 +85,9 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="text-center mt-8">
-          <p className="text-gray-500">&copy; {new Date().getFullYear()} {t.companyName}. {t.allRightsReserved}</p>
+          <p className="text-gray-500">
+            &copy; {new Date().getFullYear()} {t.companyName}. {t.allRightsReserved}
+          </p>
         </div>
       </div>
     </footer>

@@ -1,24 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Building2, Wrench, Settings, Star, ArrowRight, CheckCircle, Users, Award } from "lucide-react"
-import Link from "next/link"
 import Image from "next/image"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { LocalizedLink } from "@/components/localized-link"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
-export default function HomePage() {
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
-
+export default function HomePageClient() {
+  const { language } = useLanguage()
   const t = getTranslation(language)
 
   return (
@@ -70,7 +64,7 @@ export default function HomePage() {
               className="bg-orange-500 hover:bg-orange-600 text-white"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="/contact">{t.getQuote}</Link>
+              <LocalizedLink href="/contact">{t.getQuote}</LocalizedLink>
             </Button>
             <Button
               asChild
@@ -79,7 +73,7 @@ export default function HomePage() {
               className="border-white text-white hover:bg-white hover:text-blue-900 bg-transparent"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="/projects">{t.viewProjects}</Link>
+              <LocalizedLink href="/projects">{t.viewProjects}</LocalizedLink>
             </Button>
           </div>
         </div>
@@ -249,9 +243,9 @@ export default function HomePage() {
                   className="w-full group-hover:bg-blue-50 bg-transparent"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  <Link href="/products">
+                  <LocalizedLink href="/products">
                     {t.learnMore} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
+                  </LocalizedLink>
                 </Button>
               </CardContent>
             </Card>
@@ -295,9 +289,9 @@ export default function HomePage() {
                   className="w-full group-hover:bg-orange-50 bg-transparent"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  <Link href="/products">
+                  <LocalizedLink href="/products">
                     {t.learnMore} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
+                  </LocalizedLink>
                 </Button>
               </CardContent>
             </Card>
@@ -341,9 +335,9 @@ export default function HomePage() {
                   className="w-full group-hover:bg-green-50 bg-transparent"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  <Link href="/contact">
+                  <LocalizedLink href="/contact">
                     {t.getCustomQuote} <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
+                  </LocalizedLink>
                 </Button>
               </CardContent>
             </Card>
@@ -626,7 +620,7 @@ export default function HomePage() {
               className="bg-orange-500 hover:bg-orange-600 text-white"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="/contact">{t.getFreeConsultation}</Link>
+              <LocalizedLink href="/contact">{t.getFreeConsultation}</LocalizedLink>
             </Button>
             <Button
               asChild
@@ -635,7 +629,7 @@ export default function HomePage() {
               className="border-white text-white hover:bg-white hover:text-blue-900 bg-transparent"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="/products">{t.browseProducts}</Link>
+              <LocalizedLink href="/products">{t.browseProducts}</LocalizedLink>
             </Button>
           </div>
         </div>

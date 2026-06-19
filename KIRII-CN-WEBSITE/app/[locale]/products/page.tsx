@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
+import { LocalizedLink } from "@/components/localized-link"
 import {
   ArrowRight,
   CheckCircle,
@@ -24,17 +24,12 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
-import { useEffect } from "react"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
+  const { language } = useLanguage()
 
   const t = getTranslation(language)
 
@@ -237,7 +232,7 @@ export default function ProductsPage() {
               className="bg-orange-500 hover:bg-orange-600 text-white"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="#ceiling-systems">{t.viewProducts}</Link>
+              <LocalizedLink href="#ceiling-systems">{t.viewProducts}</LocalizedLink>
             </Button>
             <Button
               asChild
@@ -246,7 +241,7 @@ export default function ProductsPage() {
               className="border-white text-white hover:bg-white hover:text-blue-900 bg-transparent"
               style={{ fontFamily: "Arial, sans-serif" }}
             >
-              <Link href="#contact">{t.getQuote}</Link>
+              <LocalizedLink href="#contact">{t.getQuote}</LocalizedLink>
             </Button>
           </div>
         </div>

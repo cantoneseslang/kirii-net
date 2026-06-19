@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -5,15 +6,19 @@ import { Calendar, Clock, User, ArrowLeft, Tag } from "lucide-react"
 
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { JsonLd } from "@/components/json-ld"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { getBlogPost, getAllBlogPosts } from "@/lib/blog-data"
+import { isValidLocale, localizedPath, type Locale } from "@/lib/locale"
+import { createBlogPostJsonLd, createPageMetadata } from "@/lib/seo"
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
+    locale: string
     slug: string
-  }
+  }>
 }
 
 export async function generateStaticParams() {
@@ -23,8 +28,35 @@ export async function generateStaticParams() {
   }))
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getBlogPost(params.slug)
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug, locale: localeParam } = await params
+  const post = getBlogPost(slug)
+
+  if (!post || !isValidLocale(localeParam)) {
+    return {
+      title: "Article Not Found",
+    }
+  }
+
+  return createPageMetadata({
+    locale: localeParam as Locale,
+    title: post.title,
+    description: post.excerpt,
+    path: `/blog/${post.slug}`,
+    ogImage: post.image || "/images/about-kirii-01.jpg",
+    type: "article",
+  })
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug, locale: localeParam } = await params
+
+  if (!isValidLocale(localeParam)) {
+    notFound()
+  }
+
+  const locale = localeParam as Locale
+  const post = getBlogPost(slug)
 
   if (!post) {
     notFound()
@@ -36,6 +68,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd data={createBlogPostJsonLd(post)} />
       <SiteHeader />
 
       <main className="flex-1">
@@ -49,7 +82,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="container mx-auto px-4 md:px-6 relative">
             <div className="max-w-4xl mx-auto text-center text-white">
               <Button asChild variant="ghost" className="mb-6 text-white hover:bg-white/10">
-                <Link href="/blog">
+                <Link href={localizedPath("/blog", locale)}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back to Blog
                 </Link>
@@ -138,12 +171,12 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                           </div>
                           <div>
                             <p className="font-semibold text-slate-900 dark:text-white">{post.author}</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">Glass & Design Expert</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">Building Materials Expert</p>
                           </div>
                         </div>
                         <p className="text-sm text-slate-600 dark:text-slate-400">
-                          Passionate about innovative glass solutions and helping clients transform their spaces with
-                          beautiful, functional designs.
+                          Passionate about ceiling systems and building materials, helping clients deliver durable,
+                          high-performance construction solutions.
                         </p>
                       </CardContent>
                     </Card>
@@ -206,7 +239,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                         <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">{relatedPost.title}</h3>
                         <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">{relatedPost.excerpt}</p>
                         <Button asChild variant="link" className="p-0 h-auto text-gold-500 hover:text-gold-600">
-                          <Link href={`/blog/${relatedPost.slug}`}>Read More</Link>
+                          <Link href={localizedPath(`/blog/${relatedPost.slug}`, locale)}>Read More</Link>
                         </Button>
                       </CardContent>
                     </Card>
@@ -225,11 +258,11 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 Ready to Start Your <span className="text-gold-500">Project?</span>
               </h2>
               <p className="text-xl text-slate-300 mb-8">
-                Let our experts help you bring your vision to life with custom glass and aluminum solutions.
+                Let our experts help you deliver your project with professional ceiling systems and building materials.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-gold-500 hover:bg-gold-600 text-slate-900">
-                  <Link href="/contact">Get Free Consultation</Link>
+                  <Link href={localizedPath("/contact", locale)}>Get Free Consultation</Link>
                 </Button>
                 <Button
                   asChild
@@ -237,7 +270,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                   variant="outline"
                   className="border-white text-white hover:bg-white hover:text-slate-900"
                 >
-                  <Link href="/projects">View Our Work</Link>
+                  <Link href={localizedPath("/projects", locale)}>View Our Work</Link>
                 </Button>
               </div>
             </div>

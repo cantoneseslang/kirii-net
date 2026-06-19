@@ -1,9 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
 import Image from "next/image"
-
+import { LocalizedLink } from "@/components/localized-link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageHeader } from "@/components/page-header"
@@ -12,16 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Train, Building2, Home, Palette, Phone, Mail } from "lucide-react"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export default function ProjectsPage() {
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
-
+  const { language } = useLanguage()
   const t = getTranslation(language)
   return (
     <div className="flex min-h-screen flex-col">
@@ -967,14 +960,14 @@ export default function ProjectsPage() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild className="bg-gold-500 hover:bg-gold-600 text-slate-900 text-base px-8 py-6">
-                  <Link href="/contact">{t.requestProjectConsultation}</Link>
+                  <LocalizedLink href="/contact">{t.requestProjectConsultation}</LocalizedLink>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   className="border-white text-white hover:bg-white/10 text-base px-8 py-6 bg-transparent"
                 >
-                  <Link href="/products">{t.viewOurProducts}</Link>
+                  <LocalizedLink href="/products">{t.viewOurProducts}</LocalizedLink>
                 </Button>
               </div>
             </div>

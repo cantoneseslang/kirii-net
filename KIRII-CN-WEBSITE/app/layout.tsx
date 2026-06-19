@@ -1,9 +1,11 @@
 import type React from "react"
+import type { Metadata } from "next"
 import "@/app/globals.css"
 import { Inter, Playfair_Display } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
+import { JsonLd } from "@/components/json-ld"
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, organizationJsonLd } from "@/lib/seo"
 
-// Initialize the fonts
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -16,23 +18,38 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 })
 
-export const metadata = {
-  title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Professional Ceiling Systems & Building Materials",
+    template: `%s | ${SITE_NAME}`,
+  },
   description:
     "Kirii Construction Materials (三水桐井) is a leading provider of professional ceiling systems and building materials in Hong Kong and China, specializing in aluminum ceiling systems, building accessories, and custom construction solutions.",
-  keywords:
-    "ceiling systems, aluminum ceiling, building materials, construction materials, Hong Kong, China, Foshan, building accessories, commercial ceiling, residential ceiling, MTR projects",
-  generator: "Next.js",
+  keywords: [
+    "ceiling systems",
+    "aluminum ceiling",
+    "building materials",
+    "construction materials",
+    "Hong Kong",
+    "China",
+    "Foshan",
+    "building accessories",
+    "commercial ceiling",
+    "residential ceiling",
+    "MTR projects",
+  ],
   openGraph: {
-    title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
-    description: "Leading provider of professional ceiling systems and building materials in Hong Kong and China",
-    url: "https://kirii.cn",
-    siteName: "Kirii Construction Materials",
+    title: `${SITE_NAME} | Professional Ceiling Systems & Building Materials`,
+    description:
+      "Leading provider of professional ceiling systems and building materials in Hong Kong and China.",
+    url: "/",
+    siteName: SITE_NAME,
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg",
+        url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
         alt: "Kirii Construction Materials Building",
@@ -41,9 +58,21 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kirii Construction Materials | Professional Ceiling Systems & Building Materials",
-    description: "Leading provider of professional ceiling systems and building materials in Hong Kong and China",
-    images: ["https://hebbkx1anhila5yf.public.blob.vercel-storage.com/about-kirii-01.jpg-xiKJjANxvt5rzvEWA4bxRJmmTE28jE.jpeg"],
+    title: `${SITE_NAME} | Professional Ceiling Systems & Building Materials`,
+    description:
+      "Leading provider of professional ceiling systems and building materials in Hong Kong and China.",
+    images: [DEFAULT_OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  verification: {
+    google: "google5b93654b2ac7fe65",
   },
 }
 
@@ -69,6 +98,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <JsonLd data={organizationJsonLd} />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>

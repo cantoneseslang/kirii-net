@@ -1,25 +1,21 @@
 "use client"
 
 import type React from "react"
-import { useState, useTransition, useEffect } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { sendContactEmail } from "@/app/actions/send-email"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export function ContactForm() {
-  const [language, setLanguage] = useState<Language>("en")
+  const { language } = useLanguage()
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
 
   const t = getTranslation(language)
 

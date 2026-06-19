@@ -1,21 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageHeader } from "@/components/page-header"
 import { ContactForm } from "@/components/contact-form"
 import { MapPin, Phone, VoicemailIcon as Fax, Mail } from "lucide-react"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export default function ContactPage() {
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
-
+  const { language } = useLanguage()
   const t = getTranslation(language)
   return (
     <div className="flex min-h-screen flex-col">

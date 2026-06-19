@@ -13,1279 +13,345 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
-    slug: "bathroom-glass-design-trends-2023",
-    title: "5 Trends in Bathroom Glass Design for 2023",
+    slug: "aluminum-ceiling-systems-guide",
+    title: "A Practical Guide to Aluminum Ceiling Systems",
     excerpt:
-      "Discover the latest trends in bathroom glass design, from frameless shower enclosures to backlit mirrors and smart glass technologies. Our experts share insights on how these innovations can transform your space.",
+      "Learn how CH linear, CP clip-in, CR wide linear, and HP hook-on ceiling systems compare, and how to select the right Kirii solution for commercial and transport projects.",
     content: `
-# 5 Trends in Bathroom Glass Design for 2023
+# A Practical Guide to Aluminum Ceiling Systems
 
-The bathroom has evolved from a purely functional space to a personal sanctuary where design meets wellness. As we move through 2023, glass continues to play a pivotal role in creating stunning, modern bathrooms that feel both luxurious and practical.
+Aluminum ceiling systems are a core component of modern commercial interiors, especially in high-traffic environments such as MTR stations, hospitals, airports, and office towers. At Kirii Construction Materials (三水桐井), we supply a full range of engineered ceiling solutions designed for durability, maintainability, and visual consistency.
 
-## 1. Frameless Shower Enclosures
+## Why Aluminum Ceilings?
 
-Frameless shower enclosures remain at the forefront of bathroom design trends. These sleek installations create an uninterrupted visual flow, making even small bathrooms feel more spacious and open.
+Aluminum offers several advantages over traditional mineral fiber or gypsum boards in demanding environments:
 
 **Key Benefits:**
-- Creates illusion of larger space
-- Easier to clean and maintain
-- Timeless aesthetic appeal
-- Customizable to any bathroom layout
+- Corrosion resistance in humid or cleaned spaces
+- Lightweight panels that reduce structural load
+- Non-combustible performance with appropriate coatings
+- Modular access for MEP maintenance
+- Consistent finish across large ceiling areas
 
-## 2. Smart Glass Technology
+## Kirii Ceiling System Families
 
-Smart glass, also known as switchable glass, is revolutionizing bathroom privacy. With the flip of a switch, transparent glass becomes opaque, offering instant privacy without compromising natural light.
+### CH Linear Ceiling Series
+Linear aluminum panels create clean sight lines and are widely used in corridors, lobbies, and retail spaces. The system supports integrated lighting and ventilation slots.
 
-**Applications:**
-- Shower enclosures
-- Bathroom windows
-- Partition walls
-- Mirror surfaces
+### CP Clip-in Ceiling Series
+Clip-in panels allow rapid installation and individual tile replacement. This is ideal for offices and healthcare facilities where access hatches and maintenance cycles are frequent.
 
-## 3. Textured and Patterned Glass
+### CR Wide Linear Series
+Wide linear modules suit large open areas where fewer joints improve aesthetics and reduce installation time.
 
-Moving beyond clear glass, textured and patterned options are gaining popularity. From subtle frosting to bold geometric patterns, these designs add visual interest while maintaining privacy.
-
-**Popular Patterns:**
-- Fluted glass for vertical lines
-- Reeded glass for texture
-- Geometric patterns for modern appeal
-- Custom etching for personalization
-
-## 4. Backlit Mirrors and Glass Features
-
-LED backlighting transforms ordinary glass elements into stunning focal points. Backlit mirrors not only provide excellent task lighting but also create a spa-like ambiance.
-
-**Design Ideas:**
-- Floating backlit mirrors
-- Illuminated glass shelving
-- LED strip lighting behind glass panels
-- Color-changing ambient lighting
-
-## 5. Curved and Custom Shapes
-
-Gone are the days of standard rectangular glass panels. Curved glass and custom shapes are becoming increasingly popular, allowing for unique design expressions.
-
-**Trending Shapes:**
-- Curved shower screens
-- Circular mirrors
-- Asymmetrical glass partitions
-- Custom-cut glass shelving
-
-## Conclusion
-
-These trends represent more than just aesthetic choices – they reflect our evolving relationship with our living spaces. As bathrooms become more important as personal retreats, glass continues to be the material of choice for creating beautiful, functional environments.
-
-Ready to incorporate these trends into your bathroom? Contact our design team to explore how these innovations can transform your space.
-    `,
-    date: "June 15, 2023",
-    author: "Sophia Kimaro",
-    category: "Design Trends",
-    image: "/images/frameless-shower.jpeg",
-    readTime: "5 min read",
-    tags: ["Bathroom Design", "Glass Trends", "Modern Interiors", "Smart Glass"],
-  },
-  {
-    slug: "glass-partitions-open-private-spaces",
-    title: "Glass Partitions: Creating Open Yet Private Spaces",
-    excerpt:
-      "Learn how glass partitions can transform your office or home by creating spaces that feel open while maintaining privacy and reducing noise.",
-    content: `
-# Glass Partitions: Creating Open Yet Private Spaces
-
-In today's world of flexible living and working environments, the challenge lies in creating spaces that feel open and connected while still providing necessary privacy and functionality. Glass partitions have emerged as the perfect solution, offering the best of both worlds.
-
-## The Psychology of Open Spaces
-
-Open floor plans have dominated architectural design for decades, but they come with challenges:
-- Lack of privacy for focused work
-- Noise transmission between areas
-- Difficulty in defining functional zones
-- Limited storage and display options
-
-Glass partitions address these issues while maintaining the visual benefits of open design.
-
-## Types of Glass Partitions
-
-### 1. Fixed Glass Panels
-Permanent installations that create defined spaces without blocking light or views.
-
-**Best for:**
-- Office meeting rooms
-- Home study areas
-- Retail display zones
-
-### 2. Sliding Glass Doors
-Flexible solutions that can open spaces when needed or close them for privacy.
-
-**Applications:**
-- Conference rooms
-- Home offices
-- Bedroom en-suites
-
-### 3. Folding Glass Systems
-Multi-panel systems that fold away completely, offering maximum flexibility.
-
-**Ideal for:**
-- Restaurant private dining
-- Home entertainment areas
-- Retail seasonal displays
-
-## Design Considerations
-
-### Privacy Options
-- **Clear Glass**: Maximum light transmission
-- **Frosted Glass**: Privacy with light transmission
-- **Switchable Glass**: On-demand privacy control
-- **Tinted Glass**: Reduced glare and heat
-
-### Frame Materials
-- **Aluminum**: Modern, durable, low maintenance
-- **Steel**: Industrial aesthetic, very strong
-- **Frameless**: Minimal visual impact, contemporary
-
-## Acoustic Performance
-
-Modern glass partition systems can significantly reduce noise transmission:
-- **Single Glazing**: Basic sound reduction
-- **Double Glazing**: Enhanced acoustic performance
-- **Laminated Glass**: Superior sound dampening
-- **Specialized Acoustic Glass**: Maximum noise control
-
-## Installation Considerations
-
-### Structural Requirements
-- Floor-to-ceiling support systems
-- Proper foundation and anchoring
-- Integration with HVAC systems
-- Electrical considerations for smart glass
-
-### Building Codes and Regulations
-- Safety glass requirements
-- Fire rating specifications
-- Accessibility compliance
-- Local building permits
-
-## Maintenance and Care
-
-Glass partitions are surprisingly low-maintenance:
-- Regular cleaning with appropriate glass cleaners
-- Inspection of seals and hardware
-- Lubrication of moving parts
-- Professional maintenance for smart glass systems
-
-## Cost Considerations
-
-While glass partitions represent an investment, they offer excellent value:
-- **Initial Cost**: Higher than traditional walls
-- **Long-term Value**: Increased property value
-- **Energy Savings**: Better natural light utilization
-- **Flexibility**: Easy reconfiguration for changing needs
-
-## Case Studies
-
-### Corporate Office Transformation
-A tech company replaced solid walls with glass partitions, resulting in:
-- 40% increase in natural light penetration
-- Improved employee satisfaction scores
-- Enhanced collaboration while maintaining focus areas
-- Reduced energy costs from decreased artificial lighting needs
-
-### Residential Open-Plan Living
-A family home used glass partitions to:
-- Create a home office within the living area
-- Maintain visual connection with children's play area
-- Reduce cooking odors while keeping kitchen open
-- Add flexibility for entertaining
-
-## Future Trends
-
-The future of glass partitions includes:
-- **Smart Glass Integration**: App-controlled opacity
-- **Integrated Technology**: Built-in displays and sensors
-- **Sustainable Materials**: Recycled and eco-friendly options
-- **Biophilic Design**: Integration with natural elements
-
-## Conclusion
-
-Glass partitions represent the evolution of interior design, offering solutions that adapt to our changing lifestyles and work patterns. They prove that you don't have to choose between openness and privacy – you can have both.
-
-Whether you're designing a modern office, updating your home, or creating a retail space, glass partitions offer the flexibility and functionality needed for contemporary living.
-    `,
-    date: "May 22, 2023",
-    author: "Emmanuel Mwakasege",
-    category: "Interior Design",
-    image: "/images/curtain-wall-detail.jpeg",
-    readTime: "7 min read",
-    tags: ["Glass Partitions", "Interior Design", "Office Design", "Home Improvement"],
-  },
-  {
-    slug: "maintaining-glass-mirror-installations",
-    title: "Maintaining Your Glass & Mirror Installations",
-    excerpt:
-      "Expert tips on how to keep your glass shower enclosures, mirrors, and partitions looking pristine for years to come with proper care and cleaning.",
-    content: `
-# Maintaining Your Glass & Mirror Installations
-
-Proper maintenance is key to ensuring your glass and mirror installations continue to look stunning and function perfectly for years to come. With the right care routine, your investment will maintain its beauty and performance while avoiding costly repairs or replacements.
-
-## Understanding Your Glass Types
-
-Different types of glass require different maintenance approaches:
-
-### Tempered Glass
-- **Characteristics**: Stronger than regular glass, shatters into small pieces
-- **Common Uses**: Shower doors, table tops, shelving
-- **Maintenance**: Standard glass cleaners, avoid abrasive materials
-
-### Laminated Glass
-- **Characteristics**: Two glass layers with interlayer, holds together when broken
-- **Common Uses**: Security applications, large windows
-- **Maintenance**: Gentle cleaning, avoid edge damage
-
-### Low-E Glass
-- **Characteristics**: Special coating for energy efficiency
-- **Common Uses**: Windows, curtain walls
-- **Maintenance**: Specific cleaners to preserve coating
-
-### Frosted/Etched Glass
-- **Characteristics**: Textured surface for privacy
-- **Common Uses**: Bathroom windows, office partitions
-- **Maintenance**: Requires special attention to textured areas
-
-## Daily Maintenance Routine
-
-### For Shower Enclosures
-**After Each Use:**
-1. Squeegee water from glass surfaces
-2. Wipe down with microfiber cloth
-3. Leave door slightly open for air circulation
-4. Check and clean door tracks
-
-**Weekly Deep Clean:**
-1. Use appropriate glass cleaner
-2. Clean both sides thoroughly
-3. Pay attention to corners and edges
-4. Inspect seals and hardware
-
-### For Mirrors
-**Daily Care:**
-- Wipe with dry microfiber cloth
-- Remove water spots immediately
-- Avoid touching the surface
-
-**Weekly Cleaning:**
-- Use streak-free glass cleaner
-- Clean from top to bottom
-- Dry with lint-free cloth
-- Check mounting hardware
-
-## Cleaning Products and Tools
-
-### Recommended Cleaners
-- **Commercial Glass Cleaners**: Ammonia-based for general use
-- **Vinegar Solution**: 1:1 ratio with water for eco-friendly option
-- **Specialized Cleaners**: For coated or treated glass
-- **Mild Dish Soap**: For heavily soiled surfaces
-
-### Essential Tools
-- **Microfiber Cloths**: Lint-free and non-abrasive
-- **Squeegees**: Various sizes for different applications
-- **Soft-bristled Brushes**: For textured glass
-- **Rubber Gloves**: Protect hands from cleaners
-
-### What to Avoid
-- **Abrasive Cleaners**: Can scratch glass surfaces
-- **Paper Towels**: May leave lint and scratches
-- **Razor Blades**: Can damage coatings
-- **Harsh Chemicals**: May damage seals and frames
-
-## Troubleshooting Common Issues
-
-### Water Spots and Mineral Deposits
-**Causes:**
-- Hard water
-- Inadequate drying
-- Infrequent cleaning
-
-**Solutions:**
-- Use vinegar solution for removal
-- Install water softener system
-- Improve ventilation
-- Regular squeegee use
-
-### Soap Scum Buildup
-**Prevention:**
-- Use liquid soap instead of bar soap
-- Regular cleaning routine
-- Proper ventilation
-
-**Removal:**
-- Commercial soap scum removers
-- Baking soda paste for stubborn buildup
-- Soft brush for textured surfaces
-
-### Streaking
-**Causes:**
-- Wrong cleaning products
-- Dirty cleaning cloths
-- Cleaning in direct sunlight
-
-**Solutions:**
-- Use proper glass cleaners
-- Clean cloths and tools
-- Clean during cooler parts of day
-
-### Scratches
-**Minor Scratches:**
-- Toothpaste method for very light scratches
-- Commercial glass polish
-- Professional assessment for deeper scratches
-
-**Prevention:**
-- Avoid abrasive materials
-- Regular cleaning to prevent buildup
-- Proper installation and handling
-
-## Seasonal Maintenance
-
-### Spring Cleaning
-- Deep clean all glass surfaces
-- Inspect seals and weatherstripping
-- Check hardware for wear
-- Professional inspection if needed
-
-### Summer Care
-- Increase cleaning frequency
-- Monitor for heat-related expansion issues
-- Ensure proper ventilation
-- UV protection for sensitive coatings
-
-### Fall Preparation
-- Clean before weather changes
-- Check for air leaks
-- Inspect exterior installations
-- Prepare for winter conditions
-
-### Winter Maintenance
-- Monitor for condensation issues
-- Avoid thermal shock from extreme temperature changes
-- Keep drainage systems clear
-- Regular inspection for ice damage
-
-## Professional Maintenance Services
-
-### When to Call Professionals
-- Annual comprehensive inspection
-- Hardware adjustments and lubrication
-- Seal replacement
-- Coating restoration
-- Damage assessment and repair
-
-### What Professionals Provide
-- Specialized cleaning equipment
-- Expert damage assessment
-- Warranty-compliant maintenance
-- Safety compliance checks
-- Preventive maintenance programs
-
-## Warranty Considerations
-
-### Maintaining Warranty Coverage
-- Follow manufacturer guidelines
-- Use approved cleaning products
-- Document maintenance activities
-- Professional installation and service
-
-### Common Warranty Exclusions
-- Damage from improper cleaning
-- Normal wear and tear
-- Environmental damage
-- Modifications or alterations
-
-## Cost-Effective Maintenance Tips
-
-### DIY Solutions
-- Homemade cleaning solutions
-- Regular maintenance schedule
-- Proper tool investment
-- Early problem detection
-
-### Long-term Savings
-- Preventive maintenance
-- Quality cleaning products
-- Professional annual service
-- Proper installation initially
-
-## Conclusion
-
-Regular maintenance of your glass and mirror installations is an investment in their longevity and performance. By following these guidelines and establishing a consistent care routine, you'll ensure your glass features continue to enhance your space for years to come.
-
-Remember, when in doubt, consult with professionals who can provide specific guidance for your particular installations and local conditions.
-    `,
-    date: "April 10, 2023",
-    author: "Daniel Mkwawa",
-    category: "Maintenance",
-    image: "/images/frosted-glass-door.jpeg",
-    readTime: "8 min read",
-    tags: ["Maintenance", "Glass Care", "Cleaning Tips", "Home Care"],
-  },
-  {
-    slug: "custom-mirror-design-art",
-    title: "The Art of Custom Mirror Design",
-    excerpt:
-      "Explore how custom-designed mirrors can transform spaces, serve as statement pieces, and enhance natural light in your home.",
-    content: `
-# The Art of Custom Mirror Design
-
-Mirrors are far more than functional objects – they are powerful design elements that can transform spaces, create illusions, and serve as stunning focal points. Custom mirror design takes this concept to the next level, offering unlimited possibilities for personal expression and spatial enhancement.
-
-## The Psychology of Mirrors in Design
-
-### Spatial Perception
-Mirrors have the unique ability to:
-- **Expand Visual Space**: Make rooms appear larger and more open
-- **Enhance Natural Light**: Reflect and amplify available light sources
-- **Create Depth**: Add dimensional interest to flat walls
-- **Establish Flow**: Connect different areas visually
-
-### Emotional Impact
-Well-designed mirrors can:
-- Create a sense of luxury and sophistication
-- Provide moments of personal reflection
-- Serve as conversation starters
-- Enhance the overall ambiance of a space
-
-## Types of Custom Mirror Designs
-
-### Geometric Patterns
-**Contemporary Appeal:**
-- Clean lines and mathematical precision
-- Hexagonal, triangular, and diamond shapes
-- Modular systems for flexible arrangements
-- Integration with architectural elements
-
-**Popular Styles:**
-- Sunburst mirrors with radiating elements
-- Cluster arrangements of various sizes
-- Asymmetrical compositions
-- Minimalist geometric frames
-
-### Artistic and Decorative
-**Creative Expression:**
-- Hand-etched designs and patterns
-- Sandblasted textures and imagery
-- Colored and tinted mirror surfaces
-- Integration with other materials
-
-**Techniques:**
-- Acid etching for permanent designs
-- Vinyl stenciling for temporary patterns
-- LED backlighting for dramatic effects
-- Mixed media combinations
-
-### Functional Custom Designs
-**Practical Beauty:**
-- Built-in storage solutions
-- Integrated lighting systems
-- Smart mirror technology
-- Multi-functional installations
-
-## Design Considerations
-
-### Room Analysis
-**Space Assessment:**
-- Room size and proportions
-- Natural light sources and direction
-- Existing architectural features
-- Traffic flow patterns
-- Ceiling height considerations
-
-**Style Integration:**
-- Existing décor and color schemes
-- Architectural style of the space
-- Personal taste and lifestyle needs
-- Long-term design goals
-
-### Mirror Placement Strategies
-**Optimal Positioning:**
-- **Opposite Windows**: Maximize natural light reflection
-- **Narrow Spaces**: Create illusion of width
-- **Dark Corners**: Brighten and open up areas
-- **Focal Points**: Draw attention to specific areas
-
-**Height and Angle Considerations:**
-- Eye-level placement for functionality
-- Angled installation for specific reflections
-- Full-length options for complete views
-- Ceiling-mounted for dramatic effects
-
-## Custom Frame Options
-
-### Material Choices
-**Metal Frames:**
-- Aluminum for modern, lightweight options
-- Brass for warm, luxurious appeal
-- Steel for industrial, contemporary looks
-- Custom finishes and patinas
-
-**Wood Frames:**
-- Solid hardwoods for traditional elegance
-- Reclaimed materials for rustic charm
-- Painted finishes for color coordination
-- Carved details for ornate designs
-
-**Alternative Materials:**
-- Stone and marble for natural beauty
-- Acrylic for contemporary transparency
-- Rope and natural fibers for coastal themes
-- Mixed materials for unique combinations
-
-### Frame Styles
-**Traditional:**
-- Ornate carved details
-- Classical proportions
-- Rich, warm finishes
-- Timeless elegance
-
-**Contemporary:**
-- Clean, minimal lines
-- Geometric shapes
-- Neutral color palettes
-- Focus on proportion and scale
-
-**Transitional:**
-- Blend of traditional and modern elements
-- Simplified classical details
-- Versatile styling options
-- Broad appeal and flexibility
-
-## Specialized Mirror Applications
-
-### Bathroom Mirrors
-**Functional Requirements:**
-- Moisture resistance
-- Appropriate lighting integration
-- Size and proportion considerations
-- Storage integration options
-
-**Design Opportunities:**
-- Backlit options for even illumination
-- Magnification areas for detailed tasks
-- Decorative borders and frames
-- Smart features like defogging
-
-### Bedroom Mirrors
-**Dressing and Vanity Areas:**
-- Full-length options for complete views
-- Tri-fold designs for multiple angles
-- Integrated storage solutions
-- Lighting coordination
-
-**Decorative Applications:**
-- Headboard integration
-- Ceiling installations for drama
-- Closet door applications
-- Accent wall features
-
-### Living Area Mirrors
-**Statement Pieces:**
-- Large-scale installations
-- Artistic and sculptural designs
-- Gallery wall arrangements
-- Architectural integration
-
-**Functional Integration:**
-- Entertainment center coordination
-- Dining room expansion effects
-- Entryway welcome features
-- Stairway enhancement
-
-## Technology Integration
-
-### Smart Mirror Features
-**Interactive Capabilities:**
-- Touch screen interfaces
-- Voice activation systems
-- Internet connectivity
-- App integration
-
-**Practical Applications:**
-- Weather and news displays
-- Calendar and scheduling
-- Fitness and health monitoring
-- Entertainment streaming
-
-### Lighting Integration
-**LED Systems:**
-- Color temperature control
-- Dimming capabilities
-- Color-changing options
-- Energy efficiency
-
-**Design Integration:**
-- Hidden installation methods
-- Seamless appearance
-- Multiple control options
-- Professional installation requirements
-
-## Installation Considerations
-
-### Structural Requirements
-**Wall Preparation:**
-- Stud location and reinforcement
-- Wall material compatibility
-- Electrical considerations for lighting
-- Plumbing coordination if needed
-
-**Safety Factors:**
-- Proper mounting hardware
-- Weight distribution considerations
-- Safety backing for large installations
-- Building code compliance
-
-### Professional Installation
-**Why Choose Professionals:**
-- Expertise in handling large mirrors
-- Proper tools and equipment
-- Insurance and warranty coverage
-- Code compliance assurance
-
-## Maintenance and Care
-
-### Regular Cleaning
-**Proper Techniques:**
-- Appropriate cleaning products
-- Streak-free methods
-- Frame care and maintenance
-- Hardware inspection
-
-### Long-term Care
-**Preventive Measures:**
-- Environmental control
-- Regular professional inspection
-- Hardware maintenance
-- Protective measures during renovations
-
-## Cost Considerations
-
-### Factors Affecting Price
-**Mirror Specifications:**
-- Size and thickness
-- Quality and type of mirror
-- Custom cutting requirements
-- Special treatments or coatings
-
-**Frame and Installation:**
-- Material choices and finishes
-- Complexity of design
-- Installation requirements
-- Additional features and technology
-
-### Value Proposition
-**Investment Benefits:**
-- Increased property value
-- Enhanced living experience
-- Long-term durability
-- Personal satisfaction and pride
-
-## Conclusion
-
-Custom mirror design represents the perfect marriage of function and artistry. Whether you're looking to create a dramatic focal point, enhance natural light, or simply add a touch of elegance to your space, custom mirrors offer unlimited possibilities for personal expression and spatial enhancement.
-
-The key to successful custom mirror design lies in understanding your space, defining your goals, and working with experienced professionals who can bring your vision to life. With proper planning and execution, a custom mirror can become one of the most impactful and beloved features in your home.
-    `,
-    date: "March 5, 2023",
-    author: "Sophia Kimaro",
-    category: "Design Trends",
-    image: "/images/wooden-frame-mirror.jpeg",
-    readTime: "9 min read",
-    tags: ["Custom Design", "Mirrors", "Interior Design", "Home Décor"],
-  },
-  {
-    slug: "science-of-safety-glass",
-    title: "The Science of Safety Glass",
-    excerpt:
-      "Understanding the different types of safety glass, how they're made, and when to use each type in your residential or commercial projects.",
-    content: `
-# The Science of Safety Glass
-
-Safety glass represents one of the most important innovations in building materials, protecting lives and property while maintaining the aesthetic and functional benefits of traditional glass. Understanding the science behind safety glass helps architects, builders, and homeowners make informed decisions about their glazing needs.
-
-## What Makes Glass "Safe"?
-
-Traditional annealed glass, while beautiful and functional, poses significant safety risks when broken. It shatters into large, sharp shards that can cause serious injury. Safety glass addresses this concern through various manufacturing processes that alter the glass's breaking characteristics.
-
-### The Physics of Glass Failure
-**Stress Concentration:**
-- Glass fails when stress exceeds its tensile strength
-- Microscopic flaws act as stress concentrators
-- Failure typically starts at surface imperfections
-- Crack propagation determines break pattern
-
-**Safety Glass Solutions:**
-- Modify stress distribution within the glass
-- Control crack propagation patterns
-- Reduce sharp edge formation
-- Maintain structural integrity after breakage
-
-## Types of Safety Glass
-
-### Tempered Glass (Toughened Glass)
-
-**Manufacturing Process:**
-1. **Heating Phase**: Glass heated to approximately 620°C (1148°F)
-2. **Rapid Cooling**: Controlled air jets cool the surface rapidly
-3. **Stress Creation**: Surface compression with interior tension
-4. **Quality Control**: Stress testing and optical inspection
-
-**Characteristics:**
-- **Strength**: 4-5 times stronger than annealed glass
-- **Break Pattern**: Small, relatively harmless cubes
-- **Heat Resistance**: Can withstand temperature differentials up to 200°C
-- **Irreversible**: Cannot be cut or modified after tempering
-
-**Applications:**
-- Shower doors and enclosures
-- Glass doors and windows
-- Table tops and shelving
-- Automotive side windows
-- Commercial storefronts
-
-### Laminated Glass
-
-**Construction:**
-- Two or more glass layers
-- Polyvinyl butyral (PVB) or ethylene-vinyl acetate (EVA) interlayer
-- Heat and pressure bonding process
-- Various thickness combinations available
-
-**Performance Characteristics:**
-- **Impact Resistance**: Glass may crack but remains in frame
-- **Security**: Difficult to penetrate completely
-- **Sound Dampening**: Interlayer reduces noise transmission
-- **UV Protection**: Blocks up to 99% of UV radiation
-- **Customization**: Colored, patterned, or printed interlayers
-
-**Applications:**
-- Automotive windshields
-- Security glazing
-- Hurricane-resistant windows
-- Overhead glazing
-- Bullet-resistant installations
-
-### Wire Glass (Wired Glass)
-
-**Manufacturing:**
-- Wire mesh embedded during glass formation
-- Typically 6mm thickness with 12.5mm wire spacing
-- Polished or patterned surface options
-- Fire-rated applications
-
-**Properties:**
-- **Fire Resistance**: Maintains integrity during fire exposure
-- **Break Containment**: Wire holds glass fragments together
-- **Limited Safety**: Not considered true safety glass
-- **Visibility**: Wire pattern affects optical clarity
-
-**Uses:**
-- Fire doors and windows
-- Industrial applications
-- Institutional buildings
-- Areas requiring fire ratings
-
-## Advanced Safety Glass Technologies
-
-### Heat-Strengthened Glass
-
-**Process:**
-- Similar to tempering but with slower cooling
-- Creates moderate surface compression
-- Intermediate strength between annealed and tempered
-- Can be cut and processed after heat treatment
-
-**Advantages:**
-- **Thermal Stress Resistance**: Better than annealed glass
-- **Fabrication Flexibility**: Can be modified after strengthening
-- **Optical Quality**: Less distortion than tempered glass
-- **Break Pattern**: Larger pieces than tempered, safer than annealed
-
-### Chemically Strengthened Glass
-
-**Ion Exchange Process:**
-- Glass immersed in molten potassium salt bath
-- Sodium ions replaced with larger potassium ions
-- Creates surface compression without heat treatment
-- Precise control over stress levels
-
-**Benefits:**
-- **Thin Applications**: Effective in very thin glass
-- **Optical Clarity**: No heat-related distortion
-- **Complex Shapes**: Can strengthen curved or complex forms
-- **Precision**: Controlled stress distribution
-
-## Safety Standards and Regulations
-
-### International Standards
-**ANSI Z97.1 (USA):**
-- Impact testing requirements
-- Breakage pattern specifications
-- Marking and identification standards
-- Application guidelines
-
-**EN 12150 (Europe):**
-- Tempered glass specifications
-- Testing methodologies
-- Quality control requirements
-- Performance criteria
-
-**AS/NZS 2208 (Australia/New Zealand):**
-- Safety glazing standards
-- Impact resistance testing
-- Installation requirements
-- Marking systems
-
-### Building Code Requirements
-**Hazardous Locations:**
-- Doors and sidelights
-- Low-height glazing
-- Wet areas (bathrooms)
-- Stairways and ramps
-- Sports facilities
-
-**Performance Criteria:**
-- Impact resistance levels
-- Minimum thickness requirements
-- Installation specifications
-- Maintenance considerations
+### HP Hook-on Ceiling Series
+Hook-on systems provide flexible suspension and level adjustment, making them effective in projects with uneven slab conditions.
 
 ## Selection Criteria
 
-### Risk Assessment
-**Human Impact Risk:**
-- Pedestrian traffic levels
-- Activity types in area
-- Age groups using space
-- Accessibility requirements
+When specifying a ceiling system, evaluate:
 
-**Environmental Factors:**
-- Wind loads and pressure
-- Thermal stress conditions
-- Seismic considerations
-- Security requirements
-
-### Performance Requirements
-**Structural Needs:**
-- Load-bearing capacity
-- Deflection limitations
-- Long-term durability
-- Maintenance accessibility
-
-**Functional Requirements:**
-- Optical clarity needs
-- Thermal performance
-- Acoustic properties
-- Security levels
-
-## Installation Best Practices
-
-### Proper Glazing Techniques
-**Edge Support:**
-- Adequate bearing surface
-- Proper glazing compounds
-- Thermal movement accommodation
-- Drainage considerations
-
-**Handling Procedures:**
-- Appropriate lifting equipment
-- Protection during transport
-- Storage requirements
-- Installation safety protocols
-
-### Quality Assurance
-**Pre-Installation Inspection:**
-- Stress pattern verification
-- Dimensional accuracy check
-- Surface quality assessment
-- Marking verification
-
-**Post-Installation Testing:**
-- Structural performance verification
-- Seal integrity testing
-- Thermal performance validation
-- Long-term monitoring protocols
-
-## Maintenance and Lifecycle
-
-### Regular Inspection
-**Visual Assessment:**
-- Crack detection and monitoring
-- Seal condition evaluation
-- Hardware functionality check
-- Stress pattern changes
-
-**Performance Monitoring:**
-- Thermal performance tracking
-- Structural movement assessment
-- Environmental impact evaluation
-- Safety compliance verification
-
-### Replacement Indicators
-**When to Replace:**
-- Visible damage or deterioration
-- Performance degradation
-- Code compliance changes
-- Upgrade opportunities
-
-## Future Developments
-
-### Smart Glass Integration
-**Electrochromic Technology:**
-- Variable opacity control
-- Energy efficiency improvements
-- Privacy on demand
-- Integration with building systems
-
-**Photovoltaic Glass:**
-- Energy generation capability
-- Transparent solar cells
-- Building-integrated photovoltaics
-- Sustainable design solutions
-
-### Advanced Materials
-**Graphene Enhancement:**
-- Improved strength characteristics
-- Enhanced thermal properties
-- Electrical conductivity options
-- Future application potential
+1. **Acoustic requirement** – NRC or CAC targets for open offices or public concourses
+2. **Access frequency** – clip-in vs hook-on for maintenance zones
+3. **Fire rating** – project-specific compliance documentation
+4. **Finish and color** – powder coat or film options for brand environments
+5. **Substructure** – main tee spacing, hanger capacity, and seismic considerations
 
 ## Conclusion
 
-The science of safety glass continues to evolve, driven by advancing technology and increasing safety awareness. Understanding the principles behind different safety glass types enables better decision-making for specific applications, ensuring optimal performance, safety, and value.
+The right aluminum ceiling system balances performance, lifecycle cost, and installation efficiency. Kirii's technical team supports consultants and contractors with product data, load calculations, and project references across Hong Kong and mainland China.
 
-Whether specifying glass for a residential shower enclosure or a commercial curtain wall system, the key lies in matching the right safety glass technology to the specific requirements of each application. As technology advances, we can expect even more innovative solutions that enhance both safety and performance.
+Contact us for specification support or a project-specific quotation.
     `,
-    date: "February 18, 2023",
-    author: "Daniel Mkwawa",
-    category: "Material Education",
-    image: "/images/curtain-wall-blue.webp",
-    readTime: "10 min read",
-    tags: ["Safety Glass", "Material Science", "Building Codes", "Glass Technology"],
+    date: "March 12, 2024",
+    author: "David Wong",
+    category: "Product Guide",
+    image: "/images/CH-type_Linear_Ceiling_Series_RGB_10.jpg",
+    readTime: "6 min read",
+    tags: ["Aluminum Ceiling", "CH Series", "CP Series", "Commercial Interiors"],
   },
   {
-    slug: "aluminium-vs-wood-window-frames",
-    title: "Aluminium vs. Wood: Window Frame Comparison",
+    slug: "clip-in-ceiling-installation-best-practices",
+    title: "Clip-in Ceiling Installation: Best Practices for Contractors",
     excerpt:
-      "A comprehensive comparison of aluminium and wooden window frames, covering durability, maintenance, aesthetics, and energy efficiency.",
+      "Installation tips for CP-type clip-in ceiling systems covering grid alignment, hanger spacing, access panel coordination, and quality checks before handover.",
     content: `
-# Aluminium vs. Wood: Window Frame Comparison
+# Clip-in Ceiling Installation: Best Practices for Contractors
 
-Choosing the right window frame material is one of the most important decisions in any building project. The frame material affects not only the appearance of your windows but also their performance, maintenance requirements, and long-term value. This comprehensive comparison examines aluminium and wood frames across all critical factors.
+Clip-in aluminum ceiling systems such as Kirii's CP series are popular because they combine speed of installation with easy tile removal for services access. However, performance and appearance depend heavily on substructure quality and installation discipline.
 
-## Material Overview
+## Pre-Installation Planning
 
-### Aluminium Frames
-Aluminium window frames are manufactured from extruded aluminium profiles, offering exceptional strength-to-weight ratios and design flexibility. Modern aluminium frames feature thermal breaks and advanced coatings that address traditional concerns about thermal performance.
+Before fixing hangers, confirm:
 
-### Wood Frames
-Wood frames represent the traditional choice for window construction, offering natural beauty and excellent insulation properties. Modern wood frames benefit from advanced treatments and engineering that enhance their durability and performance.
+- Slab level variations and required drop height
+- MEP routes, sprinklers, and access hatch locations
+- Main and cross tee layout per approved shop drawings
+- Fire-rated damper and detector coordination
 
-## Durability and Longevity
+## Grid Alignment and Level Control
 
-### Aluminium Frame Durability
-**Advantages:**
-- **Corrosion Resistance**: Natural oxide layer provides protection
-- **Structural Integrity**: Maintains shape and function over decades
-- **Weather Resistance**: Unaffected by moisture, insects, or UV radiation
-- **Dimensional Stability**: No warping, swelling, or shrinking
+**Best Practices:**
+- Establish a master control line at the perimeter
+- Use laser levels for main runner alignment
+- Maintain consistent hanger spacing per structural load calculations
+- Avoid over-torquing clips that can bow panels
 
-**Expected Lifespan:**
-- 30-40 years with minimal maintenance
-- 50+ years with proper care and quality installation
-- Powder coating warranties typically 15-25 years
-- Hardware replacement may be needed before frame replacement
+Uneven grids are visible under linear lighting and are costly to correct after panel installation.
 
-**Potential Issues:**
-- Galvanic corrosion in coastal environments
-- Thermal expansion and contraction
-- Scratching of surface finishes
-- Sealant degradation over time
+## Panel Handling and Fixing
 
-### Wood Frame Durability
-**Advantages:**
-- **Natural Resilience**: Properly treated wood can last generations
-- **Repairability**: Damaged sections can be repaired or replaced
-- **Proven Track Record**: Centuries of successful use
-- **Structural Performance**: Excellent load-bearing capacity
+Aluminum panels should be stored flat and protected from site dust and mortar splash. When clipping panels:
 
-**Expected Lifespan:**
-- 20-30 years with regular maintenance
-- 50+ years with premium materials and excellent care
-- Varies significantly with wood species and treatment
-- Climate and exposure greatly affect longevity
+1. Start from a reference corner aligned to the architectural grid
+2. Verify clip engagement on all sides before moving to adjacent tiles
+3. Cut panels with appropriate tools to prevent edge burrs
+4. Label cut tiles near access zones for future maintenance teams
 
-**Potential Issues:**
-- Moisture damage and rot
-- Insect infestation (termites, carpenter ants)
-- UV degradation and weathering
-- Warping, swelling, and shrinking
-- Paint and stain maintenance requirements
+## Access Hatches and Building Accessories
 
-## Maintenance Requirements
+Coordinate access hatches and trim profiles early. Kirii supplies matching accessories so ceiling transitions remain visually consistent. Misaligned hatch frames are a common cause of snagging during inspection.
 
-### Aluminium Frame Maintenance
-**Routine Care:**
-- **Cleaning**: Soap and water cleaning 2-3 times per year
-- **Hardware**: Lubrication of moving parts annually
-- **Seals**: Inspection and replacement every 10-15 years
-- **Drainage**: Clear weep holes and drainage channels
+## Final Inspection Checklist
 
-**Long-term Maintenance:**
-- **Refinishing**: Powder coating may need renewal after 20-25 years
-- **Hardware Replacement**: Locks and handles every 15-20 years
-- **Sealant Renewal**: Structural glazing every 15-20 years
-- **Thermal Break Inspection**: Check for damage or degradation
-
-**Annual Maintenance Cost**: $50-100 per window
-
-### Wood Frame Maintenance
-**Routine Care:**
-- **Painting/Staining**: Every 3-7 years depending on exposure
-- **Caulking**: Annual inspection and touch-up as needed
-- **Hardware**: Regular lubrication and adjustment
-- **Moisture Control**: Ensure proper drainage and ventilation
-
-**Long-term Maintenance:**
-- **Wood Treatment**: Periodic application of preservatives
-- **Repair Work**: Replace damaged sections as needed
-- **Hardware Replacement**: More frequent than aluminium
-- **Complete Refinishing**: Every 10-15 years
-
-**Annual Maintenance Cost**: $150-300 per window
-
-## Energy Efficiency
-
-### Thermal Performance Comparison
-**Aluminium Frames:**
-- **Traditional Aluminium**: Poor thermal performance (U-value 5.0-8.0)
-- **Thermally Broken**: Good performance (U-value 2.0-4.0)
-- **Advanced Systems**: Excellent performance (U-value 1.0-2.0)
-- **Thermal Bridging**: Eliminated in quality systems
-
-**Wood Frames:**
-- **Solid Wood**: Excellent natural insulation (U-value 1.5-2.5)
-- **Engineered Wood**: Consistent performance across frame
-- **Natural Insulator**: Wood's cellular structure provides insulation
-- **Thermal Mass**: Helps moderate temperature fluctuations
-
-### Condensation Resistance
-**Aluminium:**
-- Thermal breaks essential for condensation control
-- Quality systems perform well in all climates
-- Surface temperature management critical
-- Proper installation prevents thermal bridging
-
-**Wood:**
-- Naturally resistant to condensation
-- Warm interior surface temperatures
-- Moisture management still important
-- Proper sealing prevents moisture infiltration
-
-## Aesthetic Considerations
-
-### Design Flexibility
-**Aluminium Advantages:**
-- **Slim Profiles**: Maximum glass area, minimal frame visibility
-- **Color Options**: Unlimited powder coating colors
-- **Finishes**: Anodized, painted, wood-grain textures
-- **Shapes**: Complex geometries and large spans possible
-- **Consistency**: Uniform appearance across installation
-
-**Wood Advantages:**
-- **Natural Beauty**: Unique grain patterns and character
-- **Traditional Appeal**: Classic architectural compatibility
-- **Customization**: Carved details and custom profiles
-- **Warmth**: Natural material creates inviting appearance
-- **Aging**: Develops character over time
-
-### Architectural Compatibility
-**Modern Architecture:**
-- Aluminium excels in contemporary designs
-- Clean lines and minimal visual impact
-- Integration with curtain wall systems
-- Large glazing areas possible
-
-**Traditional Architecture:**
-- Wood frames complement historic styles
-- Authentic material for restoration projects
-- Custom profiles match original details
-- Natural material harmony
-
-## Cost Analysis
-
-### Initial Investment
-**Aluminium Frames:**
-- **Standard Systems**: $300-600 per window
-- **High-Performance**: $600-1,200 per window
-- **Premium Systems**: $1,200-2,000+ per window
-- **Installation**: Generally easier and faster
-
-**Wood Frames:**
-- **Standard Wood**: $400-800 per window
-- **Premium Species**: $800-1,500 per window
-- **Custom Millwork**: $1,500-3,000+ per window
-- **Installation**: More labor-intensive
-
-### Lifecycle Costs
-**Total Cost of Ownership (30 years):**
-
-**Aluminium:**
-- Initial cost + minimal maintenance
-- Lower insurance premiums (fire resistance)
-- Higher resale value retention
-- Energy savings with thermal breaks
-
-**Wood:**
-- Initial cost + significant maintenance
-- Potential repair and replacement costs
-- Insurance considerations (fire risk)
-- Excellent insulation saves energy
-
-## Environmental Impact
-
-### Sustainability Factors
-**Aluminium:**
-- **Recyclability**: 100% recyclable indefinitely
-- **Energy Intensity**: High energy required for initial production
-- **Durability**: Long lifespan reduces replacement needs
-- **Local Sourcing**: Often available regionally
-
-**Wood:**
-- **Renewable Resource**: Sustainable if properly managed
-- **Carbon Storage**: Stores carbon throughout lifespan
-- **Processing Energy**: Lower than aluminium production
-- **End of Life**: Biodegradable or can be burned for energy
-
-### Carbon Footprint
-**Manufacturing Phase:**
-- Aluminium: Higher initial carbon footprint
-- Wood: Lower manufacturing emissions
-
-**Use Phase:**
-- Both materials can achieve excellent energy performance
-- Proper installation more important than material choice
-
-**End of Life:**
-- Aluminium: Valuable recycling stream
-- Wood: Biodegradable or biomass fuel
-
-## Performance in Different Climates
-
-### Hot Climates
-**Aluminium Advantages:**
-- No degradation from UV exposure
-- Thermal breaks prevent heat transfer
-- Dimensional stability in temperature extremes
-- Reflective finishes available
-
-**Wood Considerations:**
-- UV protection essential
-- Thermal movement can cause issues
-- Increased maintenance frequency
-- Species selection critical
-
-### Cold Climates
-**Wood Advantages:**
-- Superior natural insulation
-- Warm interior surfaces
-- No thermal bridging issues
-- Traditional cold-climate material
-
-**Aluminium Considerations:**
-- Thermal breaks absolutely essential
-- Condensation management critical
-- Quality systems perform well
-- Professional installation important
-
-### Humid Climates
-**Aluminium Advantages:**
-- Unaffected by moisture
-- No rot or decay issues
-- Consistent performance
-- Minimal maintenance
-
-**Wood Challenges:**
-- Moisture management critical
-- Increased maintenance needs
-- Species selection important
-- Proper treatment essential
-
-## Security Considerations
-
-### Break-in Resistance
-**Aluminium:**
-- Strong material resists forced entry
-- Multi-point locking systems available
-- Reinforcement options for high-security applications
-- Consistent strength throughout frame
-
-**Wood:**
-- Can be reinforced with steel components
-- Traditional mortise and tenon joints very strong
-- Thickness provides good security
-- May split under extreme force
-
-## Sound Performance
-
-### Acoustic Properties
-**Aluminium:**
-- Dense material provides good sound dampening
-- Precision manufacturing ensures tight seals
-- Thermal breaks can improve acoustic performance
-- Compatible with acoustic glazing systems
-
-**Wood:**
-- Natural sound dampening properties
-- Cellular structure absorbs vibrations
-- Traditional choice for acoustic applications
-- Thickness contributes to sound reduction
-
-## Making the Right Choice
-
-### Choose Aluminium When:
-- Minimal maintenance is priority
-- Modern architectural style
-- Large glazing areas required
-- Coastal or harsh environments
-- Long-term durability essential
-- Energy efficiency with thermal breaks
-
-### Choose Wood When:
-- Traditional or historic architecture
-- Natural materials preferred
-- Maximum thermal performance needed
-- Custom profiles required
-- Willing to invest in maintenance
-- Environmental sustainability priority
+- Panel flatness and joint alignment within tolerance
+- No visible surface damage or contamination
+- Access panels operate smoothly
+- Documentation package includes as-built layout and product certificates
 
 ## Conclusion
 
-Both aluminium and wood window frames offer distinct advantages, and the best choice depends on your specific priorities, budget, and circumstances. Aluminium excels in durability and low maintenance, while wood offers superior natural insulation and traditional beauty.
+Disciplined installation protects schedule, reduces rework, and ensures the ceiling performs as designed. Kirii provides installation guidelines and on-site technical support for major projects.
 
-The key to success with either material lies in:
-- Choosing quality products from reputable manufacturers
-- Professional installation by experienced contractors
-- Understanding and committing to appropriate maintenance
-- Selecting the right material for your specific application and climate
-
-Consider consulting with window professionals who can assess your specific needs and provide recommendations based on your local climate, architectural style, and performance requirements.
+Reach out to our project team for CP-series datasheets and fixing details.
     `,
-    date: "January 25, 2023",
-    author: "Emmanuel Mwakasege",
-    category: "Material Education",
-    image: "/images/aluminum-french-doors-interior.webp",
-    readTime: "12 min read",
-    tags: ["Window Frames", "Aluminium", "Wood", "Material Comparison", "Building Materials"],
+    date: "February 8, 2024",
+    author: "Li Wei",
+    category: "Installation",
+    image: "/images/HP-type_Hook-on_Ceiling_Series_RGB_02.jpg",
+    readTime: "5 min read",
+    tags: ["Clip-in Ceiling", "Installation", "CP Series", "Contractor Tips"],
+  },
+  {
+    slug: "mtr-ceiling-project-case-study",
+    title: "Case Study: Ceiling Systems for MTR Station Projects",
+    excerpt:
+      "How Kirii ceiling systems support MTR station upgrades with durable finishes, modular access, and compliance requirements for high-traffic public transport environments.",
+    content: `
+# Case Study: Ceiling Systems for MTR Station Projects
+
+Mass Transit Railway (MTR) stations present one of the most demanding ceiling environments: 24/7 occupancy, strict safety codes, frequent cleaning, and limited maintenance windows. Kirii has supported multiple MTR-related projects with aluminum ceiling systems and coordinated accessories.
+
+## Project Environment
+
+MTR concourses and platforms require ceilings that:
+
+- Maintain appearance under heavy public use
+- Allow rapid access to cable trays and services
+- Meet fire and smoke compliance requirements
+- Integrate lighting, signage, and PA systems
+
+## System Selection
+
+For station upgrades, Kirii typically recommends modular aluminum systems with proven access performance—clip-in or hook-on configurations depending on slab conditions and maintenance strategy.
+
+**Project Requirements Addressed:**
+- Durable powder-coated finishes
+- Replaceable individual panels
+- Compatible trim and access hatches
+- Documented fire performance data
+
+## Installation Challenges
+
+Station works often occur during limited possession hours. Prefabricated grid sections and clearly marked panel sequences help contractors complete zones efficiently. Kirii's technical support includes layout review and accessory coordination to reduce clashes with existing services.
+
+## Results
+
+Across Kirii-supported transport projects, clients benefit from:
+
+- Reduced long-term maintenance cost through modular replacement
+- Consistent visual quality across large ceiling fields
+- Improved access for operational teams
+- Reliable supply from Foshan manufacturing with Hong Kong project experience
+
+## Conclusion
+
+Public transport projects demand more than standard office ceiling specifications. Early engagement with the ceiling supplier helps align access, compliance, and programme constraints.
+
+View our Projects page for more reference work, or contact Kirii for MTR and infrastructure enquiries.
+    `,
+    date: "January 18, 2024",
+    author: "Catherine Lam",
+    category: "Case Study",
+    image: "/images/Admiralty-MTR-Station-01.jpg",
+    readTime: "7 min read",
+    tags: ["MTR", "Case Study", "Transport", "Public Infrastructure"],
+  },
+  {
+    slug: "acoustic-ceiling-performance-guide",
+    title: "Acoustic Performance in Aluminum Ceiling Design",
+    excerpt:
+      "Understand NRC, CAC, and ceiling assembly choices that improve acoustic comfort in offices, healthcare facilities, and public concourses.",
+    content: `
+# Acoustic Performance in Aluminum Ceiling Design
+
+While aluminum ceiling panels are often selected for durability and aesthetics, acoustic performance remains critical in offices, clinics, and public spaces. The ceiling assembly—not the panel alone—determines how sound is absorbed and blocked.
+
+## Core Acoustic Metrics
+
+**NRC (Noise Reduction Coefficient)** measures sound absorption. Higher values reduce reverberation and improve speech clarity.
+
+**CAC (Ceiling Attenuation Class)** measures sound blocking between spaces above and below the ceiling plenum.
+
+Project teams should specify targets early and validate them with the complete system build-up.
+
+## Design Strategies
+
+### Perforated Panels with Acoustic Backing
+Perforated aluminum with infill materials can raise absorption while maintaining a metal aesthetic.
+
+### Plenum Depth and Insulation
+Adequate plenum depth and insulation placement significantly affect both absorption and attenuation.
+
+### Layout Zoning
+Open-plan areas, meeting rooms, and corridors often need different acoustic treatments within one project.
+
+## Common Specification Mistakes
+
+- Quoting panel NRC without the installed assembly
+- Ignoring return air paths that reduce CAC performance
+- Selecting visual profiles before acoustic review
+- Omitting access panel acoustic treatment at service zones
+
+## Kirii Technical Support
+
+Kirii provides acoustic ceiling configurations and documentation to support consultant specifications. We work with project teams to align visual requirements with measurable acoustic outcomes.
+
+## Conclusion
+
+Effective acoustic design integrates ceiling product selection, plenum design, and room function. Engage suppliers early to avoid costly redesign during construction.
+
+Contact Kirii for acoustic product options and specification data.
+    `,
+    date: "December 5, 2023",
+    author: "David Wong",
+    category: "Technical",
+    image: "/images/UO-type_Baffle_Ceiling_Series_RGB_03.jpg",
+    readTime: "6 min read",
+    tags: ["Acoustics", "NRC", "Ceiling Design", "Healthcare"],
+  },
+  {
+    slug: "commercial-ceiling-material-selection",
+    title: "How to Select Commercial Ceiling Materials",
+    excerpt:
+      "A decision framework for architects and developers choosing ceiling systems for offices, retail, hospitals, and cultural facilities.",
+    content: `
+# How to Select Commercial Ceiling Materials
+
+Ceiling selection affects project cost, maintenance, safety compliance, and user experience. For commercial buildings, the decision should be structured rather than based on sample aesthetics alone.
+
+## Step 1: Define Space Function
+
+Different spaces prioritize different performance criteria:
+
+- **Offices** – acoustics, lighting integration, modular access
+- **Retail** – brand finish, durability, fast installation
+- **Healthcare** – cleanability, access, infection-control compatible surfaces
+- **Cultural venues** – large-area visual continuity, custom profiles
+
+## Step 2: Evaluate Lifecycle Cost
+
+Initial material cost is only part of the equation. Consider:
+
+- Maintenance access time and frequency
+- Panel replaceability after services work
+- Cleaning method compatibility
+- Warranty and local technical support availability
+
+Aluminum systems often deliver lower lifecycle cost in high-traffic public environments.
+
+## Step 3: Confirm Compliance Documentation
+
+Ensure the supplier can provide fire performance data, material composition statements, and installation guidance accepted by local authorities and consultants.
+
+## Step 4: Align with Project Programme
+
+Lead times, mock-up requirements, and phased handover should be confirmed before final specification. Kirii's Foshan facility supports regional supply for Hong Kong and mainland China projects.
+
+## Kirii Product Range Overview
+
+Kirii offers linear, clip-in, wide grid, baffle, and accessory systems to cover most commercial typologies. Custom solutions are available for feature zones and branded environments.
+
+## Conclusion
+
+A structured selection process reduces redesign risk and improves handover quality. Involve the ceiling supplier during design development—not only at tender stage.
+
+Speak with Kirii for product comparisons and project references.
+    `,
+    date: "November 14, 2023",
+    author: "Li Wei",
+    category: "Specification",
+    image: "/images/Wuzhou-Culture-Art-Centre-01.jpg",
+    readTime: "5 min read",
+    tags: ["Commercial", "Specification", "Material Selection", "Developers"],
+  },
+  {
+    slug: "ceiling-system-maintenance-guide",
+    title: "Maintaining Aluminum Ceiling Systems for Long-Term Performance",
+    excerpt:
+      "Maintenance procedures for aluminum ceiling systems including cleaning methods, panel replacement, corrosion prevention, and inspection schedules.",
+    content: `
+# Maintaining Aluminum Ceiling Systems for Long-Term Performance
+
+Proper maintenance preserves the appearance and function of aluminum ceiling systems over decades of service. Facilities teams benefit from clear procedures tailored to the installed product family.
+
+## Routine Cleaning
+
+**Recommended Approach:**
+- Dust panels with soft microfiber tools
+- Use mild neutral detergents for marked areas
+- Avoid abrasive pads that damage powder-coated finishes
+- Dry wipe after cleaning in humid environments
+
+In healthcare and transport projects, follow facility infection-control protocols while respecting coating manufacturer guidance.
+
+## Access and Panel Replacement
+
+One advantage of Kirii modular systems is targeted tile replacement. Maintain an inventory of spare panels and trim pieces matched to the original batch where possible.
+
+When replacing panels:
+
+1. Document location and reason for replacement
+2. Verify hanger and clip condition before refitting
+3. Align new panels to existing grid geometry
+4. Update as-built records for future maintenance
+
+## Corrosion and Environmental Exposure
+
+Aluminum performs well in interior environments when coatings remain intact. Inspect periodically for:
+
+- Mechanical impact damage at trolley or ladder contact zones
+- Moisture ingress near leaks or HVAC condensation points
+- Incompatible chemical exposure from cleaning agents
+
+Address substrate leaks promptly—ceiling damage is often a symptom of upstream water issues.
+
+## Scheduled Inspections
+
+We recommend quarterly visual inspections for public concourses and annual detailed checks for office portfolios. Inspections should cover grid stability, panel alignment, access hatch operation, and surface condition.
+
+## Conclusion
+
+Preventive maintenance is far less expensive than full ceiling replacement. Kirii provides maintenance guidance and replacement components to support long-term building operations.
+
+Contact info@kirii.cn for spare parts enquiries and maintenance documentation.
+    `,
+    date: "October 22, 2023",
+    author: "Catherine Lam",
+    category: "Maintenance",
+    image: "/images/Eastern-Hospital_01.jpg",
+    readTime: "5 min read",
+    tags: ["Maintenance", "Facilities Management", "Aluminum Ceiling", "Lifecycle"],
   },
 ]
 

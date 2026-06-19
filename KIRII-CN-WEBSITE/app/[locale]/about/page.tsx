@@ -1,25 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import Image from "next/image"
-import Link from "next/link"
-
+import { LocalizedLink } from "@/components/localized-link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { type Language, getTranslation, loadLanguage } from "@/lib/i18n"
+import { useLanguage } from "@/components/language-provider"
+import { getTranslation } from "@/lib/i18n"
 
 export default function AboutPage() {
-  const [language, setLanguage] = useState<Language>("en")
-
-  useEffect(() => {
-    const savedLanguage = loadLanguage()
-    setLanguage(savedLanguage)
-  }, [])
-
+  const { language } = useLanguage()
   const t = getTranslation(language)
 
   return (
@@ -336,7 +329,7 @@ export default function AboutPage() {
                   className="bg-blue-600 hover:bg-blue-700 text-white text-base px-8 py-6"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  <Link href="/contact">{t.contactOurTeam}</Link>
+                  <LocalizedLink href="/contact">{t.contactOurTeam}</LocalizedLink>
                 </Button>
                 <Button
                   asChild
@@ -344,7 +337,7 @@ export default function AboutPage() {
                   className="border-white text-white hover:bg-white/10 text-base px-8 py-6 bg-transparent"
                   style={{ fontFamily: "Arial, sans-serif" }}
                 >
-                  <Link href="/products">{t.viewOurProducts}</Link>
+                  <LocalizedLink href="/products">{t.viewOurProducts}</LocalizedLink>
                 </Button>
               </div>
             </div>
