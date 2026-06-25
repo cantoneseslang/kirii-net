@@ -7,6 +7,7 @@ import { DRINKS } from "../data/menu-schedule"
 import { FOODPANDA_RESTAURANT } from "../data/foodpanda-menu"
 import { getHongKongDateKey, isWeekendHongKong } from "../lib/hong-kong-calendar"
 import OrderConfirmationCard from "./order-confirmation-card"
+import OperatorSelectDialog from "./operator-select-dialog"
 
 function getFpDishCategory(dishName: string): string | null {
   if (!dishName) return null
@@ -41,6 +42,30 @@ function formatFpOrderForCard(o: {
   return { dishLine: parts.join(" "), drink: o.drink }
 }
 
+function sameMemberId(a: unknown, b: unknown): boolean {
+  return String(a ?? "") === String(b ?? "")
+}
+
+const REQUEST_TIMEOUT_MS = 20_000
+
+function isTimeoutError(error: unknown): boolean {
+  return error instanceof Error && error.message.startsWith("TIMEOUT:")
+}
+
+async function withTimeout<T>(promise: Promise<T>, label: string, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(`TIMEOUT:${label}`)), timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId)
+  }
+}
+
 export default function MenuSelection() {
   const [selectedDish, setSelectedDish] = useState("")
   const [selectedDrink, setSelectedDrink] = useState("")
@@ -57,6 +82,8 @@ export default function MenuSelection() {
   const [confirmedDrink, setConfirmedDrink] = useState("")
   const [isModified, setIsModified] = useState(false)
   const [crossOrderWarning, setCrossOrderWarning] = useState<string | null>(null)
+  const [operatorDialogOpen, setOperatorDialogOpen] = useState(false)
+  const [pendingCancelType, setPendingCancelType] = useState<"tingkok" | "foodpanda" | null>(null)
   const isJustModifiedRef = useRef(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const showConfirmationRef = useRef(false)
@@ -147,7 +174,7 @@ export default function MenuSelection() {
           }
         }
       } else if (currentMember && hasFpOrdered(currentMember)) {
-        const fpOrder = foodpandaOrders.find((order) => order.member_id === currentMember)
+        const fpOrder = foodpandaOrders.find((order) => sameMemberId(order.member_id, currentMember))
         if (fpOrder) {
           const { dishLine, drink } = formatFpOrderForCard(fpOrder)
           setConfirmedDish(dishLine)
@@ -173,7 +200,7 @@ export default function MenuSelection() {
         }
       }
     } else if (currentMember && hasFpOrdered(currentMember)) {
-      const fpOrder = foodpandaOrders.find((order) => order.member_id === currentMember)
+      const fpOrder = foodpandaOrders.find((order) => sameMemberId(order.member_id, currentMember))
       if (fpOrder) {
         const { dishLine, drink } = formatFpOrderForCard(fpOrder)
         setConfirmedDish(dishLine)
@@ -211,7 +238,7 @@ export default function MenuSelection() {
       lastHadFpOrderRef.current = false
       return
     }
-    const existing = foodpandaOrders.find((o) => o.member_id === currentMember)
+    const existing = foodpandaOrders.find((o) => sameMemberId(o.member_id, currentMember))
     const memberChanged = prevFpSyncMemberRef.current !== currentMember
     prevFpSyncMemberRef.current = currentMember
 
@@ -276,7 +303,7 @@ export default function MenuSelection() {
     }
     const member = employees.find((m) => m.id === currentMember)
     if (!member) {
-      toast.error("無効な訂餐人")
+      toast.error("無效訂餐人")
       return
     }
     if (hasOrdered(currentMember)) {
@@ -287,18 +314,21 @@ export default function MenuSelection() {
     }
     const noodle = showFpNoodle ? selectedFpNoodle : "不適用"
     const addOns = selectedFpAddOns.length > 0 ? selectedFpAddOns : ["不用加配"]
-    const isFpUpdate = foodpandaOrders.some((o) => o.member_id === currentMember)
+    const isFpUpdate = foodpandaOrders.some((o) => sameMemberId(o.member_id, currentMember))
     try {
       setIsSubmitting(true)
       setCrossOrderWarning(null)
-      await addFpOrder({
-        member_id: currentMember,
-        member_name: member.nameInChinese,
-        dish: selectedFpDish,
-        noodle,
-        addOns,
-        drink: selectedFpDrink,
-      })
+      await withTimeout(
+        addFpOrder({
+          member_id: currentMember,
+          member_name: member.nameInChinese,
+          dish: selectedFpDish,
+          noodle,
+          addOns,
+          drink: selectedFpDrink,
+        }),
+        "foodpanda submit",
+      )
       const { dishLine, drink: drinkLine } = formatFpOrderForCard({
         dish: selectedFpDish,
         noodle,
@@ -317,21 +347,31 @@ export default function MenuSelection() {
         setIsModified(false)
       }
       toast.success(isFpUpdate ? "foodpanda 落單已修改" : "foodpanda 落單已提交")
-    } catch {
-      /* addFpOrder が toast */
+    } catch (error) {
+      if (isTimeoutError(error)) {
+        toast.error("foodpanda 請求逾時，請再試一次")
+      }
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleFpCancel = async () => {
+  const operatorOptions = employees.map((e) => e.nameInChinese || e.nameInEnglish).filter(Boolean)
+
+  const openFpCancelDialog = () => {
     if (!currentMember) {
       toast.error("請先選擇訂餐人")
       return
     }
+    setPendingCancelType("foodpanda")
+    setOperatorDialogOpen(true)
+  }
+
+  const handleFpCancel = async (actorName: string) => {
+    if (!currentMember) return
     try {
       setIsSubmitting(true)
-      await cancelFpOrder(currentMember)
+      await withTimeout(cancelFpOrder(currentMember, { actorName }), "foodpanda cancel")
       setSelectedFpDish("")
       setSelectedFpNoodle(FOODPANDA_RESTAURANT.noodleOptions[0]?.name ?? "")
       setSelectedFpAddOns([])
@@ -343,9 +383,13 @@ export default function MenuSelection() {
         setConfirmedDrink("")
         setIsModified(false)
       }
+      setOperatorDialogOpen(false)
+      setPendingCancelType(null)
       toast.success("foodpanda 落單已取消")
-    } catch {
-      /* cancelFpOrder が toast */
+    } catch (error) {
+      if (isTimeoutError(error)) {
+        toast.error("foodpanda 取消逾時，請再試一次")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -355,7 +399,7 @@ export default function MenuSelection() {
     if (!currentMember) { toast.error("請選擇訂餐人"); return }
     if (!selectedDish && !selectedDrink) { toast.error("請至少選擇餐點或飲品"); return }
     const member = employees.find((m) => m.id === currentMember)
-    if (!member) { toast.error("無効な訂餐人"); return }
+    if (!member) { toast.error("無效訂餐人"); return }
     if (hasFpOrdered(currentMember)) {
       setCrossOrderWarning(CROSS_ORDER_MSG_TINGKOK_BLOCKED)
       setShowConfirmation(true)
@@ -376,12 +420,18 @@ export default function MenuSelection() {
       if (existingOrder) {
         isJustModifiedRef.current = true
         setIsModified(true)
-        await modifyOrder(existingOrder.id, { member_id: currentMember, member_name: member.nameInChinese, dish: finalDish, drink: finalDrink })
+        await withTimeout(
+          modifyOrder(existingOrder.id, { member_id: currentMember, member_name: member.nameInChinese, dish: finalDish, drink: finalDrink }),
+          "tingkok modify",
+        )
         toast.success("訂單已成功修改")
       } else {
         isJustModifiedRef.current = false
         setIsModified(false)
-        await addOrder({ member_id: currentMember, member_name: member.nameInChinese, dish: finalDish, drink: finalDrink })
+        await withTimeout(
+          addOrder({ member_id: currentMember, member_name: member.nameInChinese, dish: finalDish, drink: finalDrink }),
+          "tingkok submit",
+        )
         toast.success("訂單已成功提交")
       }
       await new Promise(resolve => setTimeout(resolve, 100))
@@ -391,20 +441,30 @@ export default function MenuSelection() {
       setConfirmedDrink(finalDrink)
     } catch (error) {
       console.error("Error submitting/modifying order:", error)
-      toast.error("訂單提交/修改失敗，請稍後再試")
+      if (isTimeoutError(error)) {
+        toast.error("汀角路請求逾時，請再試一次")
+      } else {
+        toast.error("訂單提交/修改失敗，請稍後再試")
+      }
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const handleCancel = async () => {
+  const openTingkokCancelDialog = () => {
     if (!currentMember) { toast.error("請先選擇訂餐人"); return }
+    setPendingCancelType("tingkok")
+    setOperatorDialogOpen(true)
+  }
+
+  const handleCancel = async (actorName: string) => {
+    if (!currentMember) return
     try {
       setIsSubmitting(true)
-      await cancelOrder(currentMember)
+      await withTimeout(cancelOrder(currentMember, { actorName }), "tingkok cancel")
       setSelectedDish("")
       setSelectedDrink("")
-      const fpAfter = foodpandaOrders.find((o) => o.member_id === currentMember)
+      const fpAfter = foodpandaOrders.find((o) => sameMemberId(o.member_id, currentMember))
       if (fpAfter) {
         const { dishLine, drink } = formatFpOrderForCard(fpAfter)
         setConfirmedDish(dishLine)
@@ -419,10 +479,16 @@ export default function MenuSelection() {
         setConfirmedDrink("")
         setIsModified(false)
       }
+      setOperatorDialogOpen(false)
+      setPendingCancelType(null)
       toast.success("訂單已取消")
     } catch (error) {
       console.error("Error cancelling order:", error)
-      toast.error("訂單取消失敗，請稍後再試")
+      if (isTimeoutError(error)) {
+        toast.error("取消請求逾時，請再試一次")
+      } else {
+        toast.error("訂單取消失敗，請稍後再試")
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -627,7 +693,7 @@ export default function MenuSelection() {
             {isSubmitting ? "處理中..." : hasOrdered(currentMember) ? "修改落單（汀角路）" : "確認落單（汀角路）"}
           </button>
           {hasOrdered(currentMember) && (
-            <button onClick={handleCancel} disabled={isSubmitting} className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold disabled:opacity-50">
+            <button onClick={openTingkokCancelDialog} disabled={isSubmitting} className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold disabled:opacity-50">
               {isSubmitting ? "處理中..." : "取消落單（汀角路）"}
             </button>
           )}
@@ -700,7 +766,7 @@ export default function MenuSelection() {
 
               {showFpNoodle && (
                 <div className="border-t pt-4" style={{ borderColor: '#f9d5e5' }}>
-                  <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>選項（麵の種類）</h3>
+                  <h3 className="font-bold text-lg mb-3" style={{ color: '#d70f64' }}>選項（麵類）</h3>
                   <div className="grid grid-cols-3 gap-1.5">
                     {FOODPANDA_RESTAURANT.noodleOptions.map((opt, idx) => (
                       <div key={idx} className="flex items-center text-gray-800">
@@ -794,7 +860,7 @@ export default function MenuSelection() {
                 {hasFpOrdered(currentMember) && (
                   <button
                     type="button"
-                    onClick={handleFpCancel}
+                    onClick={openFpCancelDialog}
                     disabled={isSubmitting}
                     className="w-full py-3 rounded-md bg-gray-200 hover:bg-gray-300 font-bold disabled:opacity-50"
                   >
@@ -806,6 +872,24 @@ export default function MenuSelection() {
           </div>
         )}
       </div>
+      <OperatorSelectDialog
+        open={operatorDialogOpen}
+        title={pendingCancelType === "foodpanda" ? "foodpanda 取消" : "汀角路 取消"}
+        options={operatorOptions}
+        busy={isSubmitting}
+        onCancel={() => {
+          if (isSubmitting) return
+          setOperatorDialogOpen(false)
+          setPendingCancelType(null)
+        }}
+        onConfirm={(actorName) => {
+          if (pendingCancelType === "foodpanda") {
+            void handleFpCancel(actorName)
+            return
+          }
+          void handleCancel(actorName)
+        }}
+      />
     </>
   )
 }

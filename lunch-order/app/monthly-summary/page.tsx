@@ -538,7 +538,7 @@ export default function MonthlySummary() {
         .is('valid_until', null);
 
       if (updateError) {
-        console.error('Error updating old prices:', error);
+        console.error('Error updating old prices:', updateError);
         throw updateError;
       }
 

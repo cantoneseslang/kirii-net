@@ -5,6 +5,8 @@ export interface Order {
   dish: string
   drink: string
   timestamp: string
+  operator_member_id?: string | null
+  operator_member_name?: string | null
 }
 
 export interface FoodpandaOrder {
@@ -16,6 +18,8 @@ export interface FoodpandaOrder {
   addOns: string[]
   drink: string
   timestamp: string
+  operator_member_id?: string | null
+  operator_member_name?: string | null
 }
 
 export interface EmployeeRecord {

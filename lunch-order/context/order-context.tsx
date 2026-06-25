@@ -9,6 +9,11 @@ import { supabase } from "../lib/supabase"
 import { toast } from "react-hot-toast"
 import * as XLSX from "xlsx"
 import {
+  formatOperatorSummary,
+  isProxyOrder,
+  resolveOrderOperator,
+} from "../lib/order-operator"
+import {
   getDefaultEmployees,
   getDefaultMenuItemsFromSchedule,
   readStoredMenuItems,
@@ -21,10 +26,10 @@ import {
 import {
   getHongKongDateKey,
   getHongKongDayRange,
-  isSameHongKongCalendarDay,
   formatHongKongPeriodDate,
   listRecentHongKongDateKeys,
 } from "../lib/hong-kong-calendar"
+import { isAdminMember } from "../lib/admin-access"
 
 interface OrderContextType {
   orders: DailyOrders
@@ -33,24 +38,27 @@ interface OrderContextType {
   menuItems: ManagedMenuItem[]
   currentMember: string | null
   setCurrentMember: (member: string | null) => void
+  authMemberId: string | null
+  bindAuthMember: (member: string | null) => void
   addOrder: (order: Omit<Order, "id" | "timestamp">) => Promise<void>
   getOrdersForDate: (dateKey: string) => Order[]
   fetchOrdersForDate: (dateKey: string) => Promise<Order[]>
   getManagedMenuForWeekday: (weekday: string) => string[]
   hasOrdered: (memberId: string) => boolean
   exportToCSV: (dateKey?: string) => void
-  resetOrders: () => Promise<void>
+  resetOrders: (audit: AuditActorInput) => Promise<void>
   resetOrderStatus: () => Promise<void>
   modifyOrder: (orderId: string, newOrder: Omit<Order, "id" | "timestamp">) => Promise<void>
-  cancelOrder: (memberId: string) => Promise<void>
+  cancelOrder: (memberId: string, audit: AuditActorInput) => Promise<void>
   lastResetTime: Date | null
   foodpandaOrders: FoodpandaOrder[]
   getFoodpandaOrdersForDate: (dateKey: string) => FoodpandaOrder[]
   fetchFoodpandaOrdersForDate: (dateKey: string) => Promise<FoodpandaOrder[]>
   addFpOrder: (order: Omit<FoodpandaOrder, "id" | "timestamp">) => Promise<void>
   hasFpOrdered: (memberId: string) => boolean
-  cancelFpOrder: (memberId: string) => Promise<void>
-  resetFpOrders: () => Promise<void>
+  cancelFpOrder: (memberId: string, audit: AuditActorInput) => Promise<void>
+  resetFpOrders: (audit: AuditActorInput) => Promise<void>
+  fetchAuditLogs: (limit?: number) => Promise<AuditLogEntry[]>
   saveEmployees: (employees: EmployeeRecord[]) => Promise<void>
   deleteEmployeePermanently: (employeeId: string) => Promise<void>
   saveMenuItems: (items: ManagedMenuItem[]) => Promise<void>
@@ -64,7 +72,46 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined)
 
 const META_EMPLOYEE_PREFIX = "meta-employee-"
 const META_MENU_PREFIX = "meta-menu-"
+/** 旧形式: meta-fp-{memberId}（1人1行・上書き）— 読み取りのみ互換 */
 const META_FP_PREFIX = "meta-fp-"
+/** 新形式: drink で foodpanda 行を識別し、注文ごとに1行追加 */
+const META_FP_DRINK = "__meta_fp__"
+const META_AUDIT_PREFIX = "meta-audit-"
+const META_AUDIT_DRINK = "__meta_audit__"
+const CURRENT_MEMBER_STORAGE_KEY = "lunch-order-current-member-v1"
+const AUTH_MEMBER_STORAGE_KEY = "lunch-order-auth-member-v1"
+
+type AuditActorInput = {
+  actorName: string
+}
+
+type AuditAction = "INSERT" | "UPDATE" | "DELETE"
+
+export type AuditLogEntry = {
+  id: string
+  createdAt: string
+  action: AuditAction
+  actorName: string
+  confirmationCodeSuffix: string
+  targetOrderId: string | null
+  targetMemberId: string | null
+  targetMemberName: string | null
+  operatorMemberId: string | null
+  operatorMemberName: string | null
+  isProxyOrder: boolean
+  summary: string
+}
+
+type OrderDbRow = {
+  id?: string
+  member_id: string
+  member_name?: string
+  dish: string
+  drink?: string
+  timestamp: string
+  operator_member_id?: string | null
+  operator_member_name?: string | null
+}
 
 function isEmployeeMetaRow(memberId: string) {
   return memberId.startsWith(META_EMPLOYEE_PREFIX)
@@ -78,7 +125,13 @@ function isFpMetaRow(memberId: string) {
   return memberId.startsWith(META_FP_PREFIX)
 }
 
-function isMetaRow(memberId: string) {
+function isFpOrderRow(row: { member_id: string; drink?: string }) {
+  return row.drink === META_FP_DRINK || isFpMetaRow(row.member_id)
+}
+
+function isMetaRow(memberId: string, drink?: string) {
+  if (drink === META_FP_DRINK || drink === META_AUDIT_DRINK) return true
+  if (memberId.startsWith(META_AUDIT_PREFIX)) return true
   return isEmployeeMetaRow(memberId) || isMenuMetaRow(memberId) || isFpMetaRow(memberId)
 }
 
@@ -90,30 +143,102 @@ function sortFoodpandaOrders(orders: FoodpandaOrder[], employees: EmployeeRecord
   })
 }
 
-function parseFoodpandaOrdersFromRows(
-  rows: { member_id: string; dish: string }[],
-  employees: EmployeeRecord[],
-  dateKey?: string,
-): FoodpandaOrder[] {
-  const byMember = new Map<string, FoodpandaOrder>()
-  for (const row of rows) {
-    if (!isFpMetaRow(row.member_id)) continue
-    try {
-      const parsed = JSON.parse(row.dish) as FoodpandaOrder
-      if (!parsed?.member_id) continue
-      if (dateKey && getHongKongDateKey(new Date(parsed.timestamp)) !== dateKey) continue
-      byMember.set(parsed.member_id, parsed)
-    } catch (err) {
-      console.error("Invalid foodpanda meta row:", row, err)
-    }
-  }
-  return sortFoodpandaOrders(Array.from(byMember.values()), employees)
+function normalizeActorName(name: string): string {
+  return name.replace(/\s+/g, "").toLowerCase()
 }
 
-/** PostgREST `.or()` / `like` 用: 末尾の `%` は URL では `%25` にしないとクエリが壊れる */
-const LIKE_META_EMPLOYEE_PATTERN = `${META_EMPLOYEE_PREFIX}%25`
-const LIKE_META_MENU_PATTERN = `${META_MENU_PREFIX}%25`
-const LIKE_META_FP_PATTERN = `${META_FP_PREFIX}%25`
+function isActorMatched(actorName: string, candidates: Array<string | undefined | null>): boolean {
+  const actor = normalizeActorName(actorName)
+  if (!actor) return false
+  return candidates.some((name) => !!name && normalizeActorName(name) === actor)
+}
+
+function sameMemberId(a: unknown, b: unknown): boolean {
+  return String(a ?? "") === String(b ?? "")
+}
+
+function foodpandaOrderFromRow(row: OrderDbRow): FoodpandaOrder | null {
+  try {
+    const parsed = JSON.parse(row.dish) as FoodpandaOrder
+    const memberId = parsed?.member_id ?? (isFpMetaRow(row.member_id) ? row.member_id.slice(META_FP_PREFIX.length) : row.member_id)
+    if (!memberId) return null
+    return {
+      ...parsed,
+      id: row.id ?? parsed.id,
+      member_id: String(memberId),
+      member_name: parsed.member_name ?? row.member_name ?? "",
+      timestamp: parsed.timestamp ?? row.timestamp,
+      addOns: parsed.addOns ?? [],
+      operator_member_id:
+        row.operator_member_id != null
+          ? String(row.operator_member_id)
+          : parsed.operator_member_id != null
+            ? String(parsed.operator_member_id)
+            : null,
+      operator_member_name: row.operator_member_name ?? parsed.operator_member_name ?? null,
+    }
+  } catch (err) {
+    console.error("Invalid foodpanda row:", row, err)
+    return null
+  }
+}
+
+/** onePerMember: 当日UI用（修改は上書き）。false: 過去日照会は行ごと全件 */
+function parseFoodpandaOrdersFromRows(
+  rows: OrderDbRow[],
+  employees: EmployeeRecord[],
+  dateKey?: string,
+  onePerMember = false,
+): FoodpandaOrder[] {
+  const byMember = new Map<string, FoodpandaOrder>()
+  const all: FoodpandaOrder[] = []
+  for (const row of rows) {
+    if (!isFpOrderRow(row)) continue
+    const order = foodpandaOrderFromRow(row)
+    if (!order) continue
+    const orderDateKey = getHongKongDateKey(new Date(order.timestamp))
+    if (dateKey && orderDateKey !== dateKey) continue
+    all.push(order)
+    byMember.set(order.member_id, order)
+  }
+  const list = onePerMember ? Array.from(byMember.values()) : all
+  return sortFoodpandaOrders(list, employees)
+}
+
+function parseAuditEntryFromRow(row: OrderDbRow): AuditLogEntry | null {
+  if (row.drink !== META_AUDIT_DRINK) return null
+  try {
+    const payload = JSON.parse(row.dish) as {
+      action: AuditAction
+      actorName?: string
+      confirmationCodeSuffix?: string
+      targetOrderId?: string | null
+      targetMemberId?: string | null
+      targetMemberName?: string | null
+      operatorMemberId?: string | null
+      operatorMemberName?: string | null
+      isProxyOrder?: boolean
+      summary?: string
+    }
+    return {
+      id: row.id ?? crypto.randomUUID(),
+      createdAt: row.timestamp,
+      action: payload.action,
+      actorName: payload.actorName ?? row.member_name ?? "",
+      confirmationCodeSuffix: payload.confirmationCodeSuffix ?? "",
+      targetOrderId: payload.targetOrderId ?? null,
+      targetMemberId: payload.targetMemberId ?? null,
+      targetMemberName: payload.targetMemberName ?? null,
+      operatorMemberId: payload.operatorMemberId ?? null,
+      operatorMemberName: payload.operatorMemberName ?? null,
+      isProxyOrder: Boolean(payload.isProxyOrder),
+      summary: payload.summary ?? "",
+    }
+  } catch (error) {
+    console.error("Invalid audit row:", row, error)
+    return null
+  }
+}
 
 const ORDER_HISTORY_DAYS = 90
 
@@ -131,7 +256,7 @@ export function formatPostgrestErrorMessage(err: { message?: string; code?: stri
   const m = err.message?.trim()
   if (m) return m
   const parts = [err.code, err.details, err.hint].filter(Boolean)
-  return parts.length > 0 ? parts.join(" · ") : "不明なエラー"
+  return parts.length > 0 ? parts.join(" · ") : "未知錯誤"
 }
 
 export interface EmployeesPersistResult {
@@ -185,7 +310,8 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     if (stashed.length > 0) return stashed
     return getDefaultMenuItemsFromSchedule()
   })
-  const [currentMember, setCurrentMember] = useState<string | null>(null)
+  const [currentMember, setCurrentMemberState] = useState<string | null>(null)
+  const [authMemberId, setAuthMemberId] = useState<string | null>(null)
   const [lastResetTime, setLastResetTime] = useState<Date | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -195,7 +321,57 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const [employeesPersistResult, setEmployeesPersistResult] = useState<EmployeesPersistResult | null>(null)
   const [menuPersistResult, setMenuPersistResult] = useState<MenuPersistResult | null>(null)
 
+  const setCurrentMember = useCallback((member: string | null) => {
+    setCurrentMemberState(member)
+    if (typeof window === "undefined") return
+    try {
+      if (member) {
+        localStorage.setItem(CURRENT_MEMBER_STORAGE_KEY, String(member))
+      } else {
+        localStorage.removeItem(CURRENT_MEMBER_STORAGE_KEY)
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
+
+  const bindAuthMember = useCallback((member: string | null) => {
+    setAuthMemberId(member)
+    if (typeof window === "undefined") return
+    try {
+      if (member) {
+        localStorage.setItem(AUTH_MEMBER_STORAGE_KEY, String(member))
+      } else {
+        localStorage.removeItem(AUTH_MEMBER_STORAGE_KEY)
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
+
   const activeEmployees = employees.filter((employee) => employee.isActive)
+  const authEmployeeRecord = employees.find((e) => String(e.id) === String(authMemberId ?? ""))
+  const selectedEmployeeRecord = employees.find((e) => String(e.id) === String(currentMember ?? ""))
+  const hasAdminAccess = isAdminMember(authEmployeeRecord) || isAdminMember(selectedEmployeeRecord)
+
+  const didHydrateMemberRef = useRef(false)
+  useEffect(() => {
+    if (didHydrateMemberRef.current) return
+    didHydrateMemberRef.current = true
+    if (typeof window === "undefined") return
+    try {
+      const saved = localStorage.getItem(CURRENT_MEMBER_STORAGE_KEY)
+      if (saved) {
+        setCurrentMemberState(saved)
+      }
+      const savedAuthMember = localStorage.getItem(AUTH_MEMBER_STORAGE_KEY)
+      if (savedAuthMember) {
+        setAuthMemberId(savedAuthMember)
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [])
 
   const loadMasterData = useCallback(async () => {
     if (persistMasterDataLockRef.current) return
@@ -339,6 +515,10 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const saveEmployees = useCallback(async (nextEmployees: EmployeeRecord[]) => {
+    if (!hasAdminAccess) {
+      toast.error("你冇管理權限")
+      throw new Error("Admin permission required")
+    }
     setEmployeesPersistResult(null)
     try {
       const reconciled = dedupeEmployeesById(nextEmployees.map(reconcileEmployeeRecordWithMembers))
@@ -358,9 +538,13 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       setEmployeesPersistResult(null)
       throw e
     }
-  }, [persistEmployees, loadMasterData])
+  }, [hasAdminAccess, persistEmployees, loadMasterData])
 
   const deleteEmployeePermanently = useCallback(async (employeeId: string) => {
+    if (!hasAdminAccess) {
+      toast.error("你冇管理權限")
+      throw new Error("Admin permission required")
+    }
     setEmployeesPersistResult(null)
     try {
       const nextEmployees = sortEmployeesByMembersOrder(
@@ -384,9 +568,13 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       setEmployeesPersistResult(null)
       throw e
     }
-  }, [employees, persistEmployees, loadMasterData])
+  }, [hasAdminAccess, employees, persistEmployees, loadMasterData])
 
   const saveMenuItems = useCallback(async (items: ManagedMenuItem[]) => {
+    if (!hasAdminAccess) {
+      toast.error("你冇管理權限")
+      throw new Error("Admin permission required")
+    }
     setMenuPersistResult(null)
     try {
       lastMenuPersistRef.current = items
@@ -407,7 +595,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       lastMenuPersistRef.current = null
       throw e
     }
-  }, [persistMenuItems, loadMasterData])
+  }, [hasAdminAccess, persistMenuItems, loadMasterData])
 
   const getManagedMenuForWeekday = useCallback(
     (weekday: string) =>
@@ -418,21 +606,156 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     [menuItems],
   )
 
+  const appendAuditLog = useCallback(
+    async ({
+      action,
+      targetRow,
+      actorName,
+      summary,
+      operatorMemberId,
+      operatorMemberName,
+      isProxy,
+    }: {
+      action: AuditAction
+      targetRow: OrderDbRow | null
+      actorName: string
+      summary: string
+      operatorMemberId?: string | null
+      operatorMemberName?: string | null
+      isProxy?: boolean
+    }) => {
+      const payload = {
+        action,
+        actorName,
+        confirmationCodeSuffix: "",
+        targetOrderId: targetRow?.id ?? null,
+        targetMemberId: targetRow?.member_id ?? null,
+        targetMemberName: targetRow?.member_name ?? null,
+        operatorMemberId: operatorMemberId ?? null,
+        operatorMemberName: operatorMemberName ?? null,
+        isProxyOrder: Boolean(isProxy),
+        summary,
+      }
+
+      const { error } = await supabase.from("orders").insert({
+        member_id: `${META_AUDIT_PREFIX}${crypto.randomUUID()}`,
+        member_name: actorName,
+        dish: JSON.stringify(payload),
+        drink: META_AUDIT_DRINK,
+        timestamp: new Date().toISOString(),
+      })
+      if (error) {
+        logPostgrestError("appendAuditLog:", error)
+      }
+    },
+    [],
+  )
+
+  const deleteOrderById = useCallback(
+    async (row: OrderDbRow, audit: { actorName: string }, summary: string) => {
+      if (!row.id) return
+      const { error } = await supabase.from("orders").delete().eq("id", row.id)
+      if (error) {
+        logPostgrestError("deleteOrderById:", error)
+        throw error
+      }
+      await appendAuditLog({
+        action: "DELETE",
+        targetRow: row,
+        actorName: audit.actorName,
+        summary,
+      })
+    },
+    [appendAuditLog],
+  )
+
+  const deleteTodayFpOrdersForMember = useCallback(
+    async (memberId: string, audit?: { actorName: string }) => {
+      const todayKey = getHongKongDateKey()
+      const { from, to } = getHongKongDayRange(todayKey)
+
+      const legacyMemberId = `${META_FP_PREFIX}${memberId}`
+      const [legacyRes, currentRes] = await Promise.all([
+        supabase
+          .from("orders")
+          .select("id, member_id, member_name, dish, drink, timestamp")
+          .eq("member_id", legacyMemberId)
+          .gte("timestamp", from)
+          .lt("timestamp", to),
+        supabase
+          .from("orders")
+          .select("id, member_id, member_name, dish, drink, timestamp")
+          .eq("member_id", memberId)
+          .eq("drink", META_FP_DRINK)
+          .gte("timestamp", from)
+          .lt("timestamp", to),
+      ])
+
+      if (legacyRes.error) {
+        logPostgrestError("deleteTodayFpOrdersForMember select legacy:", legacyRes.error)
+        throw legacyRes.error
+      }
+      if (currentRes.error) {
+        logPostgrestError("deleteTodayFpOrdersForMember select current:", currentRes.error)
+        throw currentRes.error
+      }
+
+      const deduped = new Map<string, OrderDbRow>()
+      for (const row of [...(legacyRes.data ?? []), ...(currentRes.data ?? [])] as OrderDbRow[]) {
+        const key = row.id ?? `${row.member_id}-${row.timestamp}-${row.drink ?? ""}`
+        deduped.set(key, row)
+      }
+      const targets = Array.from(deduped.values())
+
+      const actor = audit?.actorName?.trim() || "system"
+      for (const row of targets) {
+        await deleteOrderById(
+          row,
+          { actorName: actor },
+          `foodpanda同日訂單刪除(${memberId})`,
+        )
+      }
+    },
+    [deleteOrderById],
+  )
+
   const loadFoodpandaOrders = useCallback(async () => {
     try {
       const todayKey = getHongKongDateKey()
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .like("member_id", `${META_FP_PREFIX}%`)
-        .order("timestamp", { ascending: false })
+      const { from, to } = getHongKongDayRange(todayKey)
+      const selectCols = "id, member_id, member_name, dish, drink, timestamp, operator_member_id, operator_member_name"
+      const [legacyRes, currentRes] = await Promise.all([
+        supabase
+          .from("orders")
+          .select(selectCols)
+          .like("member_id", `${META_FP_PREFIX}%`)
+          .gte("timestamp", from)
+          .lt("timestamp", to),
+        supabase
+          .from("orders")
+          .select(selectCols)
+          .eq("drink", META_FP_DRINK)
+          .gte("timestamp", from)
+          .lt("timestamp", to),
+      ])
 
-      if (error) {
-        logPostgrestError("Error loading foodpanda orders:", error)
+      if (legacyRes.error) {
+        logPostgrestError("Error loading foodpanda legacy orders:", legacyRes.error)
+        return
+      }
+      if (currentRes.error) {
+        logPostgrestError("Error loading foodpanda current orders:", currentRes.error)
         return
       }
 
-      const arr = parseFoodpandaOrdersFromRows(data ?? [], employees, todayKey)
+      const deduped = new Map<string, OrderDbRow>()
+      for (const row of [...(legacyRes.data ?? []), ...(currentRes.data ?? [])] as OrderDbRow[]) {
+        const key = row.id ?? `${row.member_id}-${row.timestamp}-${row.drink ?? ""}`
+        deduped.set(key, row)
+      }
+
+      const fpRows = Array.from(deduped.values()).filter((row) => isFpOrderRow(row))
+      const arr = parseFoodpandaOrdersFromRows(fpRows, employees, todayKey, true)
       setFoodpandaOrders(arr)
       setFpOrdersByDate((prev) => ({ ...prev, [todayKey]: arr }))
     } catch (err) {
@@ -440,33 +763,64 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     }
   }, [employees])
 
-  const persistFpOrder = useCallback(async (order: FoodpandaOrder) => {
-    const rowKey = `${META_FP_PREFIX}${order.member_id}`
-    const { error: deleteError } = await supabase.from("orders").delete().eq("member_id", rowKey)
-    if (deleteError) {
-      logPostgrestError("persistFpOrder delete:", deleteError)
-      throw deleteError
-    }
-    const { error: insertError } = await supabase.from("orders").insert({
-      member_id: rowKey,
-      member_name: order.member_name,
-      dish: JSON.stringify(order),
-      drink: "__meta_fp__",
-      timestamp: order.timestamp,
-    })
-    if (insertError) {
-      logPostgrestError("persistFpOrder insert:", insertError)
-      throw insertError
-    }
-  }, [])
+  const persistFpOrder = useCallback(
+    async (order: FoodpandaOrder) => {
+      await deleteTodayFpOrdersForMember(order.member_id, {
+        actorName: order.operator_member_name || order.member_name,
+      })
+
+      const payload = {
+        member_id: order.member_id,
+        member_name: order.member_name,
+        dish: JSON.stringify(order),
+        drink: META_FP_DRINK,
+        timestamp: order.timestamp,
+        operator_member_id: order.operator_member_id ?? order.member_id,
+        operator_member_name: order.operator_member_name ?? order.member_name,
+      }
+
+      const { data, error: insertError } = await supabase.from("orders").insert(payload).select().single()
+
+      if (insertError) {
+        logPostgrestError("persistFpOrder insert:", insertError)
+        throw insertError
+      }
+      const operator = {
+        operatorMemberId: order.operator_member_id ?? order.member_id,
+        operatorMemberName: order.operator_member_name ?? order.member_name,
+      }
+      await appendAuditLog({
+        action: "INSERT",
+        targetRow: data as OrderDbRow,
+        actorName: operator.operatorMemberName,
+        summary: formatOperatorSummary(
+          operator,
+          order.member_id,
+          order.member_name,
+          "foodpanda訂單新增/修改",
+        ),
+        operatorMemberId: operator.operatorMemberId,
+        operatorMemberName: operator.operatorMemberName,
+        isProxy: isProxyOrder({
+          member_id: order.member_id,
+          operator_member_id: order.operator_member_id,
+        }),
+      })
+      return data
+    },
+    [appendAuditLog, deleteTodayFpOrdersForMember],
+  )
 
   const addFpOrder = useCallback(
     async (order: Omit<FoodpandaOrder, "id" | "timestamp">) => {
       try {
+        const operator = resolveOrderOperator(authMemberId, order.member_id, employees)
         const newOrder: FoodpandaOrder = {
           ...order,
           id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
+          operator_member_id: operator.operatorMemberId,
+          operator_member_name: operator.operatorMemberName,
         }
         await persistFpOrder(newOrder)
         await loadFoodpandaOrders()
@@ -476,21 +830,44 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         throw e
       }
     },
-    [persistFpOrder, loadFoodpandaOrders],
+    [authMemberId, employees, persistFpOrder, loadFoodpandaOrders],
   )
 
   const hasFpOrdered = useCallback((memberId: string) => {
-    return foodpandaOrders.some((o) => o.member_id === memberId)
+    return foodpandaOrders.some((o) => sameMemberId(o.member_id, memberId))
   }, [foodpandaOrders])
 
   const cancelFpOrder = useCallback(
-    async (memberId: string) => {
+    async (memberId: string, audit: AuditActorInput) => {
       try {
-        const { error } = await supabase.from("orders").delete().eq("member_id", `${META_FP_PREFIX}${memberId}`)
-        if (error) {
-          logPostgrestError("cancelFpOrder:", error)
-          toast.error("foodpanda 取消失敗: " + formatPostgrestErrorMessage(error))
-          throw error
+        const existing = foodpandaOrders.find((o) => sameMemberId(o.member_id, memberId))
+        const employee = employees.find((e) => e.id === memberId)
+        const allowed = isActorMatched(audit.actorName, [
+          existing?.member_name,
+          employee?.nameInChinese,
+          employee?.nameInEnglish,
+        ])
+        if (!allowed) {
+          toast.error("取消權限不足：僅限訂餐本人取消")
+          return
+        }
+        if (existing?.id) {
+          await deleteOrderById(
+            {
+              id: existing.id,
+              member_id: existing.member_id,
+              member_name: existing.member_name,
+              dish: existing.dish,
+              drink: META_FP_DRINK,
+              timestamp: existing.timestamp,
+            },
+            { actorName: audit.actorName },
+            "foodpanda個別取消",
+          )
+        } else {
+          await deleteTodayFpOrdersForMember(memberId, {
+            actorName: audit.actorName,
+          })
         }
         await loadFoodpandaOrders()
       } catch (e) {
@@ -498,24 +875,42 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         throw e
       }
     },
-    [loadFoodpandaOrders],
+    [foodpandaOrders, employees, deleteOrderById, deleteTodayFpOrdersForMember, loadFoodpandaOrders],
   )
 
-  const resetFpOrders = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const { error } = await supabase.from("orders").delete().like("member_id", `${META_FP_PREFIX}%`)
-      if (error) {
-        logPostgrestError("resetFpOrders:", error)
-        toast.error("foodpanda リセット失敗: " + formatPostgrestErrorMessage(error))
-        throw error
+  const resetFpOrders = useCallback(
+    async (audit: AuditActorInput) => {
+      if (!hasAdminAccess) {
+        toast.error("你冇管理權限")
+        return
       }
-      setFoodpandaOrders([])
-      await loadFoodpandaOrders()
-    } finally {
-      setIsLoading(false)
-    }
-  }, [loadFoodpandaOrders])
+      try {
+        setIsLoading(true)
+        const { data: rows, error } = await supabase
+          .from("orders")
+          .select("id, member_id, member_name, dish, drink, timestamp")
+          .or(`member_id.like.${META_FP_PREFIX}%,drink.eq.${META_FP_DRINK}`)
+        if (error) {
+          logPostgrestError("resetFpOrders fetch:", error)
+          toast.error("foodpanda 重設失敗: " + formatPostgrestErrorMessage(error))
+          throw error
+        }
+        for (const row of (rows ?? []) as OrderDbRow[]) {
+          await deleteOrderById(
+            row,
+            { actorName: audit.actorName },
+            "foodpanda一括Reset",
+          )
+        }
+        setFoodpandaOrders([])
+        setFpOrdersByDate({})
+        await loadFoodpandaOrders()
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [hasAdminAccess, deleteOrderById, loadFoodpandaOrders],
+  )
 
   const getDateRange = () => {
     const keys = listRecentHongKongDateKeys(ORDER_HISTORY_DAYS)
@@ -551,12 +946,12 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         logPostgrestError("Supabase error loading orders:", error)
         const msg = formatPostgrestErrorMessage(error)
-        setError(`データ読み込みエラー: ${msg}`)
-        toast.error("注文データの読み込みに失敗しました: " + msg)
+        setError(`資料載入錯誤: ${msg}`)
+        toast.error("訂單資料載入失敗: " + msg)
         return
       }
 
-      const orderRows = (data ?? []).filter((row) => !isMetaRow(row.member_id))
+      const orderRows = (data ?? []).filter((row) => !isMetaRow(row.member_id, row.drink))
       console.log("Loaded orders data:", orderRows)
 
       if (!orderRows || orderRows.length === 0) {
@@ -581,11 +976,34 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Error in loadOrders:", error)
-      setError(`予期せぬエラー: ${error instanceof Error ? error.message : String(error)}`)
-      toast.error("注文データの読み込みに失敗しました")
+      setError(`未預期錯誤: ${error instanceof Error ? error.message : String(error)}`)
+      toast.error("訂單資料載入失敗")
     } finally {
       setIsLoading(false)
       loadingRef.current = false
+    }
+  }, [])
+
+  const refreshTodayOrders = useCallback(async () => {
+    try {
+      const todayKey = getHongKongDateKey()
+      const { from, to } = getHongKongDayRange(todayKey)
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .gte("timestamp", from)
+        .lt("timestamp", to)
+        .order("timestamp", { ascending: false })
+
+      if (error) {
+        logPostgrestError("refreshTodayOrders:", error)
+        return
+      }
+
+      const dayOrders = (data ?? []).filter((row) => !isMetaRow(row.member_id, row.drink))
+      setOrders((prev) => ({ ...prev, [todayKey]: dayOrders }))
+    } catch (err) {
+      console.error("refreshTodayOrders:", err)
     }
   }, [])
 
@@ -598,12 +1016,12 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     // 定期的に更新（ポーリング）
     const intervalId = setInterval(() => {
       loadMasterData()
-      loadOrders()
+      refreshTodayOrders()
       loadFoodpandaOrders()
     }, 30000) // 30秒ごとに更新
 
     return () => clearInterval(intervalId)
-  }, [loadOrders, loadMasterData, loadFoodpandaOrders])
+  }, [loadOrders, loadMasterData, loadFoodpandaOrders, refreshTodayOrders])
 
   // リアルタイム更新（可能な場合）
   useEffect(() => {
@@ -620,7 +1038,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
           (payload) => {
             console.log("Received real-time update:", payload)
             loadMasterData()
-            loadOrders()
+            refreshTodayOrders()
             loadFoodpandaOrders()
           },
         )
@@ -635,7 +1053,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       console.error("Error setting up real-time subscription:", err)
       // リアルタイム更新に失敗してもアプリは動作し続ける
     }
-  }, [loadOrders, loadMasterData, loadFoodpandaOrders])
+  }, [loadMasterData, loadFoodpandaOrders, refreshTodayOrders])
 
   const hasOrdered = useCallback(
     (memberId: string): boolean => {
@@ -661,9 +1079,9 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       console.log("Submitting order:", order)
 
-      // タイムスタンプを明示的に設定
+      const operator = resolveOrderOperator(authMemberId, order.member_id, employees)
       const timestamp = new Date().toISOString()
-      console.log("Submitting order with data:", { ...order, timestamp })
+      console.log("Submitting order with data:", { ...order, timestamp, operator })
 
       const { data, error } = await supabase
         .from("orders")
@@ -673,7 +1091,9 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
             member_name: order.member_name,
             dish: order.dish,
             drink: order.drink,
-            timestamp: timestamp,
+            timestamp,
+            operator_member_id: operator.operatorMemberId,
+            operator_member_name: operator.operatorMemberName,
           },
         ])
         .select()
@@ -685,10 +1105,29 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       }
 
       console.log("Order added successfully:", data)
+      if (Array.isArray(data) && data[0]) {
+        await appendAuditLog({
+          action: "INSERT",
+          targetRow: data[0] as OrderDbRow,
+          actorName: operator.operatorMemberName,
+          summary: formatOperatorSummary(
+            operator,
+            order.member_id,
+            order.member_name,
+            "汀角路訂單新增",
+          ),
+          operatorMemberId: operator.operatorMemberId,
+          operatorMemberName: operator.operatorMemberName,
+          isProxy: isProxyOrder({
+            member_id: order.member_id,
+            operator_member_id: operator.operatorMemberId,
+          }),
+        })
+      }
       toast.success("訂單已成功提交")
 
       // データを再読み込み
-      await loadOrders()
+      await refreshTodayOrders()
     } catch (error) {
       console.error("Error in addOrder:", error)
       toast.error("訂單提交失敗")
@@ -721,7 +1160,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         throw new Error(formatPostgrestErrorMessage(error))
       }
 
-      const dayOrders = (data ?? []).filter((row) => !isMetaRow(row.member_id))
+      const dayOrders = (data ?? []).filter((row) => !isMetaRow(row.member_id, row.drink))
       setOrders((prev) => ({ ...prev, [dateKey]: dayOrders }))
       return dayOrders
     },
@@ -743,7 +1182,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .like("member_id", `${META_FP_PREFIX}%`)
         .gte("timestamp", from)
         .lt("timestamp", to)
         .order("timestamp", { ascending: false })
@@ -753,7 +1191,25 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         throw new Error(formatPostgrestErrorMessage(error))
       }
 
-      const dayOrders = parseFoodpandaOrdersFromRows(data ?? [], employees, dateKey)
+      let fpRows = (data ?? []).filter((row) => isFpOrderRow(row))
+
+      // 旧形式 meta-fp-* は行の timestamp が上書きでずれるため、JSON 内の期日でも拾う
+      const { data: legacyRows } = await supabase
+        .from("orders")
+        .select("*")
+        .like("member_id", `${META_FP_PREFIX}%`)
+
+      const seenIds = new Set(fpRows.map((r) => r.id).filter(Boolean))
+      for (const row of legacyRows ?? []) {
+        if (row.id && seenIds.has(row.id)) continue
+        const order = foodpandaOrderFromRow(row)
+        if (order && getHongKongDateKey(new Date(order.timestamp)) === dateKey) {
+          fpRows.push(row)
+          if (row.id) seenIds.add(row.id)
+        }
+      }
+
+      const dayOrders = parseFoodpandaOrdersFromRows(fpRows, employees, dateKey, false)
       setFpOrdersByDate((prev) => ({ ...prev, [dateKey]: dayOrders }))
       if (dateKey === getHongKongDateKey()) {
         setFoodpandaOrders(dayOrders)
@@ -766,6 +1222,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const exportToCSV = (dateKey?: string) => {
     try {
       const key = dateKey ?? getHongKongDateKey()
+      const [, month = "1", day = "1"] = key.split("-")
       const formattedDate = formatHongKongPeriodDate(key)
       const todayOrders = orders[key] || []
 
@@ -898,14 +1355,18 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       const wb = XLSX.utils.book_new()
       XLSX.utils.book_append_sheet(wb, ws, "訂單")
-      XLSX.writeFile(wb, `訂單_${today.getMonth() + 1}月${today.getDate()}日.xlsx`)
+      XLSX.writeFile(wb, `訂單_${Number(month)}月${Number(day)}日.xlsx`)
     } catch (err) {
       console.error("Error exporting Excel:", err)
-      toast.error("Excelのエクスポートに失敗しました")
+      toast.error("匯出 Excel 失敗")
     }
   }
 
-  const resetOrders = async () => {
+  const resetOrders = async (audit: AuditActorInput) => {
+    if (!hasAdminAccess) {
+      toast.error("你冇管理權限")
+      return
+    }
     try {
       setIsLoading(true)
 
@@ -915,20 +1376,31 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       console.log("Resetting orders from:", today.toISOString())
 
-      // 今日の注文のみ削除（社員・メニュー用 meta 行は同じ orders テーブルにあり、
-      // timestamp が今日なら gte だけだと一緒に消えて「1人消えた」になる）
-      const { error } = await supabase
+      const { data: targets, error: fetchError } = await supabase
         .from("orders")
-        .delete()
+        .select("id, member_id, member_name, dish, drink, timestamp")
         .gte("timestamp", today.toISOString())
-        .not("member_id", "like", LIKE_META_EMPLOYEE_PATTERN)
-        .not("member_id", "like", LIKE_META_MENU_PATTERN)
-        .not("member_id", "like", LIKE_META_FP_PATTERN)
+      if (fetchError) {
+        logPostgrestError("Error fetching orders for reset:", fetchError)
+        toast.error("重設訂單失敗: " + formatPostgrestErrorMessage(fetchError))
+        throw fetchError
+      }
 
-      if (error) {
-        logPostgrestError("Error deleting orders:", error)
-        toast.error("注文のリセットに失敗しました: " + formatPostgrestErrorMessage(error))
-        throw error
+      const rowsToDelete = ((targets ?? []) as OrderDbRow[]).filter(
+        (row) =>
+          !isEmployeeMetaRow(row.member_id) &&
+          !isMenuMetaRow(row.member_id) &&
+          !isFpMetaRow(row.member_id) &&
+          row.drink !== META_FP_DRINK &&
+          row.drink !== META_AUDIT_DRINK,
+      )
+
+      for (const row of rowsToDelete) {
+        await deleteOrderById(
+          row,
+          { actorName: audit.actorName },
+          "汀角路當日一括Reset",
+        )
       }
 
       // ローカルステートをリセット
@@ -941,13 +1413,13 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("lastResetTime", newResetTime.toISOString())
 
       console.log("Orders reset successfully at:", newResetTime)
-      toast.success("注文記録がリセットされました")
+      toast.success("訂單記錄已重設")
 
       // データを再読み込み
       await loadOrders()
     } catch (error) {
       console.error("Error in resetOrders:", error)
-      toast.error("注文のリセットに失敗しました")
+      toast.error("重設訂單失敗")
     } finally {
       setIsLoading(false)
     }
@@ -966,9 +1438,71 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const resetOrderStatus = useCallback(async () => {
-    await loadOrders()
-    await loadFoodpandaOrders()
-  }, [loadOrders, loadFoodpandaOrders])
+    await Promise.all([refreshTodayOrders(), loadFoodpandaOrders()])
+  }, [refreshTodayOrders, loadFoodpandaOrders])
+
+  const fetchAuditLogs = useCallback(async (limit = 200): Promise<AuditLogEntry[]> => {
+    if (!hasAdminAccess) {
+      throw new Error("Admin permission required")
+    }
+    const { data, error } = await supabase
+      .from("orders")
+      .select("id, member_id, member_name, dish, drink, timestamp")
+      .eq("drink", META_AUDIT_DRINK)
+      .order("timestamp", { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      logPostgrestError("fetchAuditLogs:", error)
+      throw error
+    }
+
+    const appLogs = (data ?? [])
+      .map((row) => parseAuditEntryFromRow(row as OrderDbRow))
+      .filter((row): row is AuditLogEntry => row !== null)
+
+    const { data: dbAuditData, error: dbAuditError } = await supabase
+      .from("order_audit_logs")
+      .select("id, created_at, action, old_row, new_row, order_id")
+      .order("created_at", { ascending: false })
+      .limit(limit)
+
+    if (dbAuditError) {
+      logPostgrestError("fetchAuditLogs(order_audit_logs):", dbAuditError)
+      return appLogs
+    }
+
+    const dbLogs: AuditLogEntry[] = (dbAuditData ?? []).map((row) => {
+      const oldRow = (row.old_row ?? null) as Partial<OrderDbRow> | null
+      const newRow = (row.new_row ?? null) as Partial<OrderDbRow> | null
+      const targetMemberId = String(newRow?.member_id ?? oldRow?.member_id ?? "")
+      const targetMemberName = String(newRow?.member_name ?? oldRow?.member_name ?? "")
+      const operatorMemberId = String(newRow?.operator_member_id ?? oldRow?.operator_member_id ?? "")
+      const operatorMemberName = String(newRow?.operator_member_name ?? oldRow?.operator_member_name ?? "")
+      return {
+        id: `db-${row.id}`,
+        createdAt: row.created_at as string,
+        action: row.action as AuditAction,
+        actorName: operatorMemberName || "system(db)",
+        confirmationCodeSuffix: "",
+        targetOrderId: (row.order_id as string) ?? null,
+        targetMemberId: targetMemberId || null,
+        targetMemberName: targetMemberName || null,
+        operatorMemberId: operatorMemberId || null,
+        operatorMemberName: operatorMemberName || null,
+        isProxyOrder: Boolean(
+          operatorMemberId &&
+            targetMemberId &&
+            operatorMemberId !== targetMemberId,
+        ),
+        summary: `DB trigger ${row.action}`,
+      }
+    })
+
+    return [...appLogs, ...dbLogs]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit)
+  }, [hasAdminAccess])
 
   const modifyOrder = async (orderId: string, newOrder: Omit<Order, "id" | "timestamp">) => {
     try {
@@ -984,20 +1518,21 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
       if (checkError) {
         logPostgrestError("Error checking existing order:", checkError)
-        toast.error("注文の確認に失敗しました: " + formatPostgrestErrorMessage(checkError))
+        toast.error("確認訂單失敗: " + formatPostgrestErrorMessage(checkError))
         throw checkError
       }
 
       if (!existingOrder) {
         console.error("Order not found:", orderId)
-        toast.error("注文が見つかりません")
+        toast.error("搵唔到訂單")
         throw new Error("Order not found")
       }
 
       console.log("Existing order:", existingOrder)
       console.log("Updating with:", newOrder)
 
-      // 注文を更新
+      const operator = resolveOrderOperator(authMemberId, newOrder.member_id, employees)
+
       const { error } = await supabase
         .from("orders")
         .update({
@@ -1005,30 +1540,59 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
           member_name: newOrder.member_name,
           dish: newOrder.dish,
           drink: newOrder.drink,
+          operator_member_id: operator.operatorMemberId,
+          operator_member_name: operator.operatorMemberName,
         })
         .eq("id", orderId)
 
       if (error) {
         logPostgrestError("Error modifying order:", error)
-        toast.error("注文の修正に失敗しました: " + formatPostgrestErrorMessage(error))
+        toast.error("修改訂單失敗: " + formatPostgrestErrorMessage(error))
         throw error
       }
 
+      await appendAuditLog({
+        action: "UPDATE",
+        targetRow: {
+          id: orderId,
+          member_id: newOrder.member_id,
+          member_name: newOrder.member_name,
+          dish: newOrder.dish,
+          drink: newOrder.drink,
+          timestamp: existingOrder.timestamp,
+          operator_member_id: operator.operatorMemberId,
+          operator_member_name: operator.operatorMemberName,
+        },
+        actorName: operator.operatorMemberName,
+        summary: formatOperatorSummary(
+          operator,
+          newOrder.member_id,
+          newOrder.member_name,
+          `汀角路訂單修改（前: ${existingOrder.dish}/${existingOrder.drink}）`,
+        ),
+        operatorMemberId: operator.operatorMemberId,
+        operatorMemberName: operator.operatorMemberName,
+        isProxy: isProxyOrder({
+          member_id: newOrder.member_id,
+          operator_member_id: operator.operatorMemberId,
+        }),
+      })
+
       console.log("Order modified successfully")
-      toast.success("注文が修正されました")
+      toast.success("訂單已修改")
 
       // データを再読み込み
-      await loadOrders()
+      await refreshTodayOrders()
     } catch (error) {
       console.error("Error in modifyOrder:", error)
-      toast.error("注文の修正に失敗しました")
+      toast.error("修改訂單失敗")
       throw error
     } finally {
       setIsLoading(false)
     }
   }
 
-  const cancelOrder = async (memberId: string) => {
+  const cancelOrder = async (memberId: string, audit: AuditActorInput) => {
     try {
       setIsLoading(true)
 
@@ -1036,27 +1600,35 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       const orderToCancel = todayOrders.find((order) => order.member_id === memberId)
 
       if (!orderToCancel) {
-        toast.error("該当する注文が見つかりません")
+        toast.error("搵唔到對應訂單")
+        return
+      }
+
+      const employee = employees.find((e) => e.id === memberId)
+      const allowed = isActorMatched(audit.actorName, [
+        orderToCancel.member_name,
+        employee?.nameInChinese,
+        employee?.nameInEnglish,
+      ])
+      if (!allowed) {
+        toast.error("取消權限不足：僅限訂餐本人取消")
         return
       }
 
       console.log("Cancelling order:", orderToCancel.id)
+      await deleteOrderById(
+        orderToCancel as unknown as OrderDbRow,
+        { actorName: audit.actorName },
+        "汀角路個別取消",
+      )
 
-      const { error } = await supabase.from("orders").delete().eq("id", orderToCancel.id)
-
-      if (error) {
-        logPostgrestError("Error cancelling order (delete):", error)
-        toast.error("注文の取り消しに失敗しました: " + formatPostgrestErrorMessage(error))
-        throw error
-      }
-
-      toast.success("注文が取り消されました")
+      toast.success("訂單已取消")
 
       // データを再読み込み
-      await loadOrders()
+      await refreshTodayOrders()
     } catch (error) {
       console.error("Error cancelling order:", error)
-      toast.error("注文の取り消しに失敗しました")
+      toast.error("取消訂單失敗")
     } finally {
       setIsLoading(false)
     }
@@ -1071,6 +1643,8 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         menuItems,
         currentMember,
         setCurrentMember,
+        authMemberId,
+        bindAuthMember,
         addOrder,
         getOrdersForDate,
         fetchOrdersForDate,
@@ -1089,6 +1663,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         hasFpOrdered,
         cancelFpOrder,
         resetFpOrders,
+        fetchAuditLogs,
         saveEmployees,
         deleteEmployeePermanently,
         saveMenuItems,
