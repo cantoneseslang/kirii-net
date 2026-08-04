@@ -277,7 +277,8 @@ function FoodpandaPreview({
     receipt?.imageDataUrl && receipt.imageDataUrl.startsWith("data:image/")
       ? receipt.imageDataUrl
       : null
-  const hasReceipt = Boolean(receiptImageUrl || receiptPaid != null)
+  /** 右側埋め込みは画像があるときのみ（金額だけの舊データは再スキャンが必要） */
+  const hasReceiptImage = Boolean(receiptImageUrl)
 
   const renderFpRows = (groups: FpDishGroup[], startNum: { n: number }) =>
     groups.map((group) => {
@@ -325,12 +326,12 @@ function FoodpandaPreview({
   return (
     <div
       className={`border rounded-md p-6 bg-white text-sm order-sheet ${
-        hasReceipt ? "order-sheet--with-receipt" : ""
+        hasReceiptImage ? "order-sheet--with-receipt" : ""
       }`}
       id="print-area"
       style={{ borderColor: "#d70f64" }}
     >
-      <div className="order-sheet-grid">
+      <div className={`order-sheet-grid ${hasReceiptImage ? "order-sheet-grid--receipt" : ""}`}>
         <div className="order-sheet-main">
           <div className="font-bold text-base mb-1" style={{ color: "#d70f64" }}>
             🐼 foodpanda 落單表
@@ -413,9 +414,14 @@ function FoodpandaPreview({
           </div>
         </div>
 
-        {receiptImageUrl ? (
+        {hasReceiptImage ? (
           <aside className="order-sheet-receipt" aria-label="收據">
-            <img src={receiptImageUrl} alt="收據" className="order-sheet-receipt-img" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={receiptImageUrl!}
+              alt="收據"
+              className="order-sheet-receipt-img"
+            />
           </aside>
         ) : null}
       </div>
@@ -537,9 +543,19 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
           />
         ) : null
       )}
-      {!isTingkok && fpOrders.length > 0 && queriedDateKey && !fpReceipt && !loading ? (
+      {!isTingkok && fpOrders.length > 0 && queriedDateKey && !loading && !fpReceipt ? (
         <p className="text-sm text-amber-700 mt-2 print:hidden">
           該期日尚未套用收據。請在「收據掃描」上傳並套用後，顯示折扣後金額與右側收據圖。
+        </p>
+      ) : null}
+      {!isTingkok &&
+      fpOrders.length > 0 &&
+      queriedDateKey &&
+      !loading &&
+      fpReceipt &&
+      !(fpReceipt.imageDataUrl && fpReceipt.imageDataUrl.startsWith("data:image/")) ? (
+        <p className="text-sm text-amber-700 mt-2 print:hidden">
+          已有折扣金額，但沒有收據圖。請在「收據掃描」重新上傳該日收據並套用，右側才會嵌入並可一同列印。
         </p>
       ) : null}
     </div>

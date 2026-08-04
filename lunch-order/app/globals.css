@@ -213,50 +213,56 @@ body {
     font-size: 11pt;
   }
 
-  /* 導出落單表 + 收據埋め込み（A4縦1ページ） */
+  /* foodpanda 落單表 + 收據（A4縦・同一ページ） */
   .order-sheet {
     box-sizing: border-box;
     width: 100%;
     max-height: 287mm;
     overflow: hidden;
-    font-size: 9.5pt;
-    line-height: 1.2;
+    font-size: 9pt;
+    line-height: 1.15;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .order-sheet-grid {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 3mm;
+    display: block;
+    width: 100%;
+  }
+  .order-sheet-grid--receipt {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 62mm;
+    column-gap: 3mm;
+    align-items: start;
     width: 100%;
     max-height: 287mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .order-sheet-main {
-    flex: 1 1 auto;
     min-width: 0;
   }
-  .order-sheet--with-receipt .order-sheet-main {
-    flex: 1 1 62%;
-    max-width: 62%;
-  }
   .order-sheet-receipt {
-    flex: 0 0 36%;
-    max-width: 68mm;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
+    display: block !important;
+    width: 62mm;
+    max-width: 62mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .order-sheet-receipt-img {
+    display: block !important;
     width: 100%;
-    max-width: 68mm;
-    max-height: 275mm;
+    max-width: 62mm;
+    max-height: 270mm;
     height: auto;
     object-fit: contain;
     object-position: top right;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   .order-sheet-table th,
   .order-sheet-table td {
-    padding: 0.8mm 1.5mm !important;
-    font-size: 9pt;
+    padding: 0.6mm 1.2mm !important;
+    font-size: 8.5pt;
   }
   .order-sheet-date {
     margin-bottom: 2mm !important;
@@ -268,31 +274,32 @@ body {
   }
   .order-sheet-stats,
   .order-sheet-notes {
-    margin-top: 3mm !important;
+    margin-top: 2mm !important;
   }
   .order-sheet-stats .font-bold,
   .order-sheet-notes {
-    font-size: 9.5pt;
+    font-size: 9pt;
   }
 }
 
-/* 画面プレビューでも落單表＋收據の並びを確認しやすく */
+/* 画面: 落單表＋收據を横並び */
 .order-sheet-grid {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 1rem;
+  display: block;
+  width: 100%;
 }
-.order-sheet--with-receipt .order-sheet-main {
-  flex: 1 1 62%;
-  min-width: 0;
+.order-sheet-grid--receipt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 280px);
+  column-gap: 1rem;
+  align-items: start;
 }
 .order-sheet-receipt {
-  flex: 0 0 36%;
+  width: 100%;
   max-width: 280px;
-  margin-left: auto;
+  justify-self: end;
 }
 .order-sheet-receipt-img {
+  display: block;
   width: 100%;
   max-height: 720px;
   object-fit: contain;
