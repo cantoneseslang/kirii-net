@@ -22,8 +22,8 @@ export async function POST(req: Request) {
     if (!imageDataUrl.startsWith("data:image/")) {
       return NextResponse.json({ error: "imageDataUrl 形式が不正です" }, { status: 400 })
     }
-    // 过大 payload を拒否（約 1.2MB data URL）
-    if (imageDataUrl.length > 1_600_000) {
+    // 过大 payload を拒否（OCR 用 JPEG data URL 上限）
+    if (imageDataUrl.length > 1_800_000) {
       return NextResponse.json({ error: "圖片過大，請壓縮後再試" }, { status: 413 })
     }
 

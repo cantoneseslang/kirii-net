@@ -90,16 +90,18 @@ export async function extractReceiptWithVision(imageDataUrl: string): Promise<Vi
   const token = await getGatewayToken()
   const prompt = [
     "你是香港外送收據（KeeTa / foodpanda）讀取專員。收據為繁體中文（廣東話）。",
-    "務必從收據本身讀出【落單／訂單日期】，轉成 YYYY-MM-DD。",
-    "日期常見格式：落單時間、DD/MM/YYYY、DD.MM.YYYY、YYYY年M月D日。不要用今天的日期。",
-    "金額：",
+    "【最重要】dateKey 必須是收據上清楚可見的落單／訂單日期，轉成 YYYY-MM-DD。",
+    "常見格式：落單時間、DD/MM/YYYY、DD.MM.YYYY（例 16.07.2026）、YYYY年M月D日。",
+    "看不清日期就回 dateKey: null。絕對不要猜測、不要用今天、不要編造年份。",
+    "金額看不清也回 null，不要編造。",
+    "金額欄位：",
     "- finalPaid = 顧客實付（KeeTa）或 總計／總計（含增值稅）（foodpanda）",
     "- foodSubtotal = 餐點總價 或 小計",
     "- deliveryFee = 運費 / Delivery Fee",
     "- serviceFee = 平台服務費 / Service Fee",
     "platform: keeta | foodpanda | unknown",
-    "items: 餐點名稱列表（不要包含運費／服務費）",
-    "visibleText: 盡量抄錄收據上可見的關鍵文字（含日期與金額行）",
+    "items: 只列收據上可見的餐點名稱（不要亂填 餐點1）",
+    "visibleText: 逐字抄錄收據上的日期行與金額行原文",
   ].join("\n")
 
   const body = {

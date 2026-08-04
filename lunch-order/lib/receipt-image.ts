@@ -1,9 +1,27 @@
 import { pdfFileToImageBlobs } from "./receipt-pdf"
 
-const MAX_WIDTH = 520
-const MAX_HEIGHT = 1600
-const JPEG_QUALITY = 0.72
-const MAX_DATA_URL_CHARS = 900_000
+export type ReceiptImageOptions = {
+  maxWidth: number
+  maxHeight: number
+  jpegQuality: number
+  maxDataUrlChars: number
+}
+
+/** 落單表右側埋め込み用（小さめ） */
+export const RECEIPT_IMAGE_EMBED: ReceiptImageOptions = {
+  maxWidth: 520,
+  maxHeight: 1600,
+  jpegQuality: 0.72,
+  maxDataUrlChars: 900_000,
+}
+
+/** Vision OCR 用（期日・金額を落とさないよう解像度を確保） */
+export const RECEIPT_IMAGE_OCR: ReceiptImageOptions = {
+  maxWidth: 1200,
+  maxHeight: 2400,
+  jpegQuality: 0.88,
+  maxDataUrlChars: 1_400_000,
+}
 
 function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -21,14 +39,17 @@ function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
   })
 }
 
-/** 熱感收據を縦長のまま JPEG data URL に圧縮（落單表埋め込み用） */
-export async function blobToReceiptImageDataUrl(blob: Blob): Promise<string> {
+/** 熱感收據を縦長のまま JPEG data URL に圧縮 */
+export async function blobToReceiptImageDataUrl(
+  blob: Blob,
+  options: ReceiptImageOptions = RECEIPT_IMAGE_EMBED,
+): Promise<string> {
   const img = await loadImageFromBlob(blob)
   let w = img.naturalWidth || img.width
   let h = img.naturalHeight || img.height
   if (!w || !h) throw new Error("收據圖片尺寸無效")
 
-  const scale = Math.min(1, MAX_WIDTH / w, MAX_HEIGHT / h)
+  const scale = Math.min(1, options.maxWidth / w, options.maxHeight / h)
   w = Math.max(1, Math.round(w * scale))
   h = Math.max(1, Math.round(h * scale))
 
@@ -41,22 +62,25 @@ export async function blobToReceiptImageDataUrl(blob: Blob): Promise<string> {
   ctx.fillRect(0, 0, w, h)
   ctx.drawImage(img, 0, 0, w, h)
 
-  let quality = JPEG_QUALITY
+  let quality = options.jpegQuality
   let dataUrl = canvas.toDataURL("image/jpeg", quality)
-  while (dataUrl.length > MAX_DATA_URL_CHARS && quality > 0.35) {
-    quality -= 0.1
+  while (dataUrl.length > options.maxDataUrlChars && quality > 0.45) {
+    quality -= 0.08
     dataUrl = canvas.toDataURL("image/jpeg", quality)
   }
   return dataUrl
 }
 
-/** 上傳檔（JPEG/PNG/PDF）→ 落單表用 data URL。PDF は第1頁。 */
-export async function fileToReceiptImageDataUrl(file: File): Promise<string> {
+/** 上傳檔（JPEG/PNG/PDF）→ data URL。PDF は第1頁。 */
+export async function fileToReceiptImageDataUrl(
+  file: File,
+  options: ReceiptImageOptions = RECEIPT_IMAGE_EMBED,
+): Promise<string> {
   const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name)
   if (isPdf) {
     const pages = await pdfFileToImageBlobs(file)
     if (!pages[0]) throw new Error("PDF 沒有可轉換的頁面")
-    return blobToReceiptImageDataUrl(pages[0])
+    return blobToReceiptImageDataUrl(pages[0], options)
   }
-  return blobToReceiptImageDataUrl(file)
+  return blobToReceiptImageDataUrl(file, options)
 }

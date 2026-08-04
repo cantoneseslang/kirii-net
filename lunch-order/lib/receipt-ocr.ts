@@ -1,4 +1,4 @@
-import { fileToReceiptImageDataUrl } from "./receipt-image"
+import { fileToReceiptImageDataUrl, RECEIPT_IMAGE_EMBED, RECEIPT_IMAGE_OCR } from "./receipt-image"
 import { parseReceiptText, type ParsedReceipt } from "./receipt-parser"
 
 /**
@@ -72,14 +72,20 @@ async function ocrViaTesseractFallback(imageDataUrl: string): Promise<ReceiptOcr
  * imageDataUrl も返す（落單表埋め込み用に再利用）。
  */
 export async function ocrReceiptFile(file: File): Promise<ReceiptOcrResult> {
-  const imageDataUrl = await fileToReceiptImageDataUrl(file)
+  // Vision 用は高解像度、落單表埋め込み用は別途小さめを保持
+  const [ocrImage, embedImage] = await Promise.all([
+    fileToReceiptImageDataUrl(file, RECEIPT_IMAGE_OCR),
+    fileToReceiptImageDataUrl(file, RECEIPT_IMAGE_EMBED),
+  ])
 
   try {
-    return await ocrViaVisionApi(imageDataUrl)
+    const result = await ocrViaVisionApi(ocrImage)
+    return { ...result, imageDataUrl: embedImage }
   } catch (visionErr) {
     console.warn("[receipt-ocr] vision failed, trying tesseract", visionErr)
     try {
-      const fallback = await ocrViaTesseractFallback(imageDataUrl)
+      const fallback = await ocrViaTesseractFallback(ocrImage)
+      fallback.imageDataUrl = embedImage
       // Vision 失敗をユーザーが分かるよう rawText に追記
       fallback.text = `[Vision失敗→Tesseract]\n${fallback.text}\n\n(${
         visionErr instanceof Error ? visionErr.message : "vision error"
