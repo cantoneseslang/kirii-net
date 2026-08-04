@@ -1,5 +1,10 @@
 import type { ParsedReceipt, ReceiptPlatform } from "./receipt-parser"
-import { normalizeReceiptItemName, parseReceiptText } from "./receipt-parser"
+import {
+  correctReceiptDateYear,
+  normalizeReceiptItemName,
+  parseReceiptText,
+} from "./receipt-parser"
+import { getHongKongDateKey } from "./hong-kong-calendar"
 
 export type VisionReceiptExtract = {
   dateKey: string | null
@@ -88,11 +93,14 @@ export async function extractReceiptWithVision(imageDataUrl: string): Promise<Vi
   }
 
   const token = await getGatewayToken()
+  const hkToday = getHongKongDateKey()
   const prompt = [
     "你是香港外送收據（KeeTa / foodpanda）讀取專員。收據為繁體中文（廣東話）。",
+    `今天（香港）是 ${hkToday}。收據幾乎都是近幾個月（2025–2026），年份不要讀成 2020。`,
     "【最重要】dateKey 必須是收據上清楚可見的落單／訂單日期，轉成 YYYY-MM-DD。",
-    "常見格式：落單時間、DD/MM/YYYY、DD.MM.YYYY（例 16.07.2026）、YYYY年M月D日。",
-    "看不清日期就回 dateKey: null。絕對不要猜測、不要用今天、不要編造年份。",
+    "常見格式：落單時間、DD/MM/YYYY、DD.MM.YYYY（例 02.07.2026 = 2026-07-02）、YYYY年M月D日。",
+    "熱感紙常把 2026 的 6 讀成 0（變成 2020）— 請特別小心年份。",
+    "看不清日期就回 dateKey: null。不要用無關的舊年份。",
     "金額看不清也回 null，不要編造。",
     "金額欄位：",
     "- finalPaid = 顧客實付（KeeTa）或 總計／總計（含增值稅）（foodpanda）",
@@ -101,7 +109,7 @@ export async function extractReceiptWithVision(imageDataUrl: string): Promise<Vi
     "- serviceFee = 平台服務費 / Service Fee",
     "platform: keeta | foodpanda | unknown",
     "items: 只列收據上可見的餐點名稱（不要亂填 餐點1）",
-    "visibleText: 逐字抄錄收據上的日期行與金額行原文",
+    "visibleText: 逐字抄錄收據上的日期行與金額行原文（含年份數字）",
   ].join("\n")
 
   const body = {
@@ -191,7 +199,8 @@ export async function extractReceiptWithVision(imageDataUrl: string): Promise<Vi
   // 日付は Vision を優先。取れなければ visibleText / 正規表現パーサーで補完
   const fromVision = normalizeDateKey(parsedJson.dateKey ?? null)
   const fromText = parseReceiptText(visibleText)
-  const dateKey = fromVision ?? fromText.dateKey
+  const rawDate = fromVision ?? fromText.dateKey
+  const dateKey = correctReceiptDateYear(rawDate, hkToday)
 
   return {
     dateKey,

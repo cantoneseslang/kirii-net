@@ -7,6 +7,7 @@ import { getHongKongDateKey, getHongKongDayRange } from "../lib/hong-kong-calend
 import { fileToReceiptImageDataUrl } from "../lib/receipt-image"
 import { ocrReceiptFile } from "../lib/receipt-ocr"
 import {
+  correctReceiptDateYear,
   matchReceiptToOrders,
   META_FP_RECEIPT_DRINK,
   normalizeReceiptItemName,
@@ -82,11 +83,13 @@ function draftFromOcr(
   engine: "vision" | "tesseract-fallback",
   imageDataUrl: string | null,
 ): ScanDraft {
+  const todayKey = getHongKongDateKey()
+  const corrected = correctReceiptDateYear(parsed.dateKey, todayKey)
   // 期日は收據から読めた場合のみ自動入力（今日の日付で埋めない）
   return {
     fileName,
     ocrText,
-    dateKey: parsed.dateKey || "",
+    dateKey: corrected || "",
     platform: parsed.platform,
     finalPaid: numOrEmpty(parsed.finalPaid),
     foodSubtotal: numOrEmpty(parsed.foodSubtotal),
@@ -97,7 +100,7 @@ function draftFromOcr(
     match: null,
     orderDishes: [],
     engine,
-    dateFromReceipt: Boolean(parsed.dateKey),
+    dateFromReceipt: Boolean(corrected),
     imageDataUrl,
   }
 }
@@ -162,10 +165,7 @@ export default function ReceiptScanPanel() {
       } else if (!last.finalPaid) {
         toast.error(`期日 ${last.dateKey} 已讀取，但金額未辨識 — 請手動填寫折扣後金額`)
       } else {
-        toast.success(
-          `已從收據讀取期日 ${last.dateKey}` +
-            (last.engine === "vision" ? "（Vision）" : "（備援 OCR・請仔細核對）"),
-        )
+        toast.success(`已讀取期日 ${last.dateKey} — 請確認後按「確認並套用」保存收據圖`)
       }
     } catch (err) {
       console.error(err)
@@ -181,9 +181,14 @@ export default function ReceiptScanPanel() {
   const saveReceipt = async () => {
     if (!draft) return
     const rawFinal = parseOptionalNumber(draft.finalPaid)
-    if (!draft.dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(draft.dateKey)) {
+    const todayKey = getHongKongDateKey()
+    const dateKey = correctReceiptDateYear(draft.dateKey, todayKey) || draft.dateKey
+    if (!dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
       toast.error("請輸入正確期日 YYYY-MM-DD")
       return
+    }
+    if (dateKey !== draft.dateKey) {
+      setDraft({ ...draft, dateKey })
     }
     if (rawFinal == null || rawFinal < 0) {
       toast.error("請輸入折扣後金額（顧客實付／總計）")
@@ -208,12 +213,17 @@ export default function ReceiptScanPanel() {
       let imageDataUrl: string | null = draft.imageDataUrl
       if (!imageDataUrl && sourceFile) {
         imageDataUrl = await fileToReceiptImageDataUrl(sourceFile)
-      } else if (!imageDataUrl && previewUrl?.startsWith("data:image/")) {
+      }
+      if (!imageDataUrl && previewUrl?.startsWith("data:image/")) {
         imageDataUrl = previewUrl
       }
 
-      const memberId = receiptMemberId(draft.dateKey)
-      const { from } = getHongKongDayRange(draft.dateKey)
+      if (!imageDataUrl || !imageDataUrl.startsWith("data:image/")) {
+        throw new Error("收據圖片未保存 — 請重新上傳後再套用（落單表右側需要圖片）")
+      }
+
+      const memberId = receiptMemberId(dateKey)
+      const { from } = getHongKongDayRange(dateKey)
 
       const { data: existing } = await supabase
         .from("orders")
@@ -222,18 +232,8 @@ export default function ReceiptScanPanel() {
         .eq("drink", META_FP_RECEIPT_DRINK)
         .maybeSingle()
 
-      // 再套用で画像なしの場合は既存画像を維持
-      if (!imageDataUrl && existing?.dish) {
-        try {
-          const prev = JSON.parse(existing.dish) as FoodpandaReceiptRecord
-          if (prev.imageDataUrl) imageDataUrl = prev.imageDataUrl
-        } catch {
-          /* ignore */
-        }
-      }
-
       const record: FoodpandaReceiptRecord = {
-        dateKey: draft.dateKey,
+        dateKey,
         platform: draft.platform,
         finalPaid,
         foodSubtotal,
@@ -280,11 +280,18 @@ export default function ReceiptScanPanel() {
         if (error) throw error
       }
 
-      toast.success(
-        imageDataUrl
-          ? `已套用 ${draft.dateKey}（含收據圖）至報銷表 B／落單表`
-          : `已套用 ${draft.dateKey} 折扣後金額 $${finalPaid.toFixed(1)} 至報銷表 B`,
-      )
+      // 誤年（例 2020-07-02）に保存済みの行があれば削除
+      const wrongYear = draft.dateKey
+      if (wrongYear && wrongYear !== dateKey && /^\d{4}-\d{2}-\d{2}$/.test(wrongYear)) {
+        await supabase
+          .from("orders")
+          .delete()
+          .eq("member_id", receiptMemberId(wrongYear))
+          .eq("drink", META_FP_RECEIPT_DRINK)
+      }
+
+      toast.success(`已保存收據圖並套用 ${dateKey}（報銷表 B／落單表右側）`)
+      setDraft({ ...draft, dateKey, imageDataUrl, dateFromReceipt: true })
     } catch (err) {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "儲存失敗")

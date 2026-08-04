@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useOrders } from "../context/order-context"
 import type { Order, FoodpandaOrder, EmployeeRecord } from "../types"
-import { formatHongKongPeriodDate, getHongKongDateKey } from "../lib/hong-kong-calendar"
+import {
+  formatHongKongPeriodDate,
+  getHongKongDateKey,
+  getHongKongDayRange,
+} from "../lib/hong-kong-calendar"
 import {
   META_FP_RECEIPT_DRINK,
   parseFpReceiptRecord,
@@ -20,15 +24,64 @@ import {
 import { supabase } from "../lib/supabase"
 import OrderDateQueryBar from "./order-date-query-bar"
 
-async function fetchReceiptForDate(dateKey: string): Promise<FoodpandaReceiptRecord | null> {
+async function loadReceiptRow(dateKey: string): Promise<{
+  id: string
+  record: FoodpandaReceiptRecord
+} | null> {
   const { data, error } = await supabase
     .from("orders")
-    .select("dish")
+    .select("id, dish")
     .eq("member_id", receiptMemberId(dateKey))
     .eq("drink", META_FP_RECEIPT_DRINK)
     .maybeSingle()
   if (error || !data?.dish) return null
-  return parseFpReceiptRecord(data.dish)
+  const record = parseFpReceiptRecord(data.dish)
+  if (!record) return null
+  return { id: String(data.id), record }
+}
+
+/** 誤年保存（2020-07-02 等）の画像を正しい期日へ寄せる */
+async function fetchReceiptForDate(dateKey: string): Promise<FoodpandaReceiptRecord | null> {
+  const primary = await loadReceiptRow(dateKey)
+  if (primary?.record.imageDataUrl?.startsWith("data:image/")) {
+    return primary.record
+  }
+
+  const [, mm, dd] = dateKey.split("-")
+  const y = Number(dateKey.slice(0, 4))
+  const altYears = [y - 6, y - 1, 2020, 2025].filter((yy, i, arr) => yy > 2019 && yy !== y && arr.indexOf(yy) === i)
+
+  for (const altY of altYears) {
+    const altKey = `${altY}-${mm}-${dd}`
+    const alt = await loadReceiptRow(altKey)
+    if (!alt?.record.imageDataUrl?.startsWith("data:image/")) continue
+
+    const merged: FoodpandaReceiptRecord = {
+      ...alt.record,
+      ...(primary?.record ?? {}),
+      dateKey,
+      finalPaid: primary?.record.finalPaid ?? alt.record.finalPaid,
+      imageDataUrl: alt.record.imageDataUrl,
+      updatedAt: new Date().toISOString(),
+    }
+
+    const { from } = getHongKongDayRange(dateKey)
+    const payload = {
+      member_id: receiptMemberId(dateKey),
+      member_name: "foodpanda-receipt",
+      dish: JSON.stringify(merged),
+      drink: META_FP_RECEIPT_DRINK,
+      timestamp: from,
+    }
+    if (primary?.id) {
+      await supabase.from("orders").update(payload).eq("id", primary.id)
+    } else {
+      await supabase.from("orders").insert(payload)
+    }
+    return merged
+  }
+
+  return primary?.record ?? null
 }
 
 interface DishGroup {

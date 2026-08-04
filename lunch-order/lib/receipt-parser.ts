@@ -51,6 +51,23 @@ export function receiptMemberId(dateKey: string): string {
   return `${META_FP_RECEIPT_PREFIX}${dateKey}`
 }
 
+/**
+ * 熱感 OCR は年を 2026→2020 と誤読しやすい。
+ * 基準年（香港の今日）から大きく外れた年は、月日を保ったまま基準年へ補正する。
+ */
+export function correctReceiptDateYear(
+  dateKey: string | null | undefined,
+  referenceDateKey: string,
+): string | null {
+  if (!dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return dateKey ?? null
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(referenceDateKey)) return dateKey
+  const refYear = Number(referenceDateKey.slice(0, 4))
+  const [y, m, d] = dateKey.split("-").map(Number)
+  if (!y || !m || !d) return dateKey
+  if (y >= refYear - 1 && y <= refYear) return dateKey
+  return `${refYear}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+}
+
 export function isFpReceiptRow(row: { member_id: string; drink?: string }): boolean {
   return row.drink === META_FP_RECEIPT_DRINK || row.member_id.startsWith(META_FP_RECEIPT_PREFIX)
 }
