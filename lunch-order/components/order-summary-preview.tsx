@@ -450,8 +450,12 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
   const [loadError, setLoadError] = useState<string | null>(null)
   const [hasQueried, setHasQueried] = useState(false)
 
+  const querySeq = useRef(0)
+
   const runDateQuery = useCallback(
     async (dateKey: string) => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return
+      const seq = ++querySeq.current
       setLoading(true)
       setLoadError(null)
       setQueriedDateKey(dateKey)
@@ -459,25 +463,30 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
       try {
         if (restaurant === "tingkok") {
           const data = await fetchOrdersForDate(dateKey)
+          if (seq !== querySeq.current) return
           setDayOrders(data)
           setFpOrders([])
           setFpReceipt(null)
         } else {
+          // force: キャッシュで空のまま固まらないように毎回取り直す
+          // 收據は注文と分離（巨大画像を注文照会に混ぜない）
           const [data, receipt] = await Promise.all([
-            fetchFoodpandaOrdersForDate(dateKey),
+            fetchFoodpandaOrdersForDate(dateKey, { force: true }),
             fetchReceiptForDate(dateKey),
           ])
+          if (seq !== querySeq.current) return
           setFpOrders(data)
           setDayOrders([])
           setFpReceipt(receipt)
         }
       } catch (e) {
+        if (seq !== querySeq.current) return
         setLoadError(e instanceof Error ? e.message : "載入失敗")
         setDayOrders([])
         setFpOrders([])
         setFpReceipt(null)
       } finally {
-        setLoading(false)
+        if (seq === querySeq.current) setLoading(false)
       }
     },
     [restaurant, fetchOrdersForDate, fetchFoodpandaOrdersForDate],
@@ -503,6 +512,7 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
         </button>
         <OrderDateQueryBar
           todayKey={todayKey}
+          value={queriedDateKey ?? todayKey}
           defaultDateKey={todayKey}
           loading={loading}
           onQuery={runDateQuery}
@@ -521,36 +531,41 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
         </button>
       </div>
 
-      {!hasQueried && !loading && (
-        <div className="border rounded-md p-8 text-center text-gray-500 mb-4 print:hidden">
-          請選擇期日
-        </div>
-      )}
       {loadError && (
         <p className="text-red-600 mb-4 print:hidden">{loadError}</p>
+      )}
+      {loading && displayOrders.length === 0 && (
+        <div className="border rounded-md p-8 text-center text-gray-500 mb-4 print:hidden">
+          查詢中…
+        </div>
       )}
       {hasQueried && !loading && !loadError && displayOrders.length === 0 && queriedDateKey && (
         <div className="border rounded-md p-8 text-center text-gray-500 mb-4 print:hidden">
           {formatHongKongPeriodDate(queriedDateKey)} 沒有{isTingkok ? "" : " foodpanda "}落單記錄
+          <div className="text-xs mt-2 text-gray-400">（週末や注文のない日は表示されません）</div>
         </div>
       )}
 
       {isTingkok ? (
         dayOrders.length > 0 && queriedDateKey ? (
-          <TingkokPreview
-            formattedDate={formattedDate}
-            todayOrders={dayOrders}
-            employees={employees}
-          />
+          <div className={loading ? "opacity-60" : undefined}>
+            <TingkokPreview
+              formattedDate={formattedDate}
+              todayOrders={dayOrders}
+              employees={employees}
+            />
+          </div>
         ) : null
       ) : (
         fpOrders.length > 0 && queriedDateKey ? (
-          <FoodpandaPreview
-            formattedDate={formattedDate}
-            fpOrders={fpOrders}
-            employees={employees}
-            receipt={fpReceipt}
-          />
+          <div className={loading ? "opacity-60" : undefined}>
+            <FoodpandaPreview
+              formattedDate={formattedDate}
+              fpOrders={fpOrders}
+              employees={employees}
+              receipt={fpReceipt}
+            />
+          </div>
         ) : null
       )}
       {!isTingkok && fpOrders.length > 0 && queriedDateKey && !loading && !fpReceipt ? (

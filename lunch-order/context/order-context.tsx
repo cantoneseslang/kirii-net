@@ -53,7 +53,10 @@ interface OrderContextType {
   lastResetTime: Date | null
   foodpandaOrders: FoodpandaOrder[]
   getFoodpandaOrdersForDate: (dateKey: string) => FoodpandaOrder[]
-  fetchFoodpandaOrdersForDate: (dateKey: string) => Promise<FoodpandaOrder[]>
+  fetchFoodpandaOrdersForDate: (
+    dateKey: string,
+    options?: { force?: boolean },
+  ) => Promise<FoodpandaOrder[]>
   addFpOrder: (order: Omit<FoodpandaOrder, "id" | "timestamp">) => Promise<void>
   hasFpOrdered: (memberId: string) => boolean
   cancelFpOrder: (memberId: string, audit: AuditActorInput) => Promise<void>
@@ -1217,33 +1220,47 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   )
 
   const fetchFoodpandaOrdersForDate = useCallback(
-    async (dateKey: string): Promise<FoodpandaOrder[]> => {
-      if (fpOrdersByDate[dateKey] !== undefined) return fpOrdersByDate[dateKey]
-
-      const { from, to } = getHongKongDayRange(dateKey)
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .gte("timestamp", from)
-        .lt("timestamp", to)
-        .order("timestamp", { ascending: false })
-
-      if (error) {
-        logPostgrestError("fetchFoodpandaOrdersForDate:", error)
-        throw new Error(formatPostgrestErrorMessage(error))
+    async (dateKey: string, options?: { force?: boolean }): Promise<FoodpandaOrder[]> => {
+      if (!options?.force && fpOrdersByDate[dateKey] !== undefined) {
+        return fpOrdersByDate[dateKey]
       }
 
-      let fpRows = (data ?? []).filter((row) => isFpOrderRow(row))
+      const { from, to } = getHongKongDayRange(dateKey)
+      // 收據行（巨大な imageDataUrl）を絶対に混ぜない — select("*") で日次全件を取ると画面が落ちる
+      const selectCols =
+        "id, member_id, member_name, dish, drink, timestamp, operator_member_id, operator_member_name"
 
-      // 旧形式 meta-fp-* は行の timestamp が上書きでずれるため、JSON 内の期日でも拾う
-      const { data: legacyRows } = await supabase
-        .from("orders")
-        .select("*")
-        .like("member_id", `${META_FP_PREFIX}%`)
+      const [currentRes, legacyRes] = await Promise.all([
+        supabase
+          .from("orders")
+          .select(selectCols)
+          .eq("drink", META_FP_DRINK)
+          .gte("timestamp", from)
+          .lt("timestamp", to)
+          .order("timestamp", { ascending: false }),
+        supabase
+          .from("orders")
+          .select(selectCols)
+          .like("member_id", `${META_FP_PREFIX}%`)
+          .not("member_id", "like", `${META_FP_RECEIPT_PREFIX}%`)
+          .neq("drink", META_FP_RECEIPT_DRINK),
+      ])
 
+      if (currentRes.error) {
+        logPostgrestError("fetchFoodpandaOrdersForDate current:", currentRes.error)
+        throw new Error(formatPostgrestErrorMessage(currentRes.error))
+      }
+      if (legacyRes.error) {
+        logPostgrestError("fetchFoodpandaOrdersForDate legacy:", legacyRes.error)
+        throw new Error(formatPostgrestErrorMessage(legacyRes.error))
+      }
+
+      const fpRows: OrderDbRow[] = [...(currentRes.data ?? [])]
       const seenIds = new Set(fpRows.map((r) => r.id).filter(Boolean))
-      for (const row of legacyRows ?? []) {
+      // 旧形式: 行 timestamp がずれることがあるので JSON 内の期日でも拾う（收據は除外済み）
+      for (const row of legacyRes.data ?? []) {
         if (row.id && seenIds.has(row.id)) continue
+        if (!isFpOrderRow(row)) continue
         const order = foodpandaOrderFromRow(row)
         if (order && getHongKongDateKey(new Date(order.timestamp)) === dateKey) {
           fpRows.push(row)
