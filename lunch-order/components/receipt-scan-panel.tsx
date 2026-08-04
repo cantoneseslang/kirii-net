@@ -297,12 +297,7 @@ export default function ReceiptScanPanel() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-bold text-lg">收據掃描（foodpanda / KeeTa）</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          使用 <strong>Vision AI（繁體中文／廣東話收據）</strong> 從圖片讀取
-          <strong>落單期日</strong>（必填・不以今天代替）、內容、原金額、折扣後金額。
-          金額以小數 1 位向上進位。套用後收據圖會嵌入該期日「導出落單表」右側。
-        </p>
+        <h3 className="font-bold text-lg">收據掃描</h3>
       </div>
 
       <div className="border rounded-md p-4 bg-gray-50 space-y-3">
