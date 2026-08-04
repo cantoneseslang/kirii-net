@@ -96,7 +96,18 @@ body {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm 14mm;
+    /* 上下余白を最小限に（ブラウザ既定の大きめ余白を避ける） */
+    margin: 5mm 8mm;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    /* 非表示コンテンツが空白ページを増やすのを防ぐ */
+    height: 0 !important;
+    overflow: hidden !important;
   }
 
   body * {
@@ -107,61 +118,70 @@ body {
     visibility: visible;
   }
   #print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
   }
 
-  /* 報銷表 A4 縦1ページ */
+  /* 報銷表 A4 縦1ページ（31日＋合計まで収める） */
   .reimb-print-sheet {
+    box-sizing: border-box;
     width: 100%;
-    max-width: 170mm;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
     font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     color: #000;
   }
   .reimb-print-title {
     text-align: center;
-    font-size: 16pt;
+    font-size: 13pt;
     font-weight: 700;
-    margin: 0 0 8mm;
-    letter-spacing: 0.05em;
+    margin: 0 0 2.5mm;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
   }
   .reimb-print-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1.5pt solid #000;
-    font-size: 10.5pt;
-    line-height: 1.15;
+    border: 1.2pt solid #000;
+    font-size: 9pt;
+    line-height: 1.05;
   }
   .reimb-print-table th,
   .reimb-print-table td {
-    padding: 1.6mm 3mm;
-    border-right: 1pt solid #000;
+    padding: 0.55mm 2.2mm;
+    border-right: 0.8pt solid #000;
   }
   .reimb-print-table th:last-child,
   .reimb-print-table td:last-child {
     border-right: none;
   }
   .reimb-print-table thead th {
-    border-bottom: 1.5pt solid #000;
+    border-bottom: 1.2pt solid #000;
     font-weight: 700;
     text-align: center;
     vertical-align: middle;
+    padding-top: 0.9mm;
+    padding-bottom: 0.9mm;
   }
   .reimb-print-table thead th.col-date {
     text-align: left;
   }
   .reimb-print-table thead .sub {
-    font-size: 9pt;
+    font-size: 8pt;
     font-weight: 600;
+    line-height: 1.1;
   }
   .reimb-print-table tbody td {
-    border-bottom: 0.6pt dotted #333;
+    border-bottom: 0.5pt dotted #333;
   }
   .reimb-print-table .col-date {
     width: 28%;
@@ -174,27 +194,30 @@ body {
     font-variant-numeric: tabular-nums;
   }
   .reimb-print-table .row-subtotal td {
-    border-top: 1.5pt solid #000;
-    border-bottom: 1pt solid #000;
+    border-top: 1.2pt solid #000;
+    border-bottom: 0.8pt solid #000;
     font-weight: 700;
+    padding-top: 0.9mm;
+    padding-bottom: 0.9mm;
   }
   .reimb-print-table .row-grand td {
     border-top: none;
     border-bottom: none;
-    padding-top: 3mm;
+    padding-top: 1.2mm;
+    padding-bottom: 0.4mm;
     font-weight: 700;
   }
   .reimb-print-table .col-grand {
     text-align: center;
-    border-bottom: 3pt double #000 !important;
-    font-size: 12pt;
+    border-bottom: 2.5pt double #000 !important;
+    font-size: 11pt;
   }
 
   /* 導出落單表 + 收據埋め込み（A4縦1ページ） */
   .order-sheet {
     box-sizing: border-box;
     width: 100%;
-    max-height: 277mm;
+    max-height: 287mm;
     overflow: hidden;
     font-size: 9.5pt;
     line-height: 1.2;
@@ -205,7 +228,7 @@ body {
     align-items: stretch;
     gap: 3mm;
     width: 100%;
-    max-height: 277mm;
+    max-height: 287mm;
   }
   .order-sheet-main {
     flex: 1 1 auto;
@@ -225,7 +248,7 @@ body {
   .order-sheet-receipt-img {
     width: 100%;
     max-width: 68mm;
-    max-height: 265mm;
+    max-height: 275mm;
     height: auto;
     object-fit: contain;
     object-position: top right;
