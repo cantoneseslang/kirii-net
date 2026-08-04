@@ -1,68 +1,97 @@
-import Tesseract from "tesseract.js"
+import { fileToReceiptImageDataUrl } from "./receipt-image"
 import { parseReceiptText, type ParsedReceipt } from "./receipt-parser"
 
 /**
  * 收據は廣東話（繁體中文）表記。
- * 日本語(jpn)は使わない — 誤読の原因になる。
- * chi_tra = 繁體中文、eng = 金額・Service Fee 等の英数字。
+ * ブラウザ側 Tesseract は熱感レシートでほぼ失敗するため、
+ * 本番読み取りは /api/receipt-ocr（Vision LLM）を使う。
  */
 export const RECEIPT_OCR_LANG = "chi_tra+eng"
 
-async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob)
-      else reject(new Error("Failed to convert canvas to image"))
-    }, "image/png")
+export type ReceiptOcrResult = {
+  text: string
+  parsed: ParsedReceipt
+  engine: "vision" | "tesseract-fallback"
+  imageDataUrl: string
+  warnings: { missingDate: boolean; missingFinalPaid: boolean }
+}
+
+/** PDF→画像は receipt-pdf に分離（循環依存回避） */
+export { pdfFileToImageBlobs } from "./receipt-pdf"
+
+async function ocrViaVisionApi(imageDataUrl: string): Promise<ReceiptOcrResult> {
+  const res = await fetch("/api/receipt-ocr", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ imageDataUrl }),
   })
-}
-
-/** PDF 各ページを PNG Blob に変換（ブラウザ専用） */
-export async function pdfFileToImageBlobs(file: File): Promise<Blob[]> {
-  const data = new Uint8Array(await file.arrayBuffer())
-  const pdfjs = await import("pdfjs-dist")
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
-
-  const doc = await pdfjs.getDocument({ data }).promise
-  const blobs: Blob[] = []
-
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum)
-    const viewport = page.getViewport({ scale: 2 })
-    const canvas = document.createElement("canvas")
-    canvas.width = viewport.width
-    canvas.height = viewport.height
-    const ctx = canvas.getContext("2d")
-    if (!ctx) throw new Error("Canvas unavailable")
-    await page.render({ canvasContext: ctx, viewport }).promise
-    blobs.push(await canvasToBlob(canvas))
+  const data = (await res.json()) as {
+    ok?: boolean
+    error?: string
+    text?: string
+    parsed?: ParsedReceipt
+    warnings?: { missingDate: boolean; missingFinalPaid: boolean }
   }
-
-  return blobs
+  if (!res.ok || !data.parsed) {
+    throw new Error(data.error || `Vision OCR HTTP ${res.status}`)
+  }
+  return {
+    text: data.text || data.parsed.rawText || "",
+    parsed: data.parsed,
+    engine: "vision",
+    imageDataUrl,
+    warnings: data.warnings ?? {
+      missingDate: !data.parsed.dateKey,
+      missingFinalPaid: data.parsed.finalPaid == null,
+    },
+  }
 }
 
-export async function ocrImageSource(source: File | Blob): Promise<string> {
-  const result = await Tesseract.recognize(source, RECEIPT_OCR_LANG, {
-    // 明示的に繁體中文優先（jpn は含めない）
+/** 最終手段のみ（ローカル／Vision 障害時）。精度は低い。 */
+async function ocrViaTesseractFallback(imageDataUrl: string): Promise<ReceiptOcrResult> {
+  const Tesseract = (await import("tesseract.js")).default
+  const result = await Tesseract.recognize(imageDataUrl, RECEIPT_OCR_LANG, {
     logger: () => {},
   })
-  return result.data.text ?? ""
+  const text = result.data.text ?? ""
+  const parsed = parseReceiptText(text)
+  return {
+    text,
+    parsed,
+    engine: "tesseract-fallback",
+    imageDataUrl,
+    warnings: {
+      missingDate: !parsed.dateKey,
+      missingFinalPaid: parsed.finalPaid == null,
+    },
+  }
 }
 
-export async function ocrReceiptFile(file: File): Promise<{ text: string; parsed: ParsedReceipt }> {
-  const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name)
-  let text = ""
+/**
+ * 收據ファイルを読み取り。優先: Vision（期日・金額）。
+ * imageDataUrl も返す（落單表埋め込み用に再利用）。
+ */
+export async function ocrReceiptFile(file: File): Promise<ReceiptOcrResult> {
+  const imageDataUrl = await fileToReceiptImageDataUrl(file)
 
-  if (isPdf) {
-    const pages = await pdfFileToImageBlobs(file)
-    const parts: string[] = []
-    for (const page of pages) {
-      parts.push(await ocrImageSource(page))
+  try {
+    return await ocrViaVisionApi(imageDataUrl)
+  } catch (visionErr) {
+    console.warn("[receipt-ocr] vision failed, trying tesseract", visionErr)
+    try {
+      const fallback = await ocrViaTesseractFallback(imageDataUrl)
+      // Vision 失敗をユーザーが分かるよう rawText に追記
+      fallback.text = `[Vision失敗→Tesseract]\n${fallback.text}\n\n(${
+        visionErr instanceof Error ? visionErr.message : "vision error"
+      })`
+      fallback.parsed = { ...fallback.parsed, rawText: fallback.text }
+      return fallback
+    } catch (tessErr) {
+      throw visionErr instanceof Error
+        ? visionErr
+        : tessErr instanceof Error
+          ? tessErr
+          : new Error("收據讀取失敗")
     }
-    text = parts.join("\n")
-  } else {
-    text = await ocrImageSource(file)
   }
-
-  return { text, parsed: parseReceiptText(text) }
 }

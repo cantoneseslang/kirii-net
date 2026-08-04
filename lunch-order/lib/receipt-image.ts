@@ -1,4 +1,4 @@
-import { pdfFileToImageBlobs } from "./receipt-ocr"
+import { pdfFileToImageBlobs } from "./receipt-pdf"
 
 const MAX_WIDTH = 520
 const MAX_HEIGHT = 1600

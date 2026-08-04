@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast"
 import { useOrders } from "../context/order-context"
 import { getHongKongDateKey, getHongKongDayRange } from "../lib/hong-kong-calendar"
 import { fileToReceiptImageDataUrl } from "../lib/receipt-image"
-import { ocrReceiptFile, RECEIPT_OCR_LANG } from "../lib/receipt-ocr"
+import { ocrReceiptFile } from "../lib/receipt-ocr"
 import {
   matchReceiptToOrders,
   META_FP_RECEIPT_DRINK,
@@ -32,6 +32,9 @@ type ScanDraft = {
   discountsText: string
   match: ReceiptMatchResult | null
   orderDishes: string[]
+  engine: "vision" | "tesseract-fallback"
+  dateFromReceipt: boolean
+  imageDataUrl: string | null
 }
 
 function numOrEmpty(value: number | null | undefined): string {
@@ -72,11 +75,18 @@ async function loadFoodpandaDishesForDate(dateKey: string): Promise<string[]> {
   return dishes
 }
 
-function draftFromParsed(fileName: string, parsed: ParsedReceipt, ocrText: string): ScanDraft {
+function draftFromOcr(
+  fileName: string,
+  parsed: ParsedReceipt,
+  ocrText: string,
+  engine: "vision" | "tesseract-fallback",
+  imageDataUrl: string | null,
+): ScanDraft {
+  // 期日は收據から読めた場合のみ自動入力（今日の日付で埋めない）
   return {
     fileName,
     ocrText,
-    dateKey: parsed.dateKey || getHongKongDateKey(),
+    dateKey: parsed.dateKey || "",
     platform: parsed.platform,
     finalPaid: numOrEmpty(parsed.finalPaid),
     foodSubtotal: numOrEmpty(parsed.foodSubtotal),
@@ -86,6 +96,9 @@ function draftFromParsed(fileName: string, parsed: ParsedReceipt, ocrText: strin
     discountsText: parsed.discounts.map((d) => d.label).join("\n"),
     match: null,
     orderDishes: [],
+    engine,
+    dateFromReceipt: Boolean(parsed.dateKey),
+    imageDataUrl,
   }
 }
 
@@ -99,6 +112,10 @@ export default function ReceiptScanPanel() {
   const [sourceFile, setSourceFile] = useState<File | null>(null)
 
   const refreshMatch = useCallback(async (next: ScanDraft) => {
+    if (!next.dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(next.dateKey)) {
+      setDraft({ ...next, match: null, orderDishes: [] })
+      return
+    }
     try {
       const orderDishes = await loadFoodpandaDishesForDate(next.dateKey)
       const receiptItems = next.itemsText
@@ -125,32 +142,31 @@ export default function ReceiptScanPanel() {
     try {
       let last: ScanDraft | null = null
       let lastFile: File | null = null
-      let lastPreview: string | null = null
       for (const file of Array.from(files)) {
-        setStatus(`OCR 讀取中（繁體中文）: ${file.name}`)
-        if (lastPreview) URL.revokeObjectURL(lastPreview)
-        lastPreview = null
-        if (file.type.startsWith("image/")) {
-          lastPreview = URL.createObjectURL(file)
-        } else {
-          // PDF: 第1頁をプレビュー用に変換
-          try {
-            const dataUrl = await fileToReceiptImageDataUrl(file)
-            lastPreview = dataUrl
-          } catch {
-            /* preview optional */
-          }
-        }
-        const { text, parsed } = await ocrReceiptFile(file)
-        last = draftFromParsed(file.name, parsed, text)
+        setStatus(`Vision 讀取中（繁體中文／從收據判定期日）: ${file.name}`)
+        const result = await ocrReceiptFile(file)
+        last = draftFromOcr(file.name, result.parsed, result.text, result.engine, result.imageDataUrl)
         lastFile = file
+        setPreviewUrl(result.imageDataUrl)
       }
       if (!last || !lastFile) return
       setSourceFile(lastFile)
-      if (lastPreview) setPreviewUrl(lastPreview)
-      setStatus("對照當日 foodpanda 落單…")
-      await refreshMatch(last)
-      toast.success("收據讀取完成 — 請核對期日／內容／金額後再套用")
+      if (last.dateKey) {
+        setStatus(`對照 ${last.dateKey} foodpanda 落單…`)
+        await refreshMatch(last)
+      } else {
+        setDraft(last)
+      }
+      if (!last.dateFromReceipt) {
+        toast.error("未能從收據讀取期日 — 請手動核對後填寫 YYYY-MM-DD")
+      } else if (!last.finalPaid) {
+        toast.error(`期日 ${last.dateKey} 已讀取，但金額未辨識 — 請手動填寫折扣後金額`)
+      } else {
+        toast.success(
+          `已從收據讀取期日 ${last.dateKey}` +
+            (last.engine === "vision" ? "（Vision）" : "（備援 OCR・請仔細核對）"),
+        )
+      }
     } catch (err) {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "收據掃描失敗")
@@ -189,10 +205,10 @@ export default function ReceiptScanPanel() {
           : roundUpToOneDecimal(foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0))
 
       setStatus("壓縮收據圖片…")
-      let imageDataUrl: string | null = null
-      if (sourceFile) {
+      let imageDataUrl: string | null = draft.imageDataUrl
+      if (!imageDataUrl && sourceFile) {
         imageDataUrl = await fileToReceiptImageDataUrl(sourceFile)
-      } else if (previewUrl?.startsWith("data:image/")) {
+      } else if (!imageDataUrl && previewUrl?.startsWith("data:image/")) {
         imageDataUrl = previewUrl
       }
 
@@ -283,8 +299,8 @@ export default function ReceiptScanPanel() {
       <div>
         <h3 className="font-bold text-lg">收據掃描（foodpanda / KeeTa）</h3>
         <p className="text-sm text-gray-600 mt-1">
-          OCR 語言：<strong>繁體中文（廣東話收據）</strong>（{RECEIPT_OCR_LANG}，不含日語）。
-          請核對 <strong>期日</strong>、<strong>內容</strong>、<strong>原金額</strong>、<strong>折扣後金額</strong> 後再套用。
+          使用 <strong>Vision AI（繁體中文／廣東話收據）</strong> 從圖片讀取
+          <strong>落單期日</strong>（必填・不以今天代替）、內容、原金額、折扣後金額。
           金額以小數 1 位向上進位。套用後收據圖會嵌入該期日「導出落單表」右側。
         </p>
       </div>
@@ -323,19 +339,48 @@ export default function ReceiptScanPanel() {
               <div>
                 來源檔案：<span className="font-medium text-gray-800">{draft.fileName}</span>
               </div>
-              <div className="mt-1">OCR：繁體中文 + 英文數字</div>
+              <div className="mt-1">
+                引擎：
+                <span className="font-medium text-gray-800">
+                  {draft.engine === "vision" ? "Vision AI（繁中收據）" : "Tesseract 備援（請仔細核對）"}
+                </span>
+              </div>
+              {draft.dateFromReceipt ? (
+                <div className="mt-1 text-green-700 font-medium">
+                  期日已從收據讀取：{draft.dateKey}
+                </div>
+              ) : (
+                <div className="mt-1 text-red-600 font-medium">
+                  未能從收據判定期日 — 請看圖手動填寫
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm">
+          <div
+            className={`rounded-md border p-3 text-sm ${
+              draft.dateFromReceipt && draft.finalPaid
+                ? "border-amber-300 bg-amber-50"
+                : "border-red-300 bg-red-50"
+            }`}
+          >
             <div className="font-semibold mb-2">必填核對（套用至報銷表 B）</div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <label className="font-medium">
-                期日 (YYYY-MM-DD)
+                期日 (YYYY-MM-DD) — 必須與收據落單日一致
                 <input
-                  className="mt-1 w-full border rounded px-2 py-1.5 bg-white"
+                  className={`mt-1 w-full border rounded px-2 py-1.5 bg-white ${
+                    draft.dateFromReceipt ? "" : "border-red-400 ring-1 ring-red-300"
+                  }`}
                   value={draft.dateKey}
-                  onChange={(e) => setDraft({ ...draft, dateKey: e.target.value })}
+                  placeholder="從收據讀取，例 2026-07-15"
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      dateKey: e.target.value,
+                      dateFromReceipt: /^\d{4}-\d{2}-\d{2}$/.test(e.target.value),
+                    })
+                  }
                   onBlur={() => draft && void refreshMatch(draft)}
                 />
               </label>
