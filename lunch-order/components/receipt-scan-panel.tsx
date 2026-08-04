@@ -4,7 +4,7 @@ import { useCallback, useState } from "react"
 import { toast } from "react-hot-toast"
 import { useOrders } from "../context/order-context"
 import { getHongKongDateKey, getHongKongDayRange } from "../lib/hong-kong-calendar"
-import { ocrReceiptFile } from "../lib/receipt-ocr"
+import { ocrReceiptFile, RECEIPT_OCR_LANG } from "../lib/receipt-ocr"
 import {
   matchReceiptToOrders,
   META_FP_RECEIPT_DRINK,
@@ -15,6 +15,7 @@ import {
   type ReceiptMatchResult,
   type ReceiptPlatform,
 } from "../lib/receipt-parser"
+import { roundUpToOneDecimal } from "../lib/reimbursement-totals"
 import { supabase } from "../lib/supabase"
 
 type ScanDraft = {
@@ -33,7 +34,8 @@ type ScanDraft = {
 }
 
 function numOrEmpty(value: number | null | undefined): string {
-  return value == null || !Number.isFinite(value) ? "" : String(value)
+  if (value == null || !Number.isFinite(value)) return ""
+  return String(roundUpToOneDecimal(value))
 }
 
 function parseOptionalNumber(value: string): number | null {
@@ -80,7 +82,7 @@ function draftFromParsed(fileName: string, parsed: ParsedReceipt, ocrText: strin
     deliveryFee: numOrEmpty(parsed.deliveryFee),
     serviceFee: numOrEmpty(parsed.serviceFee),
     itemsText: parsed.items.map((i) => i.name).join("\n"),
-    discountsText: parsed.discounts.map((d) => `${d.label}`).join("\n"),
+    discountsText: parsed.discounts.map((d) => d.label).join("\n"),
     match: null,
     orderDishes: [],
   }
@@ -92,6 +94,7 @@ export default function ReceiptScanPanel() {
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState<ScanDraft | null>(null)
   const [status, setStatus] = useState("")
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const refreshMatch = useCallback(async (next: ScanDraft) => {
     try {
@@ -118,17 +121,22 @@ export default function ReceiptScanPanel() {
     setBusy(true)
     setStatus("")
     try {
-      // 複数ある場合は先頭から順に処理し、最後に開いたものを編集対象にする
       let last: ScanDraft | null = null
+      let lastPreview: string | null = null
       for (const file of Array.from(files)) {
-        setStatus(`OCR中: ${file.name}`)
+        setStatus(`OCR 讀取中（繁體中文）: ${file.name}`)
+        if (file.type.startsWith("image/")) {
+          if (lastPreview) URL.revokeObjectURL(lastPreview)
+          lastPreview = URL.createObjectURL(file)
+        }
         const { text, parsed } = await ocrReceiptFile(file)
         last = draftFromParsed(file.name, parsed, text)
       }
       if (!last) return
-      setStatus("當日落單と照合中…")
+      if (lastPreview) setPreviewUrl(lastPreview)
+      setStatus("對照當日 foodpanda 落單…")
       await refreshMatch(last)
-      toast.success("收據讀取完成（請確認後保存）")
+      toast.success("收據讀取完成 — 請核對期日／內容／金額後再套用")
     } catch (err) {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "收據掃描失敗")
@@ -141,25 +149,30 @@ export default function ReceiptScanPanel() {
 
   const saveReceipt = async () => {
     if (!draft) return
-    const finalPaid = parseOptionalNumber(draft.finalPaid)
+    const rawFinal = parseOptionalNumber(draft.finalPaid)
     if (!draft.dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(draft.dateKey)) {
-      toast.error("期日を YYYY-MM-DD で入力してください")
+      toast.error("請輸入正確期日 YYYY-MM-DD")
       return
     }
-    if (finalPaid == null || finalPaid < 0) {
-      toast.error("最終支払額（顧客實付／總計）を入力してください")
+    if (rawFinal == null || rawFinal < 0) {
+      toast.error("請輸入折扣後金額（顧客實付／總計）")
       return
     }
+    const finalPaid = roundUpToOneDecimal(rawFinal)
 
     setSaving(true)
     try {
-      const foodSubtotal = parseOptionalNumber(draft.foodSubtotal)
-      const deliveryFee = parseOptionalNumber(draft.deliveryFee)
-      const serviceFee = parseOptionalNumber(draft.serviceFee)
+      const foodSubtotalRaw = parseOptionalNumber(draft.foodSubtotal)
+      const deliveryFeeRaw = parseOptionalNumber(draft.deliveryFee)
+      const serviceFeeRaw = parseOptionalNumber(draft.serviceFee)
+      const foodSubtotal = foodSubtotalRaw == null ? null : roundUpToOneDecimal(foodSubtotalRaw)
+      const deliveryFee = deliveryFeeRaw == null ? null : roundUpToOneDecimal(deliveryFeeRaw)
+      const serviceFee = serviceFeeRaw == null ? null : roundUpToOneDecimal(serviceFeeRaw)
       const originalBeforeDiscount =
         foodSubtotal == null
           ? null
-          : Math.round((foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0)) * 100) / 100
+          : roundUpToOneDecimal(foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0))
+
       const record: FoodpandaReceiptRecord = {
         dateKey: draft.dateKey,
         platform: draft.platform,
@@ -217,10 +230,10 @@ export default function ReceiptScanPanel() {
         if (error) throw error
       }
 
-      toast.success(`${draft.dateKey} の最終額 $${finalPaid} を報銷表 B に適用しました`)
+      toast.success(`已套用 ${draft.dateKey} 折扣後金額 $${finalPaid.toFixed(1)} 至報銷表 B`)
     } catch (err) {
       console.error(err)
-      toast.error(err instanceof Error ? err.message : "保存失敗")
+      toast.error(err instanceof Error ? err.message : "儲存失敗")
     } finally {
       setSaving(false)
     }
@@ -231,14 +244,15 @@ export default function ReceiptScanPanel() {
       <div>
         <h3 className="font-bold text-lg">收據掃描（foodpanda / KeeTa）</h3>
         <p className="text-sm text-gray-600 mt-1">
-          重要フィールド: <strong>期日</strong>・<strong>內容（品目）</strong>・<strong>元金額（餐點/小計）</strong>・
-          <strong>割引後（顧客實付/總計）</strong>。OCRは誤読しやすいので保存前に必ず確認してください。
+          OCR 語言：<strong>繁體中文（廣東話收據）</strong>（{RECEIPT_OCR_LANG}，不含日語）。
+          請核對 <strong>期日</strong>、<strong>內容</strong>、<strong>原金額</strong>、<strong>折扣後金額</strong> 後再套用。
+          金額以小數 1 位向上進位。
         </p>
       </div>
 
       <div className="border rounded-md p-4 bg-gray-50 space-y-3">
         <label className="block text-sm font-medium">
-          收據ファイル
+          上傳收據（JPEG / PDF）
           <input
             type="file"
             accept="image/*,application/pdf"
@@ -252,54 +266,84 @@ export default function ReceiptScanPanel() {
           />
         </label>
         {(busy || status) && (
-          <p className="text-sm text-blue-700">{busy ? status || "処理中…" : status}</p>
+          <p className="text-sm text-blue-700">{busy ? status || "處理中…" : status}</p>
         )}
       </div>
 
       {draft && (
-        <div className="border rounded-md p-4 space-y-3">
-          <div className="text-sm text-gray-500">來源: {draft.fileName}</div>
+        <div className="border rounded-md p-4 space-y-4">
+          <div className="flex flex-wrap gap-4 items-start">
+            {previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="收據預覽"
+                className="w-40 max-h-56 object-contain border rounded bg-white"
+              />
+            ) : null}
+            <div className="text-sm text-gray-600 flex-1 min-w-[12rem]">
+              <div>
+                來源檔案：<span className="font-medium text-gray-800">{draft.fileName}</span>
+              </div>
+              <div className="mt-1">OCR：繁體中文 + 英文數字</div>
+            </div>
+          </div>
+
+          <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm">
+            <div className="font-semibold mb-2">必填核對（套用至報銷表 B）</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <label className="font-medium">
+                期日 (YYYY-MM-DD)
+                <input
+                  className="mt-1 w-full border rounded px-2 py-1.5 bg-white"
+                  value={draft.dateKey}
+                  onChange={(e) => setDraft({ ...draft, dateKey: e.target.value })}
+                  onBlur={() => draft && void refreshMatch(draft)}
+                />
+              </label>
+              <label className="font-medium">
+                平台
+                <select
+                  className="mt-1 w-full border rounded px-2 py-1.5 bg-white"
+                  value={draft.platform}
+                  onChange={(e) =>
+                    setDraft({ ...draft, platform: e.target.value as ReceiptPlatform })
+                  }
+                >
+                  <option value="keeta">KeeTa</option>
+                  <option value="foodpanda">foodpanda</option>
+                  <option value="unknown">unknown</option>
+                </select>
+              </label>
+              <label className="font-medium">
+                原金額（餐點總價／小計）
+                <input
+                  className="mt-1 w-full border rounded px-2 py-1.5 bg-white"
+                  value={draft.foodSubtotal}
+                  onChange={(e) => setDraft({ ...draft, foodSubtotal: e.target.value })}
+                />
+              </label>
+              <label className="font-medium">
+                折扣後金額（顧客實付／總計）
+                <input
+                  className="mt-1 w-full border rounded px-2 py-1.5 bg-white font-bold"
+                  value={draft.finalPaid}
+                  onChange={(e) => setDraft({ ...draft, finalPaid: e.target.value })}
+                />
+              </label>
+            </div>
+          </div>
+
+          <label className="block text-sm font-medium">
+            內容（餐點，一行一項）
+            <textarea
+              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[100px] font-mono text-xs"
+              value={draft.itemsText}
+              onChange={(e) => setDraft({ ...draft, itemsText: e.target.value })}
+              onBlur={() => draft && void refreshMatch(draft)}
+            />
+          </label>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="text-sm font-semibold">
-              1. 期日 (YYYY-MM-DD)
-              <input
-                className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
-                value={draft.dateKey}
-                onChange={(e) => setDraft({ ...draft, dateKey: e.target.value })}
-                onBlur={() => draft && void refreshMatch(draft)}
-              />
-            </label>
-            <label className="text-sm">
-              平台
-              <select
-                className="mt-1 w-full border rounded px-2 py-1.5"
-                value={draft.platform}
-                onChange={(e) =>
-                  setDraft({ ...draft, platform: e.target.value as ReceiptPlatform })
-                }
-              >
-                <option value="keeta">KeeTa</option>
-                <option value="foodpanda">foodpanda</option>
-                <option value="unknown">unknown</option>
-              </select>
-            </label>
-            <label className="text-sm font-semibold">
-              3. 元金額（餐點總價 / 小計）
-              <input
-                className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
-                value={draft.foodSubtotal}
-                onChange={(e) => setDraft({ ...draft, foodSubtotal: e.target.value })}
-              />
-            </label>
-            <label className="text-sm font-semibold">
-              4. 割引後（顧客實付 / 總計）→ 報銷表B
-              <input
-                className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
-                value={draft.finalPaid}
-                onChange={(e) => setDraft({ ...draft, finalPaid: e.target.value })}
-              />
-            </label>
             <label className="text-sm">
               運費
               <input
@@ -309,7 +353,7 @@ export default function ReceiptScanPanel() {
               />
             </label>
             <label className="text-sm">
-              平台/服務費
+              平台／服務費
               <input
                 className="mt-1 w-full border rounded px-2 py-1.5"
                 value={draft.serviceFee}
@@ -318,20 +362,10 @@ export default function ReceiptScanPanel() {
             </label>
           </div>
 
-          <label className="block text-sm font-semibold">
-            2. 內容（品目・1行1件）
+          <label className="block text-sm text-gray-600">
+            折扣說明（參考）
             <textarea
-              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[100px] font-mono text-xs border-amber-400 bg-amber-50"
-              value={draft.itemsText}
-              onChange={(e) => setDraft({ ...draft, itemsText: e.target.value })}
-              onBlur={() => draft && void refreshMatch(draft)}
-            />
-          </label>
-
-          <label className="block text-sm">
-            割引行（参考）
-            <textarea
-              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[72px] font-mono text-xs"
+              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[64px] font-mono text-xs"
               value={draft.discountsText}
               onChange={(e) => setDraft({ ...draft, discountsText: e.target.value })}
             />
@@ -345,29 +379,29 @@ export default function ReceiptScanPanel() {
                   : "bg-amber-50 border-amber-200"
               }`}
             >
-              <div className="font-semibold mb-1">當日 foodpanda 落單との照会</div>
+              <div className="font-semibold mb-1">與當日 foodpanda 落單對照</div>
               <p>
-                落單 {draft.match.orderCount} 件 / 收據餐點 {draft.match.receiptMealCount} 件 /
-                一致 {draft.match.matched.length}
+                落單 {draft.match.orderCount} 件／收據餐點 {draft.match.receiptMealCount} 件／一致{" "}
+                {draft.match.matched.length}
               </p>
               {draft.match.missingInReceipt.length > 0 && (
                 <p className="mt-1 text-amber-800">
-                  收據に無い落單: {draft.match.missingInReceipt.join("、")}
+                  收據缺少：{draft.match.missingInReceipt.join("、")}
                 </p>
               )}
               {draft.match.extraInReceipt.length > 0 && (
                 <p className="mt-1 text-amber-800">
-                  落單に無い收據品目: {draft.match.extraInReceipt.join("、")}
+                  落單沒有：{draft.match.extraInReceipt.join("、")}
                 </p>
               )}
               {draft.orderDishes.length === 0 && (
-                <p className="mt-1 text-gray-600">該日の foodpanda 落單は見つかりませんでした（最終額の保存は可能）</p>
+                <p className="mt-1 text-gray-600">該日沒有 foodpanda 落單（仍可儲存折扣後金額）</p>
               )}
             </div>
           )}
 
           <details className="text-xs text-gray-500">
-            <summary>OCR 原文</summary>
+            <summary>OCR 原文（除錯用）</summary>
             <pre className="mt-2 whitespace-pre-wrap max-h-48 overflow-auto border rounded p-2 bg-gray-50">
               {draft.ocrText}
             </pre>
@@ -380,7 +414,7 @@ export default function ReceiptScanPanel() {
               onClick={() => void saveReceipt()}
               className="px-4 py-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
             >
-              {saving ? "保存中…" : "確認して報銷表 B に適用"}
+              {saving ? "儲存中…" : "確認並套用至報銷表 B"}
             </button>
             <button
               type="button"
@@ -388,7 +422,7 @@ export default function ReceiptScanPanel() {
               onClick={() => draft && void refreshMatch(draft)}
               className="px-4 py-2 rounded-md border bg-gray-100 hover:bg-gray-200"
             >
-              再照合
+              重新對照
             </button>
           </div>
         </div>

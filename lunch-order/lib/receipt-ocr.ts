@@ -1,6 +1,13 @@
 import Tesseract from "tesseract.js"
 import { parseReceiptText, type ParsedReceipt } from "./receipt-parser"
 
+/**
+ * 收據は廣東話（繁體中文）表記。
+ * 日本語(jpn)は使わない — 誤読の原因になる。
+ * chi_tra = 繁體中文、eng = 金額・Service Fee 等の英数字。
+ */
+export const RECEIPT_OCR_LANG = "chi_tra+eng"
+
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
@@ -14,7 +21,6 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 export async function pdfFileToImageBlobs(file: File): Promise<Blob[]> {
   const data = new Uint8Array(await file.arrayBuffer())
   const pdfjs = await import("pdfjs-dist")
-  // Next/webpack: use CDN worker matching installed major
   pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
   const doc = await pdfjs.getDocument({ data }).promise
@@ -36,7 +42,10 @@ export async function pdfFileToImageBlobs(file: File): Promise<Blob[]> {
 }
 
 export async function ocrImageSource(source: File | Blob): Promise<string> {
-  const result = await Tesseract.recognize(source, "chi_tra+eng")
+  const result = await Tesseract.recognize(source, RECEIPT_OCR_LANG, {
+    // 明示的に繁體中文優先（jpn は含めない）
+    logger: () => {},
+  })
   return result.data.text ?? ""
 }
 

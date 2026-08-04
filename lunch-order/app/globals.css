@@ -94,10 +94,16 @@ body {
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 14mm;
+  }
+
   body * {
     visibility: hidden;
   }
-  #print-area, #print-area * {
+  #print-area,
+  #print-area * {
     visibility: visible;
   }
   #print-area {
@@ -107,5 +113,80 @@ body {
     width: 100%;
     border: none !important;
     padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 報銷表 A4 縦1ページ */
+  .reimb-print-sheet {
+    width: 100%;
+    max-width: 170mm;
+    margin: 0 auto;
+    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    color: #000;
+  }
+  .reimb-print-title {
+    text-align: center;
+    font-size: 16pt;
+    font-weight: 700;
+    margin: 0 0 8mm;
+    letter-spacing: 0.05em;
+  }
+  .reimb-print-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1.5pt solid #000;
+    font-size: 10.5pt;
+    line-height: 1.15;
+  }
+  .reimb-print-table th,
+  .reimb-print-table td {
+    padding: 1.6mm 3mm;
+    border-right: 1pt solid #000;
+  }
+  .reimb-print-table th:last-child,
+  .reimb-print-table td:last-child {
+    border-right: none;
+  }
+  .reimb-print-table thead th {
+    border-bottom: 1.5pt solid #000;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .reimb-print-table thead th.col-date {
+    text-align: left;
+  }
+  .reimb-print-table thead .sub {
+    font-size: 9pt;
+    font-weight: 600;
+  }
+  .reimb-print-table tbody td {
+    border-bottom: 0.6pt dotted #333;
+  }
+  .reimb-print-table .col-date {
+    width: 28%;
+    text-align: left;
+  }
+  .reimb-print-table .col-a,
+  .reimb-print-table .col-b {
+    width: 36%;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .reimb-print-table .row-subtotal td {
+    border-top: 1.5pt solid #000;
+    border-bottom: 1pt solid #000;
+    font-weight: 700;
+  }
+  .reimb-print-table .row-grand td {
+    border-top: none;
+    border-bottom: none;
+    padding-top: 3mm;
+    font-weight: 700;
+  }
+  .reimb-print-table .col-grand {
+    text-align: center;
+    border-bottom: 3pt double #000 !important;
+    font-size: 12pt;
   }
 }

@@ -266,7 +266,20 @@ export function groupOrdersForReimbursement(
   return { tingkokByDate, foodpandaByDate, receiptByDate }
 }
 
+/** 小数第2位以下を切り上げて小数1桁にする（3396.76 → 3396.8） */
+export function roundUpToOneDecimal(value: number): number {
+  if (!Number.isFinite(value)) return 0
+  return Math.ceil(value * 10 - Number.EPSILON) / 10
+}
+
+/** 日別金額表示（最大小数2桁、整数は .0） */
 export function formatReimbursementAmount(value: number): string {
-  if (Number.isInteger(value)) return value.toFixed(1)
-  return String(Math.round(value * 100) / 100)
+  const rounded = Math.round(value * 100) / 100
+  if (Number.isInteger(rounded)) return rounded.toFixed(1)
+  return String(rounded)
+}
+
+/** 共 / 合共 用：小数1桁へ切り上げ */
+export function formatReimbursementTotal(value: number): string {
+  return roundUpToOneDecimal(value).toFixed(1)
 }

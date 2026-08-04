@@ -7,8 +7,10 @@ import { supabase } from "../lib/supabase"
 import {
   buildReimbursementMonthReport,
   formatReimbursementAmount,
+  formatReimbursementTotal,
   getHongKongMonthRange,
   groupOrdersForReimbursement,
+  roundUpToOneDecimal,
   type ReimbursementMonthReport,
 } from "../lib/reimbursement-totals"
 
@@ -39,7 +41,6 @@ export default function ReimbursementReport() {
 
       if (error) throw error
 
-      // 旧形式 meta-fp-* / 收據メタは行 timestamp がずれることがあるため別途拾う
       const { data: legacyRows, error: legacyError } = await supabase
         .from("orders")
         .select("*")
@@ -98,10 +99,18 @@ export default function ReimbursementReport() {
     setMonth(date.getMonth() + 1)
   }
 
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const totalA = report ? roundUpToOneDecimal(report.totalA) : 0
+  const totalB = report ? roundUpToOneDecimal(report.totalB) : 0
+  const grandTotal = roundUpToOneDecimal(totalA + totalB)
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-bold text-lg text-center flex-1">汀角路茶座 及 foodpanda</h3>
+      <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+        <h3 className="font-bold text-lg text-center flex-1">汀角路茶座 及 味千拉麵</h3>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -128,16 +137,25 @@ export default function ReimbursementReport() {
           >
             重新載入
           </button>
+          <button
+            type="button"
+            onClick={handlePrint}
+            disabled={!report || loading}
+            className="px-3 py-1.5 border rounded-md bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50"
+          >
+            印刷
+          </button>
         </div>
       </div>
 
       {loading && !report ? (
-        <div className="border rounded-md p-8 text-center text-gray-500">載入中…</div>
+        <div className="border rounded-md p-8 text-center text-gray-500 print:hidden">載入中…</div>
       ) : !report ? (
-        <div className="border rounded-md p-8 text-center text-gray-500">暫無資料</div>
+        <div className="border rounded-md p-8 text-center text-gray-500 print:hidden">暫無資料</div>
       ) : (
         <>
-          <div className={`overflow-auto border rounded-md ${loading ? "opacity-60" : ""}`}>
+          {/* 画面表示 */}
+          <div className={`overflow-auto border rounded-md print:hidden ${loading ? "opacity-60" : ""}`}>
             <table className="w-full max-w-md mx-auto text-sm border-collapse">
               <thead>
                 <tr className="bg-gray-50 border-b">
@@ -150,7 +168,7 @@ export default function ReimbursementReport() {
                   </th>
                   <th className="p-2 text-center font-semibold w-28">
                     <div>B</div>
-                    <div className="text-xs font-normal text-gray-600">foodpanda</div>
+                    <div className="text-xs font-normal text-gray-600">味千</div>
                   </th>
                 </tr>
               </thead>
@@ -164,7 +182,9 @@ export default function ReimbursementReport() {
                     <td className="p-1.5 px-2 text-right tabular-nums">
                       {formatReimbursementAmount(row.amountB)}
                       {row.amountBFromReceipt ? (
-                        <span className="ml-1 text-[10px] text-amber-700" title="收據最終額">收據</span>
+                        <span className="ml-1 text-[10px] text-amber-700" title="收據最終額">
+                          收據
+                        </span>
                       ) : null}
                     </td>
                   </tr>
@@ -173,29 +193,75 @@ export default function ReimbursementReport() {
             </table>
           </div>
 
-          <div className="max-w-md mx-auto border rounded-md overflow-hidden">
+          <div className="max-w-md mx-auto border rounded-md overflow-hidden print:hidden">
             <table className="w-full text-sm border-collapse">
               <tbody>
                 <tr className="bg-gray-50 border-b">
                   <td className="p-2 font-semibold border-r w-24">共:</td>
                   <td className="p-2 text-right border-r tabular-nums w-28">
-                    {formatReimbursementAmount(report.totalA)}
+                    {formatReimbursementTotal(report.totalA)}
                   </td>
                   <td className="p-2 text-right tabular-nums w-28">
-                    {formatReimbursementAmount(report.totalB)}
+                    {formatReimbursementTotal(report.totalB)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="p-2 font-bold border-r" colSpan={1}>
-                    合共:
-                  </td>
-                  <td className="p-2 text-right font-bold tabular-nums border-b-4 border-double border-gray-800" colSpan={2}>
-                    {formatReimbursementAmount(report.grandTotal)}
+                  <td className="p-2 font-bold border-r">合共:</td>
+                  <td
+                    className="p-2 text-right font-bold tabular-nums border-b-4 border-double border-gray-800"
+                    colSpan={2}
+                  >
+                    {formatReimbursementTotal(totalA + totalB)}
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
+
+          {/* A4 縦1ページ印刷用（添付PDF準拠） */}
+          <div id="print-area" className="hidden print:block">
+            <div className="reimb-print-sheet">
+              <h1 className="reimb-print-title">汀角路茶座 及 味千拉麵</h1>
+              <table className="reimb-print-table">
+                <thead>
+                  <tr>
+                    <th className="col-date">
+                      {report.year}年{report.month}月份
+                    </th>
+                    <th className="col-a">
+                      <div>A</div>
+                      <div className="sub">汀角</div>
+                    </th>
+                    <th className="col-b">
+                      <div>B</div>
+                      <div className="sub">味千</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.days.map((row) => (
+                    <tr key={row.dateKey}>
+                      <td className="col-date">{row.label}</td>
+                      <td className="col-a">{formatReimbursementAmount(row.amountA)}</td>
+                      <td className="col-b">{formatReimbursementAmount(row.amountB)}</td>
+                    </tr>
+                  ))}
+                  <tr className="row-subtotal">
+                    <td className="col-date">共:</td>
+                    <td className="col-a">{formatReimbursementTotal(report.totalA)}</td>
+                    <td className="col-b">{formatReimbursementTotal(report.totalB)}</td>
+                  </tr>
+                  <tr className="row-grand">
+                    <td className="col-date">合共:</td>
+                    <td className="col-grand" colSpan={2}>
+                      {formatReimbursementTotal(grandTotal)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </>
       )}
     </div>
