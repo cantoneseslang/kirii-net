@@ -8,6 +8,8 @@ import {
 import type { FoodpandaOrder, Order } from "../types"
 
 export const TINGKOK_MEAL_PRICE = 35
+/** 汀角：餐點未選擇の飲品のみ */
+export const TINGKOK_DRINK_ONLY_PRICE = 10
 
 const META_FP_PREFIX = "meta-fp-"
 const META_FP_DRINK = "__meta_fp__"
@@ -123,9 +125,18 @@ export function calculateFoodpandaOrderAmount(order: FoodpandaOrder): number {
   return dish + noodle + addOns + drink
 }
 
-/** 汀角路: 定食1件 = $35（飲品のみは $0） */
+/** 汀角路: 落單表と同じ — 定食 $35 + 飲品のみ（未選擇）$10 */
 export function calculateTingkokDayAmount(orders: Order[]): number {
-  return orders.filter((order) => order.dish && order.dish !== "未選擇").length * TINGKOK_MEAL_PRICE
+  let total = 0
+  for (const order of orders) {
+    if (!order.dish && !order.drink) continue
+    if (order.dish && order.dish !== "未選擇") {
+      total += TINGKOK_MEAL_PRICE
+    } else if (order.dish === "未選擇" && order.drink && order.drink !== "未選擇") {
+      total += TINGKOK_DRINK_ONLY_PRICE
+    }
+  }
+  return total
 }
 
 /** その日の foodpanda 合計（注文金額 + 1件以上あれば配送料1回） */
