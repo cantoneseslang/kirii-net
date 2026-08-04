@@ -141,10 +141,12 @@ body {
     color: #000;
   }
   .reimb-print-title {
-    text-align: center;
+    display: block;
+    width: 100%;
+    text-align: center !important;
     font-size: 13pt;
     font-weight: 700;
-    margin: 0 0 2.5mm;
+    margin: 0 auto 2.5mm;
     letter-spacing: 0.04em;
     line-height: 1.2;
   }
@@ -183,6 +185,9 @@ body {
   .reimb-print-table tbody td {
     border-bottom: 0.5pt dotted #333;
   }
+  .reimb-print-table tbody tr:last-child td {
+    border-bottom: none;
+  }
   .reimb-print-table .col-date {
     width: 28%;
     text-align: left;
@@ -193,24 +198,45 @@ body {
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
-  .reimb-print-table .row-subtotal td {
-    border-top: 1.2pt solid #000;
-    border-bottom: 0.8pt solid #000;
-    font-weight: 700;
-    padding-top: 0.9mm;
-    padding-bottom: 0.9mm;
-  }
-  .reimb-print-table .row-grand td {
-    border-top: none;
-    border-bottom: none;
-    padding-top: 1.2mm;
-    padding-bottom: 0.4mm;
+  /* 共 / 合共：枠線なし。合共金額の下のみ二重線 */
+  .reimb-print-totals {
+    width: 100%;
+    margin-top: 2mm;
+    font-size: 9.5pt;
     font-weight: 700;
   }
-  .reimb-print-table .col-grand {
+  .reimb-print-subtotal,
+  .reimb-print-grand {
+    display: grid;
+    grid-template-columns: 28% 36% 36%;
+    align-items: end;
+    border: none !important;
+  }
+  .reimb-print-subtotal {
+    padding: 1.2mm 2.2mm;
+  }
+  .reimb-print-grand {
+    padding: 1.5mm 2.2mm 0.5mm;
+  }
+  .reimb-print-subtotal .lab,
+  .reimb-print-grand .lab {
+    text-align: left;
+  }
+  .reimb-print-subtotal .num-a,
+  .reimb-print-subtotal .num-b {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .reimb-print-grand .num-grand {
+    grid-column: 2 / span 2;
     text-align: center;
-    border-bottom: 2.5pt double #000 !important;
     font-size: 11pt;
+    font-variant-numeric: tabular-nums;
+    border: none !important;
+    border-bottom: 2.5pt double #000 !important;
+    padding: 0 4mm 0.8mm;
+    justify-self: center;
+    min-width: 40%;
   }
 
   /* foodpanda 落單表 + 收據（A4縦・同一ページ） */

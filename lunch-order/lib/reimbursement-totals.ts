@@ -272,11 +272,9 @@ export function roundUpToOneDecimal(value: number): number {
   return Math.ceil(value * 10 - Number.EPSILON) / 10
 }
 
-/** 日別金額表示（最大小数2桁、整数は .0） */
+/** 報銷表 日別金額：常に小数1桁（切り上げ） */
 export function formatReimbursementAmount(value: number): string {
-  const rounded = Math.round(value * 100) / 100
-  if (Number.isInteger(rounded)) return rounded.toFixed(1)
-  return String(rounded)
+  return roundUpToOneDecimal(value).toFixed(1)
 }
 
 /** 共 / 合共 用：小数1桁へ切り上げ */

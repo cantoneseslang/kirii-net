@@ -193,32 +193,27 @@ export default function ReimbursementReport() {
             </table>
           </div>
 
-          <div className="max-w-md mx-auto border rounded-md overflow-hidden print:hidden">
-            <table className="w-full text-sm border-collapse">
-              <tbody>
-                <tr className="bg-gray-50 border-b">
-                  <td className="p-2 font-semibold border-r w-24">共:</td>
-                  <td className="p-2 text-right border-r tabular-nums w-28">
-                    {formatReimbursementTotal(report.totalA)}
-                  </td>
-                  <td className="p-2 text-right tabular-nums w-28">
-                    {formatReimbursementTotal(report.totalB)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-2 font-bold border-r">合共:</td>
-                  <td
-                    className="p-2 text-right font-bold tabular-nums border-b-4 border-double border-gray-800"
-                    colSpan={2}
-                  >
-                    {formatReimbursementTotal(totalA + totalB)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="max-w-md mx-auto mt-3 print:hidden">
+            <div className="flex text-sm font-semibold py-2">
+              <div className="w-24">共:</div>
+              <div className="flex-1 text-right tabular-nums pr-2">
+                {formatReimbursementTotal(report.totalA)}
+              </div>
+              <div className="w-28 text-right tabular-nums">
+                {formatReimbursementTotal(report.totalB)}
+              </div>
+            </div>
+            <div className="flex text-sm font-bold py-2 items-end">
+              <div className="w-24">合共:</div>
+              <div className="flex-1 text-center">
+                <span className="inline-block tabular-nums border-b-4 border-double border-gray-900 px-6 pb-0.5">
+                  {formatReimbursementTotal(grandTotal)}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* A4 縦1ページ印刷用（添付PDF準拠） */}
+          {/* A4 縦1ページ印刷用 */}
           <div id="print-area" className="hidden print:block">
             <div className="reimb-print-sheet">
               <h1 className="reimb-print-title">汀角路茶座 及 味千拉麵</h1>
@@ -246,19 +241,19 @@ export default function ReimbursementReport() {
                       <td className="col-b">{formatReimbursementAmount(row.amountB)}</td>
                     </tr>
                   ))}
-                  <tr className="row-subtotal">
-                    <td className="col-date">共:</td>
-                    <td className="col-a">{formatReimbursementTotal(report.totalA)}</td>
-                    <td className="col-b">{formatReimbursementTotal(report.totalB)}</td>
-                  </tr>
-                  <tr className="row-grand">
-                    <td className="col-date">合共:</td>
-                    <td className="col-grand" colSpan={2}>
-                      {formatReimbursementTotal(grandTotal)}
-                    </td>
-                  </tr>
                 </tbody>
               </table>
+              <div className="reimb-print-totals">
+                <div className="reimb-print-subtotal">
+                  <span className="lab">共:</span>
+                  <span className="num-a">{formatReimbursementTotal(report.totalA)}</span>
+                  <span className="num-b">{formatReimbursementTotal(report.totalB)}</span>
+                </div>
+                <div className="reimb-print-grand">
+                  <span className="lab">合共:</span>
+                  <span className="num-grand">{formatReimbursementTotal(grandTotal)}</span>
+                </div>
+              </div>
             </div>
           </div>
 
