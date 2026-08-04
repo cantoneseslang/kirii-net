@@ -11,12 +11,13 @@ import OperatorSelectDialog from "./operator-select-dialog"
 import Link from "next/link"
 import { formatHongKongPeriodDate, getHongKongDateKey } from "../lib/hong-kong-calendar"
 import OrderDateQueryBar from "./order-date-query-bar"
+import ReimbursementReport from "./reimbursement-report"
 import { ADMIN_MEMBER_IDS, isAdminMember } from "../lib/admin-access"
 import { isProxyOrder } from "../lib/order-operator"
 import type { AuditLogEntry } from "../context/order-context"
 
 type AdminTab = "tingkok" | "foodpanda"
-type AdminSubview = "orders" | "employees" | "menus" | "audit"
+type AdminSubview = "orders" | "employees" | "menus" | "audit" | "reimbursement"
 
 function OperatorBadge({
   order,
@@ -62,8 +63,11 @@ export default function AdminPanel() {
 
   const operatorOptions = employees
     .filter((e) => ADMIN_MEMBER_IDS.includes(e.id as (typeof ADMIN_MEMBER_IDS)[number]))
-    .map((e) => e.nameInChinese || e.nameInEnglish)
-    .filter(Boolean)
+    .map((e) => ({
+      value: String(e.id),
+      label: e.nameInChinese || e.nameInEnglish,
+    }))
+    .filter((option) => !!option.label)
   const adminCandidates = employees.filter((e) =>
     ADMIN_MEMBER_IDS.includes(String(e.id) as (typeof ADMIN_MEMBER_IDS)[number]),
   )
@@ -231,6 +235,12 @@ export default function AdminPanel() {
           className={`px-4 py-2 border rounded-md ${adminSubview === "audit" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
         >
           操作記錄
+        </button>
+        <button
+          onClick={() => setAdminSubview("reimbursement")}
+          className={`px-4 py-2 border rounded-md ${adminSubview === "reimbursement" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+        >
+          報銷表
         </button>
       </div>
 
@@ -420,6 +430,7 @@ export default function AdminPanel() {
 
       {adminSubview === "employees" && <EmployeeListManager />}
       {adminSubview === "menus" && <MenuListManager />}
+      {adminSubview === "reimbursement" && <ReimbursementReport />}
       {adminSubview === "audit" && (
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -473,6 +484,7 @@ export default function AdminPanel() {
         open={operatorDialogOpen}
         title={pendingAction === "reset-tingkok" ? "汀角路 重設" : "foodpanda 重設"}
         options={operatorOptions}
+        preferredValue={currentEmployeeRecord?.id || ""}
         busy={isResetting}
         onCancel={() => {
           if (isResetting) return

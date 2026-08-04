@@ -2,10 +2,16 @@
 
 import { useEffect, useMemo, useState } from "react"
 
+type OperatorOption = {
+  value: string
+  label: string
+}
+
 type OperatorSelectDialogProps = {
   open: boolean
   title: string
-  options: string[]
+  options: OperatorOption[]
+  preferredValue?: string
   busy?: boolean
   onCancel: () => void
   onConfirm: (actorName: string) => void
@@ -15,20 +21,46 @@ export default function OperatorSelectDialog({
   open,
   title,
   options,
+  preferredValue,
   busy = false,
   onCancel,
   onConfirm,
 }: OperatorSelectDialogProps) {
-  const normalizedOptions = useMemo(
-    () => Array.from(new Set(options.map((x) => x.trim()).filter(Boolean))),
-    [options],
-  )
-  const [selected, setSelected] = useState("")
+  const normalizedOptions = useMemo(() => {
+    const seen = new Set<string>()
+    const deduped: OperatorOption[] = []
+    for (const item of options) {
+      const value = String(item.value ?? "").trim()
+      const label = String(item.label ?? "").trim()
+      if (!value || !label || seen.has(value)) continue
+      seen.add(value)
+      deduped.push({ value, label })
+    }
+    return deduped
+  }, [options])
+  const [selectedValue, setSelectedValue] = useState("")
+  const [userChanged, setUserChanged] = useState(false)
+
+  useEffect(() => {
+    if (!open) {
+      setUserChanged(false)
+      return
+    }
+    setUserChanged(false)
+  }, [open])
 
   useEffect(() => {
     if (!open) return
-    setSelected(normalizedOptions[0] ?? "")
-  }, [open, normalizedOptions])
+    setSelectedValue((prev) => {
+      const hasPreferred =
+        !!preferredValue && normalizedOptions.some((option) => option.value === preferredValue)
+      if (hasPreferred && !userChanged) {
+        return preferredValue
+      }
+      if (prev && normalizedOptions.some((option) => option.value === prev)) return prev
+      return normalizedOptions[0]?.value ?? ""
+    })
+  }, [open, normalizedOptions, preferredValue, userChanged])
 
   if (!open) return null
 
@@ -36,16 +68,19 @@ export default function OperatorSelectDialog({
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-full max-w-md p-4 space-y-4">
         <h3 className="font-bold text-lg">{title}</h3>
-        <p className="text-sm text-gray-600">請選擇操作者姓名（取消只限本人）</p>
+        <p className="text-sm text-gray-600">請選擇操作者姓名（取消只限本人或代理操作者）</p>
         <select
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
+          value={selectedValue}
+          onChange={(e) => {
+            setUserChanged(true)
+            setSelectedValue(e.target.value)
+          }}
           disabled={busy}
           className="w-full border rounded-md px-3 py-2"
         >
-          {normalizedOptions.map((name) => (
-            <option key={name} value={name}>
-              {name}
+          {normalizedOptions.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
             </option>
           ))}
         </select>
@@ -58,8 +93,12 @@ export default function OperatorSelectDialog({
             取消
           </button>
           <button
-            onClick={() => selected && onConfirm(selected)}
-            disabled={busy || !selected}
+            onClick={() => {
+              const selected = normalizedOptions.find((option) => option.value === selectedValue)
+              if (!selected) return
+              onConfirm(selected.label)
+            }}
+            disabled={busy || !selectedValue}
             className="px-4 py-2 border rounded-md bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50"
           >
             OK
