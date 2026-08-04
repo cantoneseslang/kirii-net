@@ -153,13 +153,21 @@ export default function ReceiptScanPanel() {
 
     setSaving(true)
     try {
+      const foodSubtotal = parseOptionalNumber(draft.foodSubtotal)
+      const deliveryFee = parseOptionalNumber(draft.deliveryFee)
+      const serviceFee = parseOptionalNumber(draft.serviceFee)
+      const originalBeforeDiscount =
+        foodSubtotal == null
+          ? null
+          : Math.round((foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0)) * 100) / 100
       const record: FoodpandaReceiptRecord = {
         dateKey: draft.dateKey,
         platform: draft.platform,
         finalPaid,
-        foodSubtotal: parseOptionalNumber(draft.foodSubtotal),
-        deliveryFee: parseOptionalNumber(draft.deliveryFee),
-        serviceFee: parseOptionalNumber(draft.serviceFee),
+        foodSubtotal,
+        deliveryFee,
+        serviceFee,
+        originalBeforeDiscount,
         discounts: draft.discountsText
           .split(/\r?\n/)
           .map((line) => line.trim())
@@ -223,7 +231,8 @@ export default function ReceiptScanPanel() {
       <div>
         <h3 className="font-bold text-lg">收據掃描（foodpanda / KeeTa）</h3>
         <p className="text-sm text-gray-600 mt-1">
-          JPEG / PDF をアップロードし、顧客實付・總計を読み取ります。確認後に報銷表の B 列へ適用します。
+          重要フィールド: <strong>期日</strong>・<strong>內容（品目）</strong>・<strong>元金額（餐點/小計）</strong>・
+          <strong>割引後（顧客實付/總計）</strong>。OCRは誤読しやすいので保存前に必ず確認してください。
         </p>
       </div>
 
@@ -252,10 +261,10 @@ export default function ReceiptScanPanel() {
           <div className="text-sm text-gray-500">來源: {draft.fileName}</div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="text-sm">
-              期日 (YYYY-MM-DD)
+            <label className="text-sm font-semibold">
+              1. 期日 (YYYY-MM-DD)
               <input
-                className="mt-1 w-full border rounded px-2 py-1.5"
+                className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
                 value={draft.dateKey}
                 onChange={(e) => setDraft({ ...draft, dateKey: e.target.value })}
                 onBlur={() => draft && void refreshMatch(draft)}
@@ -276,19 +285,19 @@ export default function ReceiptScanPanel() {
               </select>
             </label>
             <label className="text-sm font-semibold">
-              最終支払額（顧客實付 / 總計）
+              3. 元金額（餐點總價 / 小計）
+              <input
+                className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
+                value={draft.foodSubtotal}
+                onChange={(e) => setDraft({ ...draft, foodSubtotal: e.target.value })}
+              />
+            </label>
+            <label className="text-sm font-semibold">
+              4. 割引後（顧客實付 / 總計）→ 報銷表B
               <input
                 className="mt-1 w-full border rounded px-2 py-1.5 border-amber-400 bg-amber-50"
                 value={draft.finalPaid}
                 onChange={(e) => setDraft({ ...draft, finalPaid: e.target.value })}
-              />
-            </label>
-            <label className="text-sm">
-              餐點總價 / 小計
-              <input
-                className="mt-1 w-full border rounded px-2 py-1.5"
-                value={draft.foodSubtotal}
-                onChange={(e) => setDraft({ ...draft, foodSubtotal: e.target.value })}
               />
             </label>
             <label className="text-sm">
@@ -309,10 +318,10 @@ export default function ReceiptScanPanel() {
             </label>
           </div>
 
-          <label className="block text-sm">
-            品目（1行1件・照合用）
+          <label className="block text-sm font-semibold">
+            2. 內容（品目・1行1件）
             <textarea
-              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[100px] font-mono text-xs"
+              className="mt-1 w-full border rounded px-2 py-1.5 min-h-[100px] font-mono text-xs border-amber-400 bg-amber-50"
               value={draft.itemsText}
               onChange={(e) => setDraft({ ...draft, itemsText: e.target.value })}
               onBlur={() => draft && void refreshMatch(draft)}

@@ -16,10 +16,14 @@ export type ParsedReceipt = {
   platform: ReceiptPlatform
   restaurant: string | null
   items: ReceiptParsedItem[]
+  /** 元の金額（餐點總價 / 小計） */
   foodSubtotal: number | null
   deliveryFee: number | null
   serviceFee: number | null
+  /** 割引前の合計（餐點+運費+服務費） */
+  originalBeforeDiscount: number | null
   discounts: ReceiptDiscountLine[]
+  /** 割引後の最終支払額（顧客實付 / 總計） */
   finalPaid: number | null
   rawText: string
 }
@@ -31,6 +35,7 @@ export type FoodpandaReceiptRecord = {
   foodSubtotal: number | null
   deliveryFee: number | null
   serviceFee: number | null
+  originalBeforeDiscount?: number | null
   discounts: ReceiptDiscountLine[]
   items: ReceiptParsedItem[]
   sourceFileName: string
@@ -59,14 +64,63 @@ export function normalizeReceiptItemName(name: string): string {
     .trim()
 }
 
+/** Apple Vision / 熱感レシートの誤字を補正 */
+export function normalizeOcrNoise(text: string): string {
+  return text
+    .replace(/\u00a0/g, " ")
+    .replace(/顧客[竇实実實]付/g, "顧客實付")
+    .replace(/餐點[矮縂經总總]價/g, "餐點總價")
+    .replace(/餐點[矮縂經总總]价/g, "餐點總價")
+    .replace(/Service\s*[Ff]ee/g, "Service Fee")
+    .replace(/Delivery\s*[Ff]ee/g, "Delivery Fee")
+    .replace(/平台[股股服]務費/g, "平台服務費")
+    .replace(/運[登費费]/g, "運費")
+    .replace(/洛[审審]時間/g, "落單時間")
+    .replace(/落[审審]時間/g, "落單時間")
+    .replace(/減建費/g, "減運費")
+    .replace(/總計\s*[（(]含增值稅[）)]/g, "總計（含增值稅）")
+    .replace(/小計金額/g, "小計金額")
+    .replace(/合計付款/g, "合計付款")
+}
+
 function parseMoneyToken(raw: string): number | null {
   const cleaned = raw.replace(/[,，\s]/g, "").replace(/HK\$/gi, "").replace(/\$/g, "")
   if (!cleaned || cleaned === "-" || cleaned === "--" || cleaned === "—") return null
   const n = Number(cleaned)
-  return Number.isFinite(n) ? n : null
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : null
 }
 
+/**
+ * ラベル行の直後の行に金額がある Vision OCR パターンにも対応
+ * e.g. "顧客實付\n$178.50" / "餐點總價\n214.00"
+ */
 function findLabeledAmount(text: string, labels: RegExp[]): number | null {
+  const lines = text.split(/\r?\n/).map((l) => l.trim())
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    for (const label of labels) {
+      if (!label.test(line)) continue
+      const same = line.match(
+        new RegExp(`${label.source}\\s*[:：]?\\s*(?:HK\\s*)?\\$?\\s*(-?[\\d,]+(?:\\.\\d+)?)`, "i"),
+      )
+      if (same) {
+        const v = parseMoneyToken(same[1])
+        if (v != null) return v
+      }
+      // next non-empty line
+      for (let j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+        const next = lines[j]
+        if (!next) continue
+        const m = next.match(/^(?:HK\s*)?\$?\s*(-?[\d,]+(?:\.\d+)?)\s*$/i)
+        if (m) {
+          const v = parseMoneyToken(m[1])
+          if (v != null) return v
+        }
+        break
+      }
+    }
+  }
+
   for (const label of labels) {
     const re = new RegExp(
       `${label.source}\\s*[:：]?\\s*(?:HK\\s*)?\\$?\\s*(-?[\\d,]+(?:\\.\\d+)?)`,
@@ -83,13 +137,8 @@ function findLabeledAmount(text: string, labels: RegExp[]): number | null {
 
 function detectPlatform(text: string): ReceiptPlatform {
   const lower = text.toLowerCase()
-  if (/keeta|kee\s*ta|顧客實付|餐點總價|平台服務費/.test(text) || /keeta/.test(lower)) {
-    if (/foodpanda|熊貓/.test(text) || /foodpanda/.test(lower)) {
-      // both keywords rare; prefer keeta markers for 顧客實付
-      if (/顧客實付/.test(text)) return "keeta"
-    } else {
-      return "keeta"
-    }
+  if (/顧客實付|餐點總價|平台服務費/.test(text) || /keeta|kee\s*ta/.test(lower)) {
+    if (/顧客實付/.test(text) || /keeta|kee\s*ta/.test(lower)) return "keeta"
   }
   if (/foodpanda|熊貓|總計（含增值稅）|與最低消費|service fee|delivery fee/i.test(text)) {
     return "foodpanda"
@@ -101,10 +150,11 @@ function detectPlatform(text: string): ReceiptPlatform {
 
 function extractDateKey(text: string): string | null {
   const patterns: Array<{ re: RegExp; y: number; m: number; d: number }> = [
-    { re: /(\d{4})[年/.\\-](\d{1,2})[月/.\\-](\d{1,2})/, y: 1, m: 2, d: 3 },
-    { re: /(\d{1,2})[/.\\-](\d{1,2})[/.\\-](\d{4})/, y: 3, m: 2, d: 1 }, // DD/MM/YYYY (HK)
-    { re: /(\d{1,2})\.(\d{1,2})\.(\d{4})/, y: 3, m: 2, d: 1 },
+    { re: /(\d{4})[年/.\-](\d{1,2})[月/.\-](\d{1,2})/, y: 1, m: 2, d: 3 },
     { re: /落單時間\s*(\d{1,2})[/.\\-](\d{1,2})[/.\\-](\d{4})/, y: 3, m: 2, d: 1 },
+    { re: /(\d{1,2})[/.\\-](\d{1,2})[/.\\-](\d{4})\s*\d{1,2}[:：]\d{2}/, y: 3, m: 2, d: 1 },
+    { re: /(\d{1,2})[/.\\-](\d{1,2})[/.\\-](\d{4})/, y: 3, m: 2, d: 1 },
+    { re: /(\d{1,2})\.(\d{1,2})\.(\d{4})/, y: 3, m: 2, d: 1 },
   ]
 
   for (const p of patterns) {
@@ -117,7 +167,17 @@ function extractDateKey(text: string): string | null {
     return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
   }
 
-  // MM.DD.YYYY ambiguous already covered; try YYYY-MM-DD ISO
+  // glued: 02/07/202610.35
+  const glued = text.match(/(\d{1,2})[/.\\-](\d{1,2})[/.\\-](\d{4})(\d{2})[.：:]\d{2}/)
+  if (glued) {
+    const year = Number(glued[3])
+    const month = Number(glued[2])
+    const day = Number(glued[1])
+    if (year >= 2020 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+    }
+  }
+
   const iso = text.match(/(\d{4})-(\d{2})-(\d{2})/)
   if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`
   return null
@@ -131,19 +191,25 @@ function extractRestaurant(text: string): string | null {
 function extractDiscounts(text: string): ReceiptDiscountLine[] {
   const lines = text.split(/\r?\n/)
   const discounts: ReceiptDiscountLine[] = []
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
     if (!/(折|減運費|優惠|discount|coupon|減\$)/i.test(line)) continue
-    if (/顧客實付|總計|餐點總價|小計|運費|服務費|平台/.test(line) && !/(折|減運費|優惠)/.test(line)) continue
-    const amountMatch = line.match(/-?\s*\$?\s*([\d,]+(?:\.\d+)?)\s*$/)
-    const inline = line.match(/(-)\s*\$?\s*([\d,]+(?:\.\d+)?)/)
+    if (/顧客實付|總計|餐點總價|小計|運費|服務費|平台/.test(line) && !/(折|減運費|優惠)/.test(line)) {
+      continue
+    }
     let amount: number | null = null
+    const inline = line.match(/(-)\s*\$?\s*([\d,]+(?:\.\d+)?)/) || line.match(/\$?\s*([\d,]+(?:\.\d+)?)\s*$/)
     if (inline) {
-      amount = parseMoneyToken(inline[2])
+      amount = parseMoneyToken(inline[inline.length - 1])
       if (amount != null) amount = -Math.abs(amount)
-    } else if (amountMatch) {
-      amount = parseMoneyToken(amountMatch[1])
-      if (amount != null && /(折|減|優惠|discount|coupon)/i.test(line)) {
-        amount = -Math.abs(amount)
+    }
+    if (amount == null || amount === 0) {
+      for (let j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+        const m = lines[j].match(/^(?:-)?\s*\$?\s*([\d,]+(?:\.\d+)?)\s*$/)
+        if (m) {
+          amount = -Math.abs(parseMoneyToken(m[1]) ?? 0)
+          break
+        }
       }
     }
     if (amount == null || amount >= 0) continue
@@ -156,13 +222,12 @@ function extractItems(text: string): ReceiptParsedItem[] {
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean)
   const items: ReceiptParsedItem[] = []
   const skip =
-    /^(數量|商品|原價|小計|餐點|運費|平台|服務|顧客|總計|折扣|優惠|訂單|落單|謝謝|外送|預計|Delivery|Service|VAT|評分|付款|已付款)/i
+    /^(數量|商品|原價|小計|餐點|運費|平台|服務|顧客|總計|折扣|優惠|訂單|落單|謝謝|外送|預計|Delivery|Service|VAT|評分|付款|已付款|滿\$)/i
 
   for (const line of lines) {
     if (skip.test(line)) continue
-    if (/無需餐具|不用加配|需要餐具/.test(line)) continue
+    if (/無需餐具|不用加配|需要餐具/.test(line) && !/\$?\d/.test(line)) continue
 
-    // 1x 關東煮-套餐 40.00  /  1 x 關東煮 $40.00
     const m = line.match(/^(?:\d+\s*[xX×]\s*)?(.+?)\s+(?:HK\$|\$)?\s*([\d,]+(?:\.\d+)?)\s*$/)
     if (!m) continue
     const name = m[1]
@@ -170,9 +235,8 @@ function extractItems(text: string): ReceiptParsedItem[] {
       .replace(/\s+/g, " ")
       .trim()
     if (name.length < 2 || name.length > 60) continue
-    if (/^(運費|平台|服務|小計|總計|顧客)/.test(name)) continue
+    if (/^(運費|平台|服務|小計|總計|顧客|滿)/.test(name)) continue
     const price = parseMoneyToken(m[2])
-    // skip tiny modifier-only lines that look like drinks alone if needed — keep drinks as items for matching soft
     items.push({
       name,
       normalizedName: normalizeReceiptItemName(name),
@@ -182,39 +246,61 @@ function extractItems(text: string): ReceiptParsedItem[] {
   return items
 }
 
-function extractFinalPaid(text: string, platform: ReceiptPlatform): number | null {
-  const keeta = findLabeledAmount(text, [/顧客實付/, /顧客實付金額/])
-  if (keeta != null) return keeta
+/** 領収書の支払額として妥当か（注文番号の誤検出を除外） */
+function isPlausiblePaidAmount(value: number): boolean {
+  return value >= 20 && value <= 800
+}
 
-  const fpVat = findLabeledAmount(text, [/總計（含增值稅）/, /總計\(含增值稅\)/, /總計\s*\(含稅\)/])
-  if (fpVat != null) return fpVat
-
-  // Prefer last "總計" that isn't a subtotal line
-  const totals = [
-    ...text.matchAll(/總計(?:（含增值稅）)?\s*[:：]?\s*(?:HK\s*)?\$?\s*([\d,]+(?:\.\d+)?)/gi),
-  ]
-  if (totals.length > 0) {
-    const value = parseMoneyToken(totals[totals.length - 1][1])
-    if (value != null) return value
-  }
-
-  // Same-line or next-token patterns after OCR noise
-  const looseKeeta = text.match(/顧客實付[^\d-]{0,12}([\d,]+(?:\.\d+)?)/)
-  if (looseKeeta) {
-    const value = parseMoneyToken(looseKeeta[1])
-    if (value != null) return value
-  }
-
-  const paid = findLabeledAmount(text, [/合計付款/, /實付金額/, /Paid\s*Amount/i])
-  if (paid != null) return paid
-  if (platform === "foodpanda") {
-    return findLabeledAmount(text, [/\bTotal\b/i])
+/**
+ * ラベル行の後続に並ぶ金額から最終支払額を選ぶ。
+ * 割引行（負数）や運費単独を避け、20〜800 の最後の正数を優先。
+ */
+function amountAfterLabelBlock(text: string, label: RegExp): number | null {
+  const lines = text.split(/\r?\n/).map((l) => l.trim())
+  for (let i = 0; i < lines.length; i++) {
+    if (!label.test(lines[i])) continue
+    const sameLine = lines[i].match(/(?:HK\s*)?\$?\s*(-?[\d,]+(?:\.\d+)?)\s*$/i)
+    const candidates: number[] = []
+    if (sameLine) {
+      const v = parseMoneyToken(sameLine[1])
+      if (v != null && v > 0 && isPlausiblePaidAmount(v)) candidates.push(v)
+    }
+    for (let j = i + 1; j < Math.min(i + 8, lines.length); j++) {
+      const line = lines[j]
+      if (!line) continue
+      if (/商戶|送遞|謝謝|Partners|評分|訂單編號|落單時間|當面|程式/.test(line)) break
+      const money = [...line.matchAll(/(?:HK\s*)?\$?\s*(-?[\d,]+(?:\.\d+)?)/gi)]
+      for (const m of money) {
+        const v = parseMoneyToken(m[1])
+        if (v == null) continue
+        if (v < 0) continue // 割引行はスキップ
+        if (isPlausiblePaidAmount(v)) candidates.push(v)
+      }
+    }
+    if (candidates.length > 0) return candidates[candidates.length - 1]
   }
   return null
 }
 
+function extractFinalPaid(text: string, _platform: ReceiptPlatform): number | null {
+  const keeta = amountAfterLabelBlock(text, /顧客實付/)
+  if (keeta != null) return keeta
+
+  const fpVat = amountAfterLabelBlock(text, /總計（含增值稅）/)
+  if (fpVat != null) return fpVat
+
+  // foodpanda: 「總計」ブロックの最後の妥当額（小計・運費の後に来る）
+  const totalBlock = amountAfterLabelBlock(text, /^總計$|總計\s*$|總計\s*[:：]/)
+  if (totalBlock != null) return totalBlock
+
+  const paid = amountAfterLabelBlock(text, /合計付款|實付金額|Paid\s*Amount/i)
+  if (paid != null) return paid
+
+  return null
+}
+
 export function parseReceiptText(rawText: string): ParsedReceipt {
-  const text = rawText.replace(/\u00a0/g, " ").replace(/[ \t]+/g, " ")
+  const text = normalizeOcrNoise(rawText.replace(/[ \t]+/g, " "))
   const platform = detectPlatform(text)
   const dateKey = extractDateKey(text)
   const restaurant = extractRestaurant(text)
@@ -225,6 +311,13 @@ export function parseReceiptText(rawText: string): ParsedReceipt {
   const items = extractItems(text)
   const finalPaid = extractFinalPaid(text, platform)
 
+  let originalBeforeDiscount: number | null = null
+  if (foodSubtotal != null) {
+    originalBeforeDiscount =
+      foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0)
+    originalBeforeDiscount = Math.round(originalBeforeDiscount * 100) / 100
+  }
+
   return {
     dateKey,
     platform,
@@ -233,6 +326,7 @@ export function parseReceiptText(rawText: string): ParsedReceipt {
     foodSubtotal,
     deliveryFee,
     serviceFee,
+    originalBeforeDiscount,
     discounts,
     finalPaid,
     rawText: text,
