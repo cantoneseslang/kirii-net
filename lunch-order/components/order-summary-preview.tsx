@@ -8,11 +8,19 @@ import {
   META_FP_RECEIPT_DRINK,
   parseFpReceiptRecord,
   receiptMemberId,
+  type FoodpandaReceiptRecord,
 } from "../lib/receipt-parser"
+import {
+  calculateFoodpandaDayAmount,
+  calculateFoodpandaOrderAmount,
+  formatReimbursementAmount,
+  formatReimbursementTotal,
+  roundUpToOneDecimal,
+} from "../lib/reimbursement-totals"
 import { supabase } from "../lib/supabase"
 import OrderDateQueryBar from "./order-date-query-bar"
 
-async function fetchReceiptImageForDate(dateKey: string): Promise<string | null> {
+async function fetchReceiptForDate(dateKey: string): Promise<FoodpandaReceiptRecord | null> {
   const { data, error } = await supabase
     .from("orders")
     .select("dish")
@@ -20,9 +28,7 @@ async function fetchReceiptImageForDate(dateKey: string): Promise<string | null>
     .eq("drink", META_FP_RECEIPT_DRINK)
     .maybeSingle()
   if (error || !data?.dish) return null
-  const record = parseFpReceiptRecord(data.dish)
-  const url = record?.imageDataUrl
-  return url && url.startsWith("data:image/") ? url : null
+  return parseFpReceiptRecord(data.dish)
 }
 
 interface DishGroup {
@@ -79,52 +85,87 @@ function TingkokPreview({
   formattedDate,
   todayOrders,
   employees,
-  receiptImageUrl,
 }: {
   formattedDate: string
   todayOrders: Order[]
   employees: EmployeeRecord[]
-  receiptImageUrl: string | null
 }) {
   const { dishGroupsA, dishGroupsB, dishCounts, drinkCounts, totalFormula } = buildSummaryData(todayOrders, employees)
   const dishEntries = Object.entries(dishCounts)
   const drinkEntries = Object.entries(drinkCounts)
   let aNum = 0
-  const hasReceipt = Boolean(receiptImageUrl)
 
   return (
-    <div
-      className={`border rounded-md p-6 bg-white text-sm order-sheet ${hasReceipt ? "order-sheet--with-receipt" : ""}`}
-      id="print-area"
-    >
-      <div className="order-sheet-grid">
-        <div className="order-sheet-main">
-          <div className="font-bold text-base mb-3 order-sheet-date">{formattedDate}</div>
-          <table className="w-full border-collapse border mb-2 order-sheet-table" style={{ tableLayout: "fixed" }}>
-            <colgroup>
-              <col style={{ width: "5%" }} />
-              <col style={{ width: "15%" }} />
-              <col style={{ width: "28%" }} />
-              <col style={{ width: "8%" }} />
-              <col style={{ width: "44%" }} />
-            </colgroup>
-            <thead>
-              <tr>
-                <th className="text-left py-1 px-2 border">A</th>
-                <th className="text-left py-1 px-2 border">姓名</th>
-                <th className="text-left py-1 px-2 border">餐點</th>
-                <th className="text-center py-1 px-2 border">數量</th>
-                <th className="text-left py-1 px-2 border">飲品</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dishGroupsA.map((group) => {
+    <div className="border rounded-md p-6 bg-white text-sm order-sheet" id="print-area">
+      <div className="font-bold text-base mb-3 order-sheet-date">{formattedDate}</div>
+      <table className="w-full border-collapse border mb-2 order-sheet-table" style={{ tableLayout: "fixed" }}>
+        <colgroup>
+          <col style={{ width: "5%" }} />
+          <col style={{ width: "15%" }} />
+          <col style={{ width: "28%" }} />
+          <col style={{ width: "8%" }} />
+          <col style={{ width: "44%" }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th className="text-left py-1 px-2 border">A</th>
+            <th className="text-left py-1 px-2 border">姓名</th>
+            <th className="text-left py-1 px-2 border">餐點</th>
+            <th className="text-center py-1 px-2 border">數量</th>
+            <th className="text-left py-1 px-2 border">飲品</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dishGroupsA.map((group) => {
+            const qty = group.orders.length
+            return group.orders.map((o, i) => {
+              aNum++
+              return (
+                <tr key={o.id}>
+                  <td className="py-1 px-2 border">{aNum}</td>
+                  <td className="py-1 px-2 border">{o.member_name}</td>
+                  <td className="py-1 px-2 border">{o.dish}</td>
+                  {i === 0 ? (
+                    <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>
+                      {qty}
+                    </td>
+                  ) : null}
+                  <td className="py-1 px-2 border align-middle">{o.drink}</td>
+                </tr>
+              )
+            })
+          })}
+        </tbody>
+      </table>
+
+      <div className="mt-3 mb-1">
+        <table className="w-full border-collapse border order-sheet-table" style={{ tableLayout: "fixed" }}>
+          <colgroup>
+            <col style={{ width: "5%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "28%" }} />
+            <col style={{ width: "8%" }} />
+            <col style={{ width: "44%" }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th className="text-left py-1 px-2 border">B</th>
+              <th className="border"></th>
+              <th className="border"></th>
+              <th className="border"></th>
+              <th className="border"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {(() => {
+              let bNum = 0
+              return dishGroupsB.map((group) => {
                 const qty = group.orders.length
                 return group.orders.map((o, i) => {
-                  aNum++
+                  bNum++
                   return (
                     <tr key={o.id}>
-                      <td className="py-1 px-2 border">{aNum}</td>
+                      <td className="py-1 px-2 border">{bNum}</td>
                       <td className="py-1 px-2 border">{o.member_name}</td>
                       <td className="py-1 px-2 border">{o.dish}</td>
                       {i === 0 ? (
@@ -136,93 +177,42 @@ function TingkokPreview({
                     </tr>
                   )
                 })
-              })}
-            </tbody>
-          </table>
+              })
+            })()}
+          </tbody>
+        </table>
+      </div>
 
-          <div className="mt-3 mb-1">
-            <table className="w-full border-collapse border order-sheet-table" style={{ tableLayout: "fixed" }}>
-              <colgroup>
-                <col style={{ width: "5%" }} />
-                <col style={{ width: "15%" }} />
-                <col style={{ width: "28%" }} />
-                <col style={{ width: "8%" }} />
-                <col style={{ width: "44%" }} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th className="text-left py-1 px-2 border">B</th>
-                  <th className="border"></th>
-                  <th className="border"></th>
-                  <th className="border"></th>
-                  <th className="border"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {(() => {
-                  let bNum = 0
-                  return dishGroupsB.map((group) => {
-                    const qty = group.orders.length
-                    return group.orders.map((o, i) => {
-                      bNum++
-                      return (
-                        <tr key={o.id}>
-                          <td className="py-1 px-2 border">{bNum}</td>
-                          <td className="py-1 px-2 border">{o.member_name}</td>
-                          <td className="py-1 px-2 border">{o.dish}</td>
-                          {i === 0 ? (
-                            <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>
-                              {qty}
-                            </td>
-                          ) : null}
-                          <td className="py-1 px-2 border align-middle">{o.drink}</td>
-                        </tr>
-                      )
-                    })
-                  })
-                })()}
-              </tbody>
-            </table>
-          </div>
+      <div className="text-left font-bold mt-2 mb-4 order-sheet-total">{totalFormula}</div>
 
-          <div className="text-left font-bold mt-2 mb-4 order-sheet-total">{totalFormula}</div>
-
-          <div className="order-sheet-stats">
-            <div className="font-bold text-base mb-2 ml-4">統計</div>
-            <div className="flex" style={{ paddingLeft: "5%" }}>
-              <div style={{ width: "48%" }}>
-                <div className="font-medium mb-1">餐點:</div>
-                {dishEntries.map(([name, count]) => (
-                  <div key={name}>
-                    {name}: {count}件
-                  </div>
-                ))}
+      <div className="order-sheet-stats">
+        <div className="font-bold text-base mb-2 ml-4">統計</div>
+        <div className="flex" style={{ paddingLeft: "5%" }}>
+          <div style={{ width: "48%" }}>
+            <div className="font-medium mb-1">餐點:</div>
+            {dishEntries.map(([name, count]) => (
+              <div key={name}>
+                {name}: {count}件
               </div>
-              <div>
-                <div className="font-medium mb-1">飲品:</div>
-                {drinkEntries.map(([name, count]) => (
-                  <div key={name}>
-                    {name}: {count}件
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-
-          <div className="mt-6 ml-4 order-sheet-notes">
-            <span className="font-bold">註：</span>
-            <span className="ml-4">香港桐井有限公司</span>
-            <div className="ml-12">請留意數量和種類，</div>
-            <div className="ml-12">請於約 11:30 送來，謝謝！</div>
-            <div className="ml-12">電話：2264 8166</div>
+          <div>
+            <div className="font-medium mb-1">飲品:</div>
+            {drinkEntries.map(([name, count]) => (
+              <div key={name}>
+                {name}: {count}件
+              </div>
+            ))}
           </div>
         </div>
+      </div>
 
-        {hasReceipt ? (
-          <aside className="order-sheet-receipt" aria-label="收據">
-            <img src={receiptImageUrl!} alt="收據" className="order-sheet-receipt-img" />
-          </aside>
-        ) : null}
+      <div className="mt-6 ml-4 order-sheet-notes">
+        <span className="font-bold">註：</span>
+        <span className="ml-4">香港桐井有限公司</span>
+        <div className="ml-12">請留意數量和種類，</div>
+        <div className="ml-12">請於約 11:30 送來，謝謝！</div>
+        <div className="ml-12">電話：2264 8166</div>
       </div>
     </div>
   )
@@ -246,10 +236,20 @@ function buildFpDishGroups(orderList: FoodpandaOrder[], employees: EmployeeRecor
   return groups
 }
 
-function FoodpandaPreview({ formattedDate, fpOrders, employees }: { formattedDate: string; fpOrders: FoodpandaOrder[]; employees: EmployeeRecord[] }) {
-  const getMemberGroup = (memberId: string) => employees.find(m => m.id === memberId)?.group || "A"
-  const groupA = fpOrders.filter(o => getMemberGroup(o.member_id) === "A")
-  const groupB = fpOrders.filter(o => getMemberGroup(o.member_id) === "B")
+function FoodpandaPreview({
+  formattedDate,
+  fpOrders,
+  employees,
+  receipt,
+}: {
+  formattedDate: string
+  fpOrders: FoodpandaOrder[]
+  employees: EmployeeRecord[]
+  receipt: FoodpandaReceiptRecord | null
+}) {
+  const getMemberGroup = (memberId: string) => employees.find((m) => m.id === memberId)?.group || "A"
+  const groupA = fpOrders.filter((o) => getMemberGroup(o.member_id) === "A")
+  const groupB = fpOrders.filter((o) => getMemberGroup(o.member_id) === "B")
 
   const dishGroupsA = buildFpDishGroups(groupA, employees)
   const dishGroupsB = buildFpDishGroups(groupB, employees)
@@ -263,111 +263,159 @@ function FoodpandaPreview({ formattedDate, fpOrders, employees }: { formattedDat
   const dishEntries = Object.entries(dishCounts)
   const drinkEntries = Object.entries(drinkCounts)
 
-  let aNum = 0
+  const originalTotal = calculateFoodpandaDayAmount(fpOrders)
+  const receiptPaid =
+    receipt != null && Number.isFinite(receipt.finalPaid)
+      ? roundUpToOneDecimal(receipt.finalPaid)
+      : null
+  const receiptImageUrl =
+    receipt?.imageDataUrl && receipt.imageDataUrl.startsWith("data:image/")
+      ? receipt.imageDataUrl
+      : null
+  const hasReceipt = Boolean(receiptImageUrl || receiptPaid != null)
+
+  const renderFpRows = (groups: FpDishGroup[], startNum: { n: number }) =>
+    groups.map((group) => {
+      const qty = group.orders.length
+      return group.orders.map((o, i) => {
+        startNum.n++
+        const amount = calculateFoodpandaOrderAmount(o)
+        return (
+          <tr key={o.id}>
+            <td className="py-1 px-2 border">{startNum.n}</td>
+            <td className="py-1 px-2 border">{o.member_name}</td>
+            <td className="py-1 px-2 border">{o.dish}</td>
+            {i === 0 ? (
+              <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>
+                {qty}
+              </td>
+            ) : null}
+            <td className="py-1 px-2 border">{o.noodle || "-"}</td>
+            <td className="py-1 px-2 border text-xs">
+              {o.addOns.length > 0 ? o.addOns.join(", ") : "-"}
+            </td>
+            <td className="py-1 px-2 border">{o.drink}</td>
+            <td className="py-1 px-2 border text-right tabular-nums">
+              ${formatReimbursementAmount(amount)}
+            </td>
+          </tr>
+        )
+      })
+    })
+
+  const colgroup = (
+    <colgroup>
+      <col style={{ width: "4%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "18%" }} />
+      <col style={{ width: "6%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "16%" }} />
+      <col style={{ width: "14%" }} />
+      <col style={{ width: "10%" }} />
+    </colgroup>
+  )
 
   return (
-    <div className="border rounded-md p-6 bg-white text-sm" id="print-area" style={{borderColor: '#d70f64'}}>
-      <div className="font-bold text-base mb-1" style={{color: '#d70f64'}}>🐼 foodpanda 落單表</div>
-      <div className="font-bold text-base mb-4">{formattedDate}</div>
-
-      <table className="w-full border-collapse border mb-2" style={{tableLayout: 'fixed'}}>
-        <colgroup>
-          <col style={{width: '4%'}} />
-          <col style={{width: '11%'}} />
-          <col style={{width: '20%'}} />
-          <col style={{width: '6%'}} />
-          <col style={{width: '9%'}} />
-          <col style={{width: '20%'}} />
-          <col style={{width: '15%'}} />
-        </colgroup>
-        <thead>
-          <tr>
-            <th className="text-left py-1 px-2 border">A</th>
-            <th className="text-left py-1 px-2 border">姓名</th>
-            <th className="text-left py-1 px-2 border">餐點</th>
-            <th className="text-center py-1 px-2 border">數量</th>
-            <th className="text-left py-1 px-2 border">麵類</th>
-            <th className="text-left py-1 px-2 border">追加</th>
-            <th className="text-left py-1 px-2 border">飲品</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dishGroupsA.map((group) => {
-            const qty = group.orders.length
-            return group.orders.map((o, i) => {
-              aNum++
-              return (
-                <tr key={o.id}>
-                  <td className="py-1 px-2 border">{aNum}</td>
-                  <td className="py-1 px-2 border">{o.member_name}</td>
-                  <td className="py-1 px-2 border">{o.dish}</td>
-                  {i === 0 ? <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>{qty}</td> : null}
-                  <td className="py-1 px-2 border">{o.noodle || "-"}</td>
-                  <td className="py-1 px-2 border text-xs">{o.addOns.length > 0 ? o.addOns.join(", ") : "-"}</td>
-                  <td className="py-1 px-2 border">{o.drink}</td>
-                </tr>
-              )
-            })
-          })}
-        </tbody>
-      </table>
-
-      <div className="mt-4 mb-2">
-        <table className="w-full border-collapse border" style={{tableLayout: 'fixed'}}>
-          <colgroup>
-            <col style={{width: '4%'}} />
-            <col style={{width: '11%'}} />
-            <col style={{width: '20%'}} />
-            <col style={{width: '6%'}} />
-            <col style={{width: '9%'}} />
-            <col style={{width: '20%'}} />
-            <col style={{width: '15%'}} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th className="text-left py-1 px-2 border">B</th>
-              <th className="border"></th><th className="border"></th><th className="border"></th><th className="border"></th><th className="border"></th><th className="border"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {(() => {
-              let bNum = 0
-              return dishGroupsB.map((group) => {
-                const qty = group.orders.length
-                return group.orders.map((o, i) => {
-                  bNum++
-                  return (
-                    <tr key={o.id}>
-                      <td className="py-1 px-2 border">{bNum}</td>
-                      <td className="py-1 px-2 border">{o.member_name}</td>
-                      <td className="py-1 px-2 border">{o.dish}</td>
-                      {i === 0 ? <td className="py-1 px-2 border text-center align-middle" rowSpan={qty}>{qty}</td> : null}
-                      <td className="py-1 px-2 border">{o.noodle || "-"}</td>
-                      <td className="py-1 px-2 border text-xs">{o.addOns.length > 0 ? o.addOns.join(", ") : "-"}</td>
-                      <td className="py-1 px-2 border">{o.drink}</td>
-                    </tr>
-                  )
-                })
-              })
-            })()}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="text-right font-bold mt-2 mb-6">合計: {fpOrders.length} 件</div>
-
-      <div className="mt-6">
-        <div className="font-bold text-base mb-2 ml-8">統計</div>
-        <div className="flex" style={{paddingLeft: '5%'}}>
-          <div style={{width: '48%'}}>
-            <div className="font-medium mb-1">餐點:</div>
-            {dishEntries.map(([name, count]) => (<div key={name}>{name}: {count}件</div>))}
+    <div
+      className={`border rounded-md p-6 bg-white text-sm order-sheet ${
+        hasReceipt ? "order-sheet--with-receipt" : ""
+      }`}
+      id="print-area"
+      style={{ borderColor: "#d70f64" }}
+    >
+      <div className="order-sheet-grid">
+        <div className="order-sheet-main">
+          <div className="font-bold text-base mb-1" style={{ color: "#d70f64" }}>
+            🐼 foodpanda 落單表
           </div>
-          <div>
-            <div className="font-medium mb-1">飲品:</div>
-            {drinkEntries.map(([name, count]) => (<div key={name}>{name}: {count}件</div>))}
+          <div className="font-bold text-base mb-3 order-sheet-date">{formattedDate}</div>
+
+          <table
+            className="w-full border-collapse border mb-2 order-sheet-table"
+            style={{ tableLayout: "fixed" }}
+          >
+            {colgroup}
+            <thead>
+              <tr>
+                <th className="text-left py-1 px-2 border">A</th>
+                <th className="text-left py-1 px-2 border">姓名</th>
+                <th className="text-left py-1 px-2 border">餐點</th>
+                <th className="text-center py-1 px-2 border">數量</th>
+                <th className="text-left py-1 px-2 border">麵類</th>
+                <th className="text-left py-1 px-2 border">追加</th>
+                <th className="text-left py-1 px-2 border">飲品</th>
+                <th className="text-right py-1 px-2 border">金額</th>
+              </tr>
+            </thead>
+            <tbody>{renderFpRows(dishGroupsA, { n: 0 })}</tbody>
+          </table>
+
+          <div className="mt-3 mb-1">
+            <table
+              className="w-full border-collapse border order-sheet-table"
+              style={{ tableLayout: "fixed" }}
+            >
+              {colgroup}
+              <thead>
+                <tr>
+                  <th className="text-left py-1 px-2 border">B</th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                  <th className="border"></th>
+                </tr>
+              </thead>
+              <tbody>{renderFpRows(dishGroupsB, { n: 0 })}</tbody>
+            </table>
+          </div>
+
+          <div className="text-left font-bold mt-2 mb-4 order-sheet-total space-y-0.5">
+            <div>
+              合計: {fpOrders.length} 件　原價 ${formatReimbursementTotal(originalTotal)}
+            </div>
+            {receiptPaid != null ? (
+              <div style={{ color: "#d70f64" }}>
+                折扣後: ${formatReimbursementTotal(receiptPaid)}（收據）
+              </div>
+            ) : (
+              <div className="text-gray-500 font-normal text-xs print:hidden">
+                尚未套用收據折扣 — 掃描後顯示折扣後金額
+              </div>
+            )}
+          </div>
+
+          <div className="order-sheet-stats">
+            <div className="font-bold text-base mb-2 ml-4">統計</div>
+            <div className="flex" style={{ paddingLeft: "5%" }}>
+              <div style={{ width: "48%" }}>
+                <div className="font-medium mb-1">餐點:</div>
+                {dishEntries.map(([name, count]) => (
+                  <div key={name}>
+                    {name}: {count}件
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="font-medium mb-1">飲品:</div>
+                {drinkEntries.map(([name, count]) => (
+                  <div key={name}>
+                    {name}: {count}件
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+
+        {receiptImageUrl ? (
+          <aside className="order-sheet-receipt" aria-label="收據">
+            <img src={receiptImageUrl} alt="收據" className="order-sheet-receipt-img" />
+          </aside>
+        ) : null}
       </div>
     </div>
   )
@@ -379,7 +427,7 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
   const [queriedDateKey, setQueriedDateKey] = useState<string | null>(null)
   const [dayOrders, setDayOrders] = useState<Order[]>([])
   const [fpOrders, setFpOrders] = useState<FoodpandaOrder[]>([])
-  const [receiptImageUrl, setReceiptImageUrl] = useState<string | null>(null)
+  const [fpReceipt, setFpReceipt] = useState<FoodpandaReceiptRecord | null>(null)
   const [loading, setLoading] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [hasQueried, setHasQueried] = useState(false)
@@ -391,22 +439,25 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
       setQueriedDateKey(dateKey)
       setHasQueried(true)
       try {
-        const receiptPromise = fetchReceiptImageForDate(dateKey)
         if (restaurant === "tingkok") {
           const data = await fetchOrdersForDate(dateKey)
           setDayOrders(data)
           setFpOrders([])
+          setFpReceipt(null)
         } else {
-          const data = await fetchFoodpandaOrdersForDate(dateKey)
+          const [data, receipt] = await Promise.all([
+            fetchFoodpandaOrdersForDate(dateKey),
+            fetchReceiptForDate(dateKey),
+          ])
           setFpOrders(data)
           setDayOrders([])
+          setFpReceipt(receipt)
         }
-        setReceiptImageUrl(await receiptPromise)
       } catch (e) {
         setLoadError(e instanceof Error ? e.message : "載入失敗")
         setDayOrders([])
         setFpOrders([])
-        setReceiptImageUrl(null)
+        setFpReceipt(null)
       } finally {
         setLoading(false)
       }
@@ -472,17 +523,21 @@ export default function OrderSummaryPreview({ onBack, restaurant = "tingkok" }: 
             formattedDate={formattedDate}
             todayOrders={dayOrders}
             employees={employees}
-            receiptImageUrl={receiptImageUrl}
           />
         ) : null
       ) : (
         fpOrders.length > 0 && queriedDateKey ? (
-          <FoodpandaPreview formattedDate={formattedDate} fpOrders={fpOrders} employees={employees} />
+          <FoodpandaPreview
+            formattedDate={formattedDate}
+            fpOrders={fpOrders}
+            employees={employees}
+            receipt={fpReceipt}
+          />
         ) : null
       )}
-      {isTingkok && dayOrders.length > 0 && queriedDateKey && !receiptImageUrl && !loading ? (
+      {!isTingkok && fpOrders.length > 0 && queriedDateKey && !fpReceipt && !loading ? (
         <p className="text-sm text-amber-700 mt-2 print:hidden">
-          該期日尚未儲存收據圖。請在「收據掃描」上傳並套用後，右側會顯示收據。
+          該期日尚未套用收據。請在「收據掃描」上傳並套用後，顯示折扣後金額與右側收據圖。
         </p>
       ) : null}
     </div>
