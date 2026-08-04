@@ -76,6 +76,9 @@ const META_MENU_PREFIX = "meta-menu-"
 const META_FP_PREFIX = "meta-fp-"
 /** 新形式: drink で foodpanda 行を識別し、注文ごとに1行追加 */
 const META_FP_DRINK = "__meta_fp__"
+/** 收據掃描の日次最終支払額（報銷表 B 上書き） */
+const META_FP_RECEIPT_PREFIX = "meta-fp-receipt-"
+const META_FP_RECEIPT_DRINK = "__meta_fp_receipt__"
 const META_AUDIT_PREFIX = "meta-audit-"
 const META_AUDIT_DRINK = "__meta_audit__"
 const CURRENT_MEMBER_STORAGE_KEY = "lunch-order-current-member-v1"
@@ -125,13 +128,18 @@ function isFpMetaRow(memberId: string) {
   return memberId.startsWith(META_FP_PREFIX)
 }
 
+function isFpReceiptMetaRow(memberId: string, drink?: string) {
+  return drink === META_FP_RECEIPT_DRINK || memberId.startsWith(META_FP_RECEIPT_PREFIX)
+}
+
 function isFpOrderRow(row: { member_id: string; drink?: string }) {
+  if (isFpReceiptMetaRow(row.member_id, row.drink)) return false
   return row.drink === META_FP_DRINK || isFpMetaRow(row.member_id)
 }
 
 function isMetaRow(memberId: string, drink?: string) {
-  if (drink === META_FP_DRINK || drink === META_AUDIT_DRINK) return true
-  if (memberId.startsWith(META_AUDIT_PREFIX)) return true
+  if (drink === META_FP_DRINK || drink === META_AUDIT_DRINK || drink === META_FP_RECEIPT_DRINK) return true
+  if (memberId.startsWith(META_AUDIT_PREFIX) || memberId.startsWith(META_FP_RECEIPT_PREFIX)) return true
   return isEmployeeMetaRow(memberId) || isMenuMetaRow(memberId) || isFpMetaRow(memberId)
 }
 
@@ -155,6 +163,33 @@ function isActorMatched(actorName: string, candidates: Array<string | undefined 
 
 function sameMemberId(a: unknown, b: unknown): boolean {
   return String(a ?? "") === String(b ?? "")
+}
+
+function getEmployeeAliasCandidates(
+  employees: EmployeeRecord[],
+  memberId?: string | null,
+): Array<string | undefined> {
+  if (!memberId) return []
+  const employee = employees.find((row) => sameMemberId(row.id, memberId))
+  if (!employee) return []
+  return [employee.nameInChinese, employee.nameInEnglish]
+}
+
+function buildCancelActorCandidates(
+  employees: EmployeeRecord[],
+  params: {
+    targetMemberId: string
+    targetMemberName?: string | null
+    operatorMemberId?: string | null
+    operatorMemberName?: string | null
+  },
+): Array<string | undefined | null> {
+  return [
+    params.targetMemberName,
+    ...getEmployeeAliasCandidates(employees, params.targetMemberId),
+    params.operatorMemberName,
+    ...getEmployeeAliasCandidates(employees, params.operatorMemberId),
+  ]
 }
 
 function foodpandaOrderFromRow(row: OrderDbRow): FoodpandaOrder | null {
@@ -841,14 +876,17 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     async (memberId: string, audit: AuditActorInput) => {
       try {
         const existing = foodpandaOrders.find((o) => sameMemberId(o.member_id, memberId))
-        const employee = employees.find((e) => e.id === memberId)
-        const allowed = isActorMatched(audit.actorName, [
-          existing?.member_name,
-          employee?.nameInChinese,
-          employee?.nameInEnglish,
-        ])
+        const allowed = isActorMatched(
+          audit.actorName,
+          buildCancelActorCandidates(employees, {
+            targetMemberId: memberId,
+            targetMemberName: existing?.member_name,
+            operatorMemberId: existing?.operator_member_id,
+            operatorMemberName: existing?.operator_member_name,
+          }),
+        )
         if (!allowed) {
-          toast.error("取消權限不足：僅限訂餐本人取消")
+          toast.error("取消權限不足：僅限訂餐本人或代理操作者取消")
           return
         }
         if (existing?.id) {
@@ -930,10 +968,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     setError(null)
 
     try {
-      console.log("Loading orders...")
-
       const dateRange = getDateRange()
-      console.log("Date range:", dateRange)
 
       // 直接Supabaseクライアントを使用
       const { data, error } = await supabase
@@ -952,10 +987,8 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       }
 
       const orderRows = (data ?? []).filter((row) => !isMetaRow(row.member_id, row.drink))
-      console.log("Loaded orders data:", orderRows)
 
       if (!orderRows || orderRows.length === 0) {
-        console.log("No orders found")
         setOrders({})
       } else {
         // 日付ごとにグループ化
@@ -971,7 +1004,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
           }
         }, {} as DailyOrders)
 
-        console.log("Grouped orders:", groupedOrders)
         setOrders(groupedOrders)
       }
     } catch (error) {
@@ -1007,21 +1039,33 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const loadMasterDataRef = useRef(loadMasterData)
+  const loadOrdersRef = useRef(loadOrders)
+  const loadFoodpandaOrdersRef = useRef(loadFoodpandaOrders)
+  const refreshTodayOrdersRef = useRef(refreshTodayOrders)
+
+  useEffect(() => {
+    loadMasterDataRef.current = loadMasterData
+    loadOrdersRef.current = loadOrders
+    loadFoodpandaOrdersRef.current = loadFoodpandaOrders
+    refreshTodayOrdersRef.current = refreshTodayOrders
+  }, [loadMasterData, loadOrders, loadFoodpandaOrders, refreshTodayOrders])
+
   // 初期ロード
   useEffect(() => {
-    loadMasterData()
-    loadOrders()
-    loadFoodpandaOrders()
+    loadMasterDataRef.current()
+    loadOrdersRef.current()
+    loadFoodpandaOrdersRef.current()
 
     // 定期的に更新（ポーリング）
     const intervalId = setInterval(() => {
-      loadMasterData()
-      refreshTodayOrders()
-      loadFoodpandaOrders()
+      loadMasterDataRef.current()
+      refreshTodayOrdersRef.current()
+      loadFoodpandaOrdersRef.current()
     }, 30000) // 30秒ごとに更新
 
     return () => clearInterval(intervalId)
-  }, [loadOrders, loadMasterData, loadFoodpandaOrders, refreshTodayOrders])
+  }, [])
 
   // リアルタイム更新（可能な場合）
   useEffect(() => {
@@ -1036,15 +1080,17 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
             table: "orders",
           },
           (payload) => {
-            console.log("Received real-time update:", payload)
-            loadMasterData()
-            refreshTodayOrders()
-            loadFoodpandaOrders()
+            const row = (payload.new ?? payload.old) as
+              | { member_id?: string | null; drink?: string | null }
+              | null
+            if (row?.member_id && isMetaRow(String(row.member_id), row.drink ?? undefined)) {
+              loadMasterDataRef.current()
+            }
+            refreshTodayOrdersRef.current()
+            loadFoodpandaOrdersRef.current()
           },
         )
-        .subscribe((status) => {
-          console.log("Supabase channel status:", status)
-        })
+        .subscribe()
 
       return () => {
         channel.unsubscribe()
@@ -1053,7 +1099,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       console.error("Error setting up real-time subscription:", err)
       // リアルタイム更新に失敗してもアプリは動作し続ける
     }
-  }, [loadMasterData, loadFoodpandaOrders, refreshTodayOrders])
+  }, [])
 
   const hasOrdered = useCallback(
     (memberId: string): boolean => {
@@ -1077,11 +1123,8 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      console.log("Submitting order:", order)
-
       const operator = resolveOrderOperator(authMemberId, order.member_id, employees)
       const timestamp = new Date().toISOString()
-      console.log("Submitting order with data:", { ...order, timestamp, operator })
 
       const { data, error } = await supabase
         .from("orders")
@@ -1104,7 +1147,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
 
-      console.log("Order added successfully:", data)
       if (Array.isArray(data) && data[0]) {
         await appendAuditLog({
           action: "INSERT",
@@ -1374,8 +1416,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
 
-      console.log("Resetting orders from:", today.toISOString())
-
       const { data: targets, error: fetchError } = await supabase
         .from("orders")
         .select("id, member_id, member_name, dish, drink, timestamp")
@@ -1412,7 +1452,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
       setLastResetTime(newResetTime)
       localStorage.setItem("lastResetTime", newResetTime.toISOString())
 
-      console.log("Orders reset successfully at:", newResetTime)
       toast.success("訂單記錄已重設")
 
       // データを再読み込み
@@ -1507,8 +1546,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const modifyOrder = async (orderId: string, newOrder: Omit<Order, "id" | "timestamp">) => {
     try {
       setIsLoading(true)
-      console.log("Modifying order:", orderId, newOrder)
-
       // 更新前に注文が存在するか確認
       const { data: existingOrder, error: checkError } = await supabase
         .from("orders")
@@ -1527,9 +1564,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         toast.error("搵唔到訂單")
         throw new Error("Order not found")
       }
-
-      console.log("Existing order:", existingOrder)
-      console.log("Updating with:", newOrder)
 
       const operator = resolveOrderOperator(authMemberId, newOrder.member_id, employees)
 
@@ -1578,7 +1612,6 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         }),
       })
 
-      console.log("Order modified successfully")
       toast.success("訂單已修改")
 
       // データを再読み込み
@@ -1604,18 +1637,20 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
         return
       }
 
-      const employee = employees.find((e) => e.id === memberId)
-      const allowed = isActorMatched(audit.actorName, [
-        orderToCancel.member_name,
-        employee?.nameInChinese,
-        employee?.nameInEnglish,
-      ])
+      const allowed = isActorMatched(
+        audit.actorName,
+        buildCancelActorCandidates(employees, {
+          targetMemberId: memberId,
+          targetMemberName: orderToCancel.member_name,
+          operatorMemberId: orderToCancel.operator_member_id,
+          operatorMemberName: orderToCancel.operator_member_name,
+        }),
+      )
       if (!allowed) {
-        toast.error("取消權限不足：僅限訂餐本人取消")
+        toast.error("取消權限不足：僅限訂餐本人或代理操作者取消")
         return
       }
 
-      console.log("Cancelling order:", orderToCancel.id)
       await deleteOrderById(
         orderToCancel as unknown as OrderDbRow,
         { actorName: audit.actorName },

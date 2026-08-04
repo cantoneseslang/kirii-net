@@ -12,12 +12,13 @@ import Link from "next/link"
 import { formatHongKongPeriodDate, getHongKongDateKey } from "../lib/hong-kong-calendar"
 import OrderDateQueryBar from "./order-date-query-bar"
 import ReimbursementReport from "./reimbursement-report"
+import ReceiptScanPanel from "./receipt-scan-panel"
 import { ADMIN_MEMBER_IDS, isAdminMember } from "../lib/admin-access"
 import { isProxyOrder } from "../lib/order-operator"
 import type { AuditLogEntry } from "../context/order-context"
 
 type AdminTab = "tingkok" | "foodpanda"
-type AdminSubview = "orders" | "employees" | "menus" | "audit" | "reimbursement"
+type AdminSubview = "orders" | "employees" | "menus" | "audit" | "reimbursement" | "receipt-scan"
 
 function OperatorBadge({
   order,
@@ -242,6 +243,12 @@ export default function AdminPanel() {
         >
           報銷表
         </button>
+        <button
+          onClick={() => setAdminSubview("receipt-scan")}
+          className={`px-4 py-2 border rounded-md ${adminSubview === "receipt-scan" ? "bg-gray-800 text-white" : "bg-gray-100 hover:bg-gray-200"}`}
+        >
+          收據掃描
+        </button>
       </div>
 
       {adminSubview === "orders" && (
@@ -431,6 +438,7 @@ export default function AdminPanel() {
       {adminSubview === "employees" && <EmployeeListManager />}
       {adminSubview === "menus" && <MenuListManager />}
       {adminSubview === "reimbursement" && <ReimbursementReport />}
+      {adminSubview === "receipt-scan" && <ReceiptScanPanel />}
       {adminSubview === "audit" && (
         <div className="space-y-3">
           <div className="flex justify-between items-center">

@@ -1,5 +1,10 @@
 import { FOODPANDA_RESTAURANT } from "../data/foodpanda-menu"
 import { getHongKongDateKey, getHongKongDayRange } from "./hong-kong-calendar"
+import {
+  isFpReceiptRow,
+  parseFpReceiptRecord,
+  type FoodpandaReceiptRecord,
+} from "./receipt-parser"
 import type { FoodpandaOrder, Order } from "../types"
 
 export const TINGKOK_MEAL_PRICE = 35
@@ -18,6 +23,8 @@ export type ReimbursementDayRow = {
   isSunday: boolean
   amountA: number
   amountB: number
+  /** 收據掃描の最終支払額で上書きしたか */
+  amountBFromReceipt: boolean
 }
 
 export type ReimbursementMonthReport = {
@@ -41,11 +48,13 @@ type OrderLikeRow = {
 }
 
 export function isFpOrderRow(row: { member_id: string; drink?: string }): boolean {
+  if (isFpReceiptRow(row)) return false
   return row.drink === META_FP_DRINK || row.member_id.startsWith(META_FP_PREFIX)
 }
 
 export function isMetaOrFpRow(memberId: string, drink?: string): boolean {
   if (drink === META_FP_DRINK || drink === META_AUDIT_DRINK) return true
+  if (isFpReceiptRow({ member_id: memberId, drink })) return true
   if (memberId.startsWith(META_AUDIT_PREFIX)) return true
   return (
     memberId.startsWith(META_EMPLOYEE_PREFIX) ||
@@ -161,13 +170,18 @@ export function buildReimbursementMonthReport(
   month: number,
   tingkokByDate: Record<string, Order[]>,
   foodpandaByDate: Record<string, FoodpandaOrder[]>,
+  receiptByDate: Record<string, FoodpandaReceiptRecord> = {},
 ): ReimbursementMonthReport {
   const dateKeys = listCalendarMonthDateKeys(year, month)
   const days: ReimbursementDayRow[] = dateKeys.map((dateKey) => {
     const day = Number(dateKey.slice(-2))
     const isSunday = isSundayHongKongDateKey(dateKey)
     const amountA = calculateTingkokDayAmount(tingkokByDate[dateKey] ?? [])
-    const amountB = calculateFoodpandaDayAmount(foodpandaByDate[dateKey] ?? [])
+    const receipt = receiptByDate[dateKey]
+    const amountBFromReceipt = receipt != null && Number.isFinite(receipt.finalPaid)
+    const amountB = amountBFromReceipt
+      ? receipt.finalPaid
+      : calculateFoodpandaDayAmount(foodpandaByDate[dateKey] ?? [])
     return {
       dateKey,
       day,
@@ -175,6 +189,7 @@ export function buildReimbursementMonthReport(
       isSunday,
       amountA,
       amountB,
+      amountBFromReceipt,
     }
   })
 
@@ -191,14 +206,19 @@ export function buildReimbursementMonthReport(
   }
 }
 
-/** 生の orders 行を日別 tingkok / foodpanda に振り分け */
+/** 生の orders 行を日別 tingkok / foodpanda / 收據 に振り分け */
 export function groupOrdersForReimbursement(
   rows: OrderLikeRow[],
   dateKeys: string[],
-): { tingkokByDate: Record<string, Order[]>; foodpandaByDate: Record<string, FoodpandaOrder[]> } {
+): {
+  tingkokByDate: Record<string, Order[]>
+  foodpandaByDate: Record<string, FoodpandaOrder[]>
+  receiptByDate: Record<string, FoodpandaReceiptRecord>
+} {
   const dateKeySet = new Set(dateKeys)
   const tingkokByDate: Record<string, Order[]> = {}
   const foodpandaByDate: Record<string, FoodpandaOrder[]> = {}
+  const receiptByDate: Record<string, FoodpandaReceiptRecord> = {}
   for (const key of dateKeys) {
     tingkokByDate[key] = []
     foodpandaByDate[key] = []
@@ -207,6 +227,14 @@ export function groupOrdersForReimbursement(
   const seenFpIds = new Set<string>()
 
   for (const row of rows) {
+    if (isFpReceiptRow(row)) {
+      const record = parseFpReceiptRecord(row.dish)
+      if (!record) continue
+      if (!dateKeySet.has(record.dateKey)) continue
+      receiptByDate[record.dateKey] = record
+      continue
+    }
+
     if (isFpOrderRow(row)) {
       const order = parseFoodpandaOrderFromRow(row)
       if (!order) continue
@@ -235,7 +263,7 @@ export function groupOrdersForReimbursement(
     })
   }
 
-  return { tingkokByDate, foodpandaByDate }
+  return { tingkokByDate, foodpandaByDate, receiptByDate }
 }
 
 export function formatReimbursementAmount(value: number): string {

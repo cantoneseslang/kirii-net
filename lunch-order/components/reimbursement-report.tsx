@@ -39,7 +39,7 @@ export default function ReimbursementReport() {
 
       if (error) throw error
 
-      // 旧形式 meta-fp-* は行 timestamp がずれることがあるため JSON 内期日でも拾う
+      // 旧形式 meta-fp-* / 收據メタは行 timestamp がずれることがあるため別途拾う
       const { data: legacyRows, error: legacyError } = await supabase
         .from("orders")
         .select("*")
@@ -47,6 +47,15 @@ export default function ReimbursementReport() {
 
       if (legacyError) {
         console.error("reimbursement legacy fp fetch:", legacyError)
+      }
+
+      const { data: receiptRows, error: receiptError } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("drink", "__meta_fp_receipt__")
+
+      if (receiptError) {
+        console.error("reimbursement receipt fetch:", receiptError)
       }
 
       type OrderRow = {
@@ -60,20 +69,16 @@ export default function ReimbursementReport() {
         operator_member_name?: string | null
       }
       const byId = new Map<string, OrderRow>()
-      for (const row of (data ?? []) as OrderRow[]) {
-        if (row.id) byId.set(String(row.id), row)
-        else byId.set(`${row.member_id}-${row.timestamp}-${row.dish}`, row)
-      }
-      for (const row of (legacyRows ?? []) as OrderRow[]) {
+      for (const row of [...(data ?? []), ...(legacyRows ?? []), ...(receiptRows ?? [])] as OrderRow[]) {
         const key = row.id ? String(row.id) : `${row.member_id}-${row.timestamp}-${row.dish}`
         if (!byId.has(key)) byId.set(key, row)
       }
 
-      const { tingkokByDate, foodpandaByDate } = groupOrdersForReimbursement(
+      const { tingkokByDate, foodpandaByDate, receiptByDate } = groupOrdersForReimbursement(
         Array.from(byId.values()),
         dateKeys,
       )
-      setReport(buildReimbursementMonthReport(y, m, tingkokByDate, foodpandaByDate))
+      setReport(buildReimbursementMonthReport(y, m, tingkokByDate, foodpandaByDate, receiptByDate))
     } catch (err) {
       console.error("reimbursement load:", err)
       toast.error("報銷表載入失敗")
@@ -158,6 +163,9 @@ export default function ReimbursementReport() {
                     </td>
                     <td className="p-1.5 px-2 text-right tabular-nums">
                       {formatReimbursementAmount(row.amountB)}
+                      {row.amountBFromReceipt ? (
+                        <span className="ml-1 text-[10px] text-amber-700" title="收據最終額">收據</span>
+                      ) : null}
                     </td>
                   </tr>
                 ))}
