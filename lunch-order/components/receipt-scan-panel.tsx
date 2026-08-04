@@ -4,6 +4,7 @@ import { useCallback, useState } from "react"
 import { toast } from "react-hot-toast"
 import { useOrders } from "../context/order-context"
 import { getHongKongDateKey, getHongKongDayRange } from "../lib/hong-kong-calendar"
+import { fileToReceiptImageDataUrl } from "../lib/receipt-image"
 import { ocrReceiptFile, RECEIPT_OCR_LANG } from "../lib/receipt-ocr"
 import {
   matchReceiptToOrders,
@@ -95,6 +96,7 @@ export default function ReceiptScanPanel() {
   const [draft, setDraft] = useState<ScanDraft | null>(null)
   const [status, setStatus] = useState("")
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [sourceFile, setSourceFile] = useState<File | null>(null)
 
   const refreshMatch = useCallback(async (next: ScanDraft) => {
     try {
@@ -122,17 +124,29 @@ export default function ReceiptScanPanel() {
     setStatus("")
     try {
       let last: ScanDraft | null = null
+      let lastFile: File | null = null
       let lastPreview: string | null = null
       for (const file of Array.from(files)) {
         setStatus(`OCR 讀取中（繁體中文）: ${file.name}`)
+        if (lastPreview) URL.revokeObjectURL(lastPreview)
+        lastPreview = null
         if (file.type.startsWith("image/")) {
-          if (lastPreview) URL.revokeObjectURL(lastPreview)
           lastPreview = URL.createObjectURL(file)
+        } else {
+          // PDF: 第1頁をプレビュー用に変換
+          try {
+            const dataUrl = await fileToReceiptImageDataUrl(file)
+            lastPreview = dataUrl
+          } catch {
+            /* preview optional */
+          }
         }
         const { text, parsed } = await ocrReceiptFile(file)
         last = draftFromParsed(file.name, parsed, text)
+        lastFile = file
       }
-      if (!last) return
+      if (!last || !lastFile) return
+      setSourceFile(lastFile)
       if (lastPreview) setPreviewUrl(lastPreview)
       setStatus("對照當日 foodpanda 落單…")
       await refreshMatch(last)
@@ -141,6 +155,7 @@ export default function ReceiptScanPanel() {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "收據掃描失敗")
       setDraft(null)
+      setSourceFile(null)
     } finally {
       setBusy(false)
       setStatus("")
@@ -173,6 +188,34 @@ export default function ReceiptScanPanel() {
           ? null
           : roundUpToOneDecimal(foodSubtotal + (deliveryFee ?? 0) + (serviceFee ?? 0))
 
+      setStatus("壓縮收據圖片…")
+      let imageDataUrl: string | null = null
+      if (sourceFile) {
+        imageDataUrl = await fileToReceiptImageDataUrl(sourceFile)
+      } else if (previewUrl?.startsWith("data:image/")) {
+        imageDataUrl = previewUrl
+      }
+
+      const memberId = receiptMemberId(draft.dateKey)
+      const { from } = getHongKongDayRange(draft.dateKey)
+
+      const { data: existing } = await supabase
+        .from("orders")
+        .select("id, dish")
+        .eq("member_id", memberId)
+        .eq("drink", META_FP_RECEIPT_DRINK)
+        .maybeSingle()
+
+      // 再套用で画像なしの場合は既存画像を維持
+      if (!imageDataUrl && existing?.dish) {
+        try {
+          const prev = JSON.parse(existing.dish) as FoodpandaReceiptRecord
+          if (prev.imageDataUrl) imageDataUrl = prev.imageDataUrl
+        } catch {
+          /* ignore */
+        }
+      }
+
       const record: FoodpandaReceiptRecord = {
         dateKey: draft.dateKey,
         platform: draft.platform,
@@ -200,17 +243,8 @@ export default function ReceiptScanPanel() {
           })),
         sourceFileName: draft.fileName,
         updatedAt: new Date().toISOString(),
+        imageDataUrl,
       }
-
-      const memberId = receiptMemberId(draft.dateKey)
-      const { from } = getHongKongDayRange(draft.dateKey)
-
-      const { data: existing } = await supabase
-        .from("orders")
-        .select("id")
-        .eq("member_id", memberId)
-        .eq("drink", META_FP_RECEIPT_DRINK)
-        .maybeSingle()
 
       const payload = {
         member_id: memberId,
@@ -230,12 +264,17 @@ export default function ReceiptScanPanel() {
         if (error) throw error
       }
 
-      toast.success(`已套用 ${draft.dateKey} 折扣後金額 $${finalPaid.toFixed(1)} 至報銷表 B`)
+      toast.success(
+        imageDataUrl
+          ? `已套用 ${draft.dateKey}（含收據圖）至報銷表 B／落單表`
+          : `已套用 ${draft.dateKey} 折扣後金額 $${finalPaid.toFixed(1)} 至報銷表 B`,
+      )
     } catch (err) {
       console.error(err)
       toast.error(err instanceof Error ? err.message : "儲存失敗")
     } finally {
       setSaving(false)
+      setStatus("")
     }
   }
 
@@ -246,7 +285,7 @@ export default function ReceiptScanPanel() {
         <p className="text-sm text-gray-600 mt-1">
           OCR 語言：<strong>繁體中文（廣東話收據）</strong>（{RECEIPT_OCR_LANG}，不含日語）。
           請核對 <strong>期日</strong>、<strong>內容</strong>、<strong>原金額</strong>、<strong>折扣後金額</strong> 後再套用。
-          金額以小數 1 位向上進位。
+          金額以小數 1 位向上進位。套用後收據圖會嵌入該期日「導出落單表」右側。
         </p>
       </div>
 

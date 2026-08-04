@@ -189,4 +189,94 @@ body {
     border-bottom: 3pt double #000 !important;
     font-size: 12pt;
   }
+
+  /* 導出落單表 + 收據埋め込み（A4縦1ページ） */
+  .order-sheet {
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 277mm;
+    overflow: hidden;
+    font-size: 9.5pt;
+    line-height: 1.2;
+  }
+  .order-sheet-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 3mm;
+    width: 100%;
+    max-height: 277mm;
+  }
+  .order-sheet-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .order-sheet--with-receipt .order-sheet-main {
+    flex: 1 1 62%;
+    max-width: 62%;
+  }
+  .order-sheet-receipt {
+    flex: 0 0 36%;
+    max-width: 68mm;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+  .order-sheet-receipt-img {
+    width: 100%;
+    max-width: 68mm;
+    max-height: 265mm;
+    height: auto;
+    object-fit: contain;
+    object-position: top right;
+  }
+  .order-sheet-table th,
+  .order-sheet-table td {
+    padding: 0.8mm 1.5mm !important;
+    font-size: 9pt;
+  }
+  .order-sheet-date {
+    margin-bottom: 2mm !important;
+    font-size: 11pt !important;
+  }
+  .order-sheet-total {
+    text-align: left !important;
+    margin: 2mm 0 3mm !important;
+  }
+  .order-sheet-stats,
+  .order-sheet-notes {
+    margin-top: 3mm !important;
+  }
+  .order-sheet-stats .font-bold,
+  .order-sheet-notes {
+    font-size: 9.5pt;
+  }
+}
+
+/* 画面プレビューでも落單表＋收據の並びを確認しやすく */
+.order-sheet-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.order-sheet--with-receipt .order-sheet-main {
+  flex: 1 1 62%;
+  min-width: 0;
+}
+.order-sheet-receipt {
+  flex: 0 0 36%;
+  max-width: 280px;
+  margin-left: auto;
+}
+.order-sheet-receipt-img {
+  width: 100%;
+  max-height: 720px;
+  object-fit: contain;
+  object-position: top right;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+.order-sheet-total {
+  text-align: left;
 }

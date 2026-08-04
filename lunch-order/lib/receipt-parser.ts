@@ -40,6 +40,8 @@ export type FoodpandaReceiptRecord = {
   items: ReceiptParsedItem[]
   sourceFileName: string
   updatedAt: string
+  /** 落單表右側埋め込み用（JPEG data URL）。再スキャン時に更新 */
+  imageDataUrl?: string | null
 }
 
 export const META_FP_RECEIPT_PREFIX = "meta-fp-receipt-"
