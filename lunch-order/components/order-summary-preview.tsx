@@ -11,7 +11,6 @@ import {
   type FoodpandaReceiptRecord,
 } from "../lib/receipt-parser"
 import {
-  calculateFoodpandaDayAmount,
   calculateFoodpandaOrderAmount,
   formatReimbursementAmount,
   formatReimbursementTotal,
@@ -263,10 +262,16 @@ function FoodpandaPreview({
   const dishEntries = Object.entries(dishCounts)
   const drinkEntries = Object.entries(drinkCounts)
 
-  const originalTotal = calculateFoodpandaDayAmount(fpOrders)
+  // 原價 = 各人メニュー金額の合計（配送料は含めない）
+  const originalTotal = fpOrders.reduce((sum, o) => sum + calculateFoodpandaOrderAmount(o), 0)
   const receiptPaid =
     receipt != null && Number.isFinite(receipt.finalPaid)
       ? roundUpToOneDecimal(receipt.finalPaid)
+      : null
+  // 收據あり: 折扣後 ÷ 人数（小数1桁、例 154.6/2 → 77.3）
+  const perPersonReceipt =
+    receiptPaid != null && fpOrders.length > 0
+      ? Math.round((receiptPaid / fpOrders.length) * 10) / 10
       : null
   const receiptImageUrl =
     receipt?.imageDataUrl && receipt.imageDataUrl.startsWith("data:image/")
@@ -279,7 +284,8 @@ function FoodpandaPreview({
       const qty = group.orders.length
       return group.orders.map((o, i) => {
         startNum.n++
-        const amount = calculateFoodpandaOrderAmount(o)
+        const menuAmount = calculateFoodpandaOrderAmount(o)
+        const displayAmount = perPersonReceipt != null ? perPersonReceipt : menuAmount
         return (
           <tr key={o.id}>
             <td className="py-1 px-2 border">{startNum.n}</td>
@@ -296,7 +302,7 @@ function FoodpandaPreview({
             </td>
             <td className="py-1 px-2 border">{o.drink}</td>
             <td className="py-1 px-2 border text-right tabular-nums">
-              ${formatReimbursementAmount(amount)}
+              ${formatReimbursementAmount(displayAmount)}
             </td>
           </tr>
         )
@@ -375,17 +381,13 @@ function FoodpandaPreview({
 
           <div className="text-left font-bold mt-2 mb-4 order-sheet-total space-y-0.5">
             <div>
-              合計: {fpOrders.length} 件　原價 ${formatReimbursementTotal(originalTotal)}
+              合計: {fpOrders.length} 件　原價 ${formatReimbursementAmount(originalTotal)}
             </div>
             {receiptPaid != null ? (
               <div style={{ color: "#d70f64" }}>
                 折扣後: ${formatReimbursementTotal(receiptPaid)}（收據）
               </div>
-            ) : (
-              <div className="text-gray-500 font-normal text-xs print:hidden">
-                尚未套用收據折扣 — 掃描後顯示折扣後金額
-              </div>
-            )}
+            ) : null}
           </div>
 
           <div className="order-sheet-stats">
