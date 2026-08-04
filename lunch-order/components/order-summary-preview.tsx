@@ -12,9 +12,10 @@ import {
 } from "../lib/receipt-parser"
 import {
   calculateFoodpandaOrderAmount,
-  formatReimbursementAmount,
+  formatMoney2,
   formatReimbursementTotal,
   roundUpToOneDecimal,
+  splitAmountEvenly,
 } from "../lib/reimbursement-totals"
 import { supabase } from "../lib/supabase"
 import OrderDateQueryBar from "./order-date-query-bar"
@@ -268,11 +269,18 @@ function FoodpandaPreview({
     receipt != null && Number.isFinite(receipt.finalPaid)
       ? roundUpToOneDecimal(receipt.finalPaid)
       : null
-  // 收據あり: 折扣後 ÷ 人数（小数1桁、例 154.6/2 → 77.3）
-  const perPersonReceipt =
-    receiptPaid != null && fpOrders.length > 0
-      ? Math.round((receiptPaid / fpOrders.length) * 10) / 10
+  // 表示順（A→B）で按分し、各行の合計が折扣後と完全一致（例 133.9→66.95+66.95）
+  const displayOrder = [...dishGroupsA, ...dishGroupsB].flatMap((g) => g.orders)
+  const receiptSplits =
+    receiptPaid != null && displayOrder.length > 0
+      ? splitAmountEvenly(receiptPaid, displayOrder.length)
       : null
+  const amountByOrderId = new Map<string, number>()
+  if (receiptSplits) {
+    displayOrder.forEach((o, idx) => {
+      amountByOrderId.set(o.id, receiptSplits[idx] ?? 0)
+    })
+  }
   const receiptImageUrl =
     receipt?.imageDataUrl && receipt.imageDataUrl.startsWith("data:image/")
       ? receipt.imageDataUrl
@@ -286,7 +294,9 @@ function FoodpandaPreview({
       return group.orders.map((o, i) => {
         startNum.n++
         const menuAmount = calculateFoodpandaOrderAmount(o)
-        const displayAmount = perPersonReceipt != null ? perPersonReceipt : menuAmount
+        const displayAmount = amountByOrderId.has(o.id)
+          ? (amountByOrderId.get(o.id) as number)
+          : menuAmount
         return (
           <tr key={o.id}>
             <td className="py-1 px-2 border">{startNum.n}</td>
@@ -303,7 +313,7 @@ function FoodpandaPreview({
             </td>
             <td className="py-1 px-2 border">{o.drink}</td>
             <td className="py-1 px-2 border text-right tabular-nums">
-              ${formatReimbursementAmount(displayAmount)}
+              ${formatMoney2(displayAmount)}
             </td>
           </tr>
         )
@@ -382,7 +392,7 @@ function FoodpandaPreview({
 
           <div className="text-left font-bold mt-2 mb-4 order-sheet-total space-y-0.5">
             <div>
-              合計: {fpOrders.length} 件　原價 ${formatReimbursementAmount(originalTotal)}
+              合計: {fpOrders.length} 件　原價 ${formatMoney2(originalTotal)}
             </div>
             {receiptPaid != null ? (
               <div style={{ color: "#d70f64" }}>

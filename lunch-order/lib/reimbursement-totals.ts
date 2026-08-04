@@ -283,3 +283,21 @@ export function formatReimbursementAmount(value: number): string {
 export function formatReimbursementTotal(value: number): string {
   return roundUpToOneDecimal(value).toFixed(1)
 }
+
+/** foodpanda 落單表の各人金額表示（常に小数2桁） */
+export function formatMoney2(value: number): string {
+  if (!Number.isFinite(value)) return "0.00"
+  return (Math.round(value * 100) / 100).toFixed(2)
+}
+
+/**
+ * 合計を人数で按分（小数2桁）。端数は先頭から1セントずつ配り、合計が total と完全一致する。
+ * 例: 133.9 / 2 → [66.95, 66.95]
+ */
+export function splitAmountEvenly(total: number, count: number): number[] {
+  if (count <= 0) return []
+  const cents = Math.round(total * 100)
+  const base = Math.floor(cents / count)
+  const rem = cents - base * count
+  return Array.from({ length: count }, (_, i) => (base + (i < rem ? 1 : 0)) / 100)
+}
